@@ -1,0 +1,24 @@
+﻿@typeparam TItem
+
+<tr>
+    @foreach (var columnData in GetItemData(Item))
+    {
+        <td>@columnData</td>
+    }
+</tr>
+
+
+
+@code
+{
+
+    [Parameter]
+    public TItem Item { get; set; }
+
+    private IEnumerable<object> GetItemData(TItem item)
+        => DataGridUtils.GetItemsPropertyInfo<TItem>()
+            .Select(x => x.GetValue(item));
+
+
+
+}

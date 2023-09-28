@@ -1,0 +1,24 @@
+﻿@using static DataGridProject.Pages.FetchData;
+@typeparam TItem
+
+
+<table class="table">
+    <DataGridHeader TItem="TItem" />
+
+    <tbody>
+        @foreach (var forecast in Items)
+        {
+            <DataGridRow Item="forecast" />
+        }
+    </tbody>
+</table>
+
+
+
+
+@code {
+
+    [Parameter]
+    public IEnumerable<TItem> Items { get; set; } = Enumerable.Empty<TItem>();
+
+}

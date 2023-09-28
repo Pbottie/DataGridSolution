@@ -1,0 +1,19 @@
+﻿@typeparam TItem
+
+<thead>
+    <tr>
+        @foreach (var name in GetColumnNames())
+        {
+            <th>@name</th>
+        }
+    </tr>
+</thead>
+
+
+
+@code
+{
+    private IEnumerable<string> GetColumnNames()
+        => DataGridUtils.GetItemsPropertyInfo<TItem>()
+        .Select(x => x.Name);
+}
