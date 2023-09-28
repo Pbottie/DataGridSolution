@@ -7,7 +7,7 @@
     public void HelloWorldComponentRendersCorrectly()
     {
         // Act
-        var cut = Render(@<DataGrid Items="object"/>);
+        var cut = Render(@<DataGrid TItem="object"/>);
 
         // Assert
         cut.MarkupMatches(@<h1>Hello world from Blazor</h1>);
