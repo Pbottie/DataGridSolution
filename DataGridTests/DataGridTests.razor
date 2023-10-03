@@ -3,13 +3,36 @@
 
 @code
 {
-    [TestMethod]
-    public void HelloWorldComponentRendersCorrectly()
-    {
-        // Act
-        var cut = Render(@<DataGrid TItem="object"/>);
+    // [TestMethod]
+    // public void DataGridComponentRendersCorrectly()
+    // {
+    //     // Act
+    //     var cut = Render(@<DataGrid TItem="object" />);
+    //     // Assert
+    //     cut.MarkupMatches(
+    //         @<table class="table">
+    //             <thead diff:ignoreChildren></thead>
+    //             <tbody></tbody>
+    //         </table>
+    //     );
+    // }
 
-        // Assert
-        cut.MarkupMatches(@<h1>Hello world from Blazor</h1>);
-    }
+    // [TestMethod]
+    // public void DataGridHeaderComponentRendersCorrectly()
+    // {
+    //     var cut = Render(@<DataGrid TItem="object" />);
+
+    //     var dataGridHeader = cut.FindComponent<DataGridHeader<object>>();
+
+    //     cut.Find("thead")
+    //     .ChildNodes
+    //     .MarkupMatches(dataGridHeader);
+    // }
+
+   
+
+
+
+
+
 }

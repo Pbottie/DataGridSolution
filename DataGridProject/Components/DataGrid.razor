@@ -1,24 +1,54 @@
-﻿@using static DataGridProject.Pages.FetchData;
-@typeparam TItem
+﻿@inherits UIComponentBase
+@typeparam TGridItem
+@attribute [CascadingTypeParameter(nameof(TGridItem))]
 
 
-<table class="table">
-    <DataGridHeader TItem="TItem" />
+@if (!NoRender)
+{
+    <CascadingValue Value="this">
+        <table class="@ClassNames">
+            <thead>
+                <tr>
+                    @foreach (var item in GridItems)
+                    {
+                        @item.ItemHeader;                   
+                    }
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
 
-    <tbody>
-        @foreach (var forecast in Items)
-        {
-            <DataGridRow Item="forecast" />
-        }
-    </tbody>
-</table>
+        </table>
+        @ChildContent
+    </CascadingValue>
+
+}
 
 
 
 
 @code {
 
+
     [Parameter]
-    public IEnumerable<TItem> Items { get; set; } = Enumerable.Empty<TItem>();
+    public IEnumerable<TGridItem> Items { get; set; } = Enumerable.Empty<TGridItem>();
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    private List<GridItem<TGridItem>> GridItems { get; set; } = new();
+
+    protected override void OnParametersSet()
+    {
+        classBuilder
+            .Begin("table");
+    }
+
+
+    internal void AddItem(GridItem<TGridItem> gridItem)
+    {
+        GridItems.Add(gridItem);
+        StateHasChanged();
+    }
 
 }

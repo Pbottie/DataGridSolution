@@ -1,19 +1,18 @@
-﻿@typeparam TItem
+﻿@inherits UIComponentBase
+@typeparam TGridItem
 
-<thead>
-    <tr>
-        @foreach (var name in GetColumnNames())
-        {
-            <th>@name</th>
-        }
-    </tr>
-</thead>
+<tr>
+    @foreach (var name in GetColumnNames())
+    {
+        <th>@name</th>
+    }
+</tr>
 
 
 
 @code
 {
     private IEnumerable<string> GetColumnNames()
-        => DataGridUtils.GetItemsPropertyInfo<TItem>()
-        .Select(x => x.Name);
+     => DataGridUtils.GetItemsPropertyInfo<TGridItem>()
+     .Select(x => x.Name);
 }

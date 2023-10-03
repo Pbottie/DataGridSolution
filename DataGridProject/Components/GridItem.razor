@@ -1,0 +1,41 @@
+﻿@inherits UIComponentBase
+@typeparam TGridItem
+
+
+@code {
+    [CascadingParameter]
+    public DataGrid<TGridItem> ParentGrid { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+    [Parameter]
+    public string Field { get; set; }
+
+    public RenderFragment ItemHeader;
+
+    protected override void OnInitialized()
+    {
+        if (ParentGrid == null)
+            throw new ArgumentNullException("Component must be used with DataGrid");
+
+        if (Field.IsNullOrEmpty())
+        {
+            ItemHeader = @<th>@ChildContent</th>;
+        }
+        else
+        {
+            ItemHeader = @<th>@Field</th>;
+        }
+        ParentGrid.AddItem(this);
+    }
+
+    private string GetColumnName()
+     => DataGridUtils.GetItemsPropertyInfo<TGridItem>()
+     .Select(x => x.Name)
+     .Where(x => x == Field)
+     .FirstOrDefault();
+
+    private IEnumerable<object> GetItemData(TGridItem item)
+      => DataGridUtils.GetItemsPropertyInfo<TGridItem>()
+          .Select(x => x.GetValue(item));
+}

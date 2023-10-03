@@ -1,4 +1,4 @@
-﻿@typeparam TItem
+﻿@typeparam TGridItem
 
 <tr>
     @foreach (var columnData in GetItemData(Item))
@@ -13,12 +13,10 @@
 {
 
     [Parameter]
-    public TItem Item { get; set; }
+    public TGridItem Item { get; set; }
 
-    private IEnumerable<object> GetItemData(TItem item)
-        => DataGridUtils.GetItemsPropertyInfo<TItem>()
+    private IEnumerable<object> GetItemData(TGridItem item)
+        => DataGridUtils.GetItemsPropertyInfo<TGridItem>()
             .Select(x => x.GetValue(item));
-
-
 
 }

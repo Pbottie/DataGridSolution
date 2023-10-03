@@ -1,27 +1,41 @@
 ﻿@using DataGridProject.Components
 @inject HttpClient Http
 
-<PageTitle>Weather forecast</PageTitle>
+<PageTitle>DataGrid</PageTitle>
 
-<h1>Weather forecast</h1>
+<h1>Datagrid</h1>
 
-<p>This component demonstrates fetching data from the server.</p>
+<p>This component demonstrates displaying data from the server.</p>
 
-@if (forecasts == null)
+@if (testData == null)
 {
     <p><em>Loading...</em></p>
 }
 else
 {
-    <DataGrid Items="forecasts"/>
+    //Usage with rendering directly from list of objects
+    @* <DataGrid Items="testData" class="table-striped" /> *@
+
+    //Usage with templated header
+    <DataGrid Items="forecasts" class="table-striped">
+        @* <GridColumn></GridColumn>  Header, Value, hardcoded *@
+        @* <GridColumn></GridColumn>  Header, Value, hardcoded *@
+     
+            <GridItem Field="Id"></GridItem>
+            <GridItem>Test3</GridItem>
+
+        
+    </DataGrid>
 }
 
 @code {
     private WeatherForecast[] forecasts;
+    private List<SearchMeasurementListItem> testData;
 
     protected override async Task OnInitializedAsync()
     {
         forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
+        testData = BogusData.GetData();
     }
 
     public class WeatherForecast
