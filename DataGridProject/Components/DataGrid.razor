@@ -16,10 +16,10 @@
                 <GridRow Items="TotalItems" ColumnFields="columnFields" GridItems="gridItems" />
             </tbody>
         </table>
-        @* @if (IsPaginated)
-    {
-    <Paginator OnPaginate="HandlePagination" @ref="paginator" />
-    } *@
+        @if (IsPaginated)
+        {
+            <Paginator PaginationState="paginationState" OnPaginate="HandlePagination" />
+        }
     </CascadingValue>
 
 }
@@ -47,6 +47,7 @@
     private Dictionary<GridItem<TGridItem>, string> filterTextDict = new();
     private List<string> columnFields = new();
     private Paginator paginator;
+    private PaginationState paginationState;
 
     private IEnumerable<TGridItem> items;
     private IEnumerable<TGridItem> ogItems;
@@ -68,29 +69,57 @@
         }
     }
 
+    protected override void OnInitialized()
+    {
+        if (IsPaginated)
+        {
+            //Also set other than default itemsperpage
+            paginationState = new();
+            paginationState.SetTotalItemsAsync(Items.Count());
+        }
 
-    // sortera
-    // filtera
+    }
+
     // paginera
 
-    public IEnumerable<TGridItem> TotalItems => SortedItems
-        ?.Where(x =>
+    public IEnumerable<TGridItem> TotalItems
+    {
+        get
         {
-            bool satisfiesAllFilters = true;
-            foreach (var (gridKey, filterString) in filterTextDict)
-            {
-                var property = typeof(TGridItem).GetProperty(gridKey.Field);
+            var result = SortedItems
+        ?.Where(x => IsFiltered(x))
+            // .Where(x=> x)
 
-                if (!property.GetValue(x).ToString().ToLower().Contains(filterString.ToLower()))
-                    satisfiesAllFilters = false;
+            .ToList()
+            ?? new();
+
+
+            if (IsPaginated)
+            {
+                paginationState.SetTotalItemsAsync(result.Count);
+                result = result.Skip(paginationState.ItemsPerPage * paginationState.PageIndex).Take(paginationState.ItemsPerPage).ToList();
             }
 
-            return satisfiesAllFilters;
-        })
-        // ?.Where(x => filterTextDict.)
-        .ToList()
-        ?? new();
 
+            return result;
+        }
+    }
+
+
+
+    internal bool IsFiltered(TGridItem item)
+    {
+        bool satisfiesAllFilters = true;
+        foreach (var (gridKey, filterString) in filterTextDict)
+        {
+            var property = typeof(TGridItem).GetProperty(gridKey.Field);
+
+            if (!property.GetValue(item).ToString().ToLower().Contains(filterString.ToLower()))
+                satisfiesAllFilters = false;
+        }
+
+        return satisfiesAllFilters;
+    }
     // public IEnumerable<TGridItem> FilteredItems
     // {
     //     get
@@ -137,10 +166,10 @@
 
     // }
 
-    // internal void HandlePagination(PaginationState state)
-    // {
-    //     items = PaginatedItems;
-    // }
+    internal void HandlePagination(PaginationState state)
+    {
+
+    }
 
     internal void UpdateColumnFields(string field)
     {
