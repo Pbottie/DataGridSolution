@@ -18,7 +18,7 @@
         </table>
         @if (IsPaginated)
         {
-            <Paginator PaginationState="paginationState" OnPaginate="HandlePagination" />
+            <Paginator PaginationState="paginationState" />
         }
     </CascadingValue>
 
@@ -40,13 +40,15 @@
     [Parameter]
     public bool IsPaginated { get; set; }
 
+    [Parameter]
+    public int DefaultItemsPerPage { get; set; }
+
     public string SortedField { get; private set; }
 
     public List<GridItem<TGridItem>> gridItems = new();
     private bool isAscending;
     private Dictionary<GridItem<TGridItem>, string> filterTextDict = new();
     private List<string> columnFields = new();
-    private Paginator paginator;
     private PaginationState paginationState;
 
     private IEnumerable<TGridItem> items;
@@ -63,9 +65,6 @@
             ogItems = Items;
             items = Items;
 
-            // paginator.PaginationState.SetTotalItemsAsync(SortedItems.Count());
-
-            // items = FilteredItems; //Här är felet...
         }
     }
 
@@ -75,6 +74,10 @@
         {
             //Also set other than default itemsperpage
             paginationState = new();
+            if (DefaultItemsPerPage > 0)
+            {
+                paginationState.ItemsPerPage = DefaultItemsPerPage;
+            }
             paginationState.SetTotalItemsAsync(Items.Count());
         }
 
@@ -106,7 +109,6 @@
     }
 
 
-
     internal bool IsFiltered(TGridItem item)
     {
         bool satisfiesAllFilters = true;
@@ -120,56 +122,7 @@
 
         return satisfiesAllFilters;
     }
-    // public IEnumerable<TGridItem> FilteredItems
-    // {
-    //     get
-    //     {
-    //         List<IEnumerable<TGridItem>> filterResults = new();
-    //         var sortedItems = items;
 
-    //         foreach (var (gridKey, filterString) in filterTextDict)
-    //         {
-    //             var property = typeof(TGridItem).GetProperty(gridKey.Field);
-
-    //             if (string.IsNullOrEmpty(filterString))
-    //                 continue;
-
-    //             sortedItems = sortedItems
-    //            .Where(item => property.GetValue(item).ToString().ToLower().Contains(filterString.ToLower()));
-
-    //             if (sortedItems.Count() == 0)
-    //                 break;
-
-    //         }
-    //         return sortedItems;
-
-    //     }
-    // }
-
-    // protected override void OnAfterRender(bool firstRender)
-    // {
-
-    //     if (firstRender)
-    //     {
-    //         if (!string.IsNullOrEmpty(DefaultSortedField))
-    //         {
-    //             Sort(DefaultSortedField);
-    //         }
-
-    //         if (IsPaginated)
-    //         {
-    //             paginator.PaginationState.SetTotalItemsAsync(Items.Count());
-    //         }
-
-    //         items = PaginatedItems;
-    //     }
-
-    // }
-
-    internal void HandlePagination(PaginationState state)
-    {
-
-    }
 
     internal void UpdateColumnFields(string field)
     {
@@ -203,52 +156,9 @@
 
         gridItems.Where(x => x.Field == field).FirstOrDefault().IsAscending = isAscending;
 
-
-        // if (IsPaginated && paginator is not null)
-        // {
-        //     items = FilteredItems.Skip(paginator.PaginationState.ItemsPerPage * paginator.PaginationState.PageIndex - 1).Take(paginator.PaginationState.ItemsPerPage);
-        // }
-        // else
-        // items = PaginatedItems;
-
-        // StateHasChanged();
     }
 
-    // public IEnumerable<TGridItem> PaginatedItems
-    // {
-    //     get
-    //     {
-    //         var result = FilteredItems.Skip(paginator.PaginationState.ItemsPerPage * paginator.PaginationState.PageIndex - 1).Take(paginator.PaginationState.ItemsPerPage);
-    //         return result;
 
-    //     }
-    // }
-
-
-    // public IEnumerable<TGridItem> FilteredItems
-    // {
-    //     get
-    //     {
-    // List<IEnumerable<TGridItem>> filterResults = new();
-    // var sortedItems = SortedItems;
-
-    // foreach (var (gridKey, filterString) in filterTextDict)
-    // {
-    //     var property = typeof(TGridItem).GetProperty(gridKey.Field);
-
-    //     if (string.IsNullOrEmpty(filterString))
-    //         continue;
-
-    //     sortedItems = sortedItems
-    //    .Where(item => property.GetValue(item).ToString().ToLower().Contains(filterString.ToLower()));
-
-    //     if (sortedItems.Count() == 0)
-    //         break;
-
-    // }
-    // return sortedItems;
-    //     }
-    // }
 
     public void Filter(GridItem<TGridItem> gridItem, string filterText)
     {
@@ -260,36 +170,8 @@
         else
             filterTextDict.Add(gridItem, filterText);
 
-        // paginator.PaginationState.SetTotalItemsAsync(FilteredItems.Count());
-        // if (IsPaginated)
-        //     items = FilteredItems.Skip(paginator.PaginationState.ItemsPerPage * paginator.PaginationState.PageIndex - 1).Take(paginator.PaginationState.ItemsPerPage);
-        // else
-        // items = PaginatedItems;
-
         StateHasChanged();
     }
-
-    // public IEnumerable<TGridItem>
-    //     SortedItems
-    // {
-    //     get
-    //     {
-    //         if (items != null)
-    //         {
-    //             Console.WriteLine("ITEMS IS NULL WTF?!");
-    //             if (!string.IsNullOrEmpty(SortedField))
-    //             {
-    //                 var property = typeof(TGridItem).GetProperty(SortedField);
-    //                 if (isAscending)
-    //                     return items.OrderBy(item => (string)property.GetValue(item));
-    //                 else
-    //                     return items.OrderByDescending(item => (string)property.GetValue(item));
-    //             }
-    //         }
-    //         return new List<TGridItem>();
-    //     }
-    // }
-
 
 
     public IEnumerable<TGridItem>
