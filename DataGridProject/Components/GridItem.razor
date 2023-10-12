@@ -1,7 +1,6 @@
 ﻿@inherits UIComponentBase
 @typeparam TGridItem
 
-
 <th attribute="@AdditionalAttributes" class="@ClassNames">
     <div class="header-content">
         @if (IsFilterable)
@@ -42,18 +41,21 @@
             <div class="filter">
                 @if (FilterTemplate != null)
                 {
-                @FilterTemplate
+                    @FilterTemplate
                 }
                 else
                 {
-                <div class="search-box">
-                    <input type="search" autofocus @bind="filterText" @oninput="FilterFromInput" placeholder="Filter..." />
-                </div>
+                    <div class="search-box">
+                        <input type="search" autofocus @bind="filterText" @oninput="FilterFromInput" placeholder="Filter..." />
+                    </div>
                 }
             </div>
         }
     </div>
+            <span class="fullscreen @(isShowingFilterInput ? "" : "hidden")" @onclick=CloseFilter>
+            </span>
 </th>
+
 
 
 
@@ -85,8 +87,8 @@
     public bool IsSorted => Field == (ParentGrid.SortedField ?? "-x-");
     public bool IsAscending;
 
-    private bool isShowingFilterInput;
     private bool isHovering;
+    private bool isShowingFilterInput;
     private string filterText;
     private string isVisibleClass => IsSorted || (!IsSorted && isHovering) ? "visible" : "hidden";
 
@@ -152,6 +154,9 @@
     // }
     private void HandleMouseOver() => isHovering = true;
     private void HandleMouseOut() => isHovering = false;
+
+    private void CloseFilter() => isShowingFilterInput = false;
+
 
     private void HandleClick()
     {

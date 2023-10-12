@@ -72,7 +72,6 @@
     {
         if (IsPaginated)
         {
-            //Also set other than default itemsperpage
             paginationState = new();
             if (DefaultItemsPerPage > 0)
             {
@@ -164,7 +163,6 @@
     {
         var property = typeof(TGridItem).GetProperty(gridItem.Field);
 
-        //Update Filtered Dictionary?
         if (filterTextDict.ContainsKey(gridItem))
             filterTextDict[gridItem] = filterText;
         else
@@ -191,4 +189,5 @@
             return Items;
         }
     }
+
 }
