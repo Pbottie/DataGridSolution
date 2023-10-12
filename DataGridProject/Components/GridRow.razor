@@ -8,7 +8,7 @@
 
         foreach (var field in ColumnFields)
         {
-            var columnTemplate = ParentGrid.GridItems.Where(grid => grid.Field == field).Select(item => item.ColumnTemplate).FirstOrDefault();
+            var columnTemplate = GridItems.Where(grid => grid.Field == field).Select(item => item.ColumnTemplate).FirstOrDefault();
             var columnData = DataGridUtils
                  .GetItemsPropertyInfo<TGridItem>()
                  .Where(x => x.Name == field)
@@ -54,4 +54,6 @@
     [Parameter, EditorRequired]
     public List<string> ColumnFields { get; set; }
 
+    [Parameter, EditorRequired]
+    public List<GridItem<TGridItem>> GridItems { get; set; }
 }
