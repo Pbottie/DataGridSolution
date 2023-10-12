@@ -13,7 +13,7 @@
                 </tr>
             </thead>
             <tbody>
-                <GridRow Items="items" ColumnFields="columnFields" GridItems="gridItems" />
+                <GridRow Items="TotalItems" ColumnFields="columnFields" GridItems="gridItems" />
             </tbody>
         </table>
         @if (IsPaginated)
@@ -43,7 +43,7 @@
     public string SortedField { get; private set; }
 
     public List<GridItem<TGridItem>> gridItems = new();
-    private bool IsAscending;
+    private bool isAscending;
     private Dictionary<GridItem<TGridItem>, string> filterTextDict = new();
     private List<string> columnFields = new();
     private Paginator paginator;
@@ -60,32 +60,42 @@
         if (ogItems != Items)
         {
             ogItems = Items;
-            
-            paginator.PaginationState.SetTotalItemsAsync(SortedItems.Count());
-            
+            items = Items;
+            // paginator.PaginationState.SetTotalItemsAsync(SortedItems.Count());
+
             // items = FilteredItems; //Här är felet...
         }
     }
 
-    protected override void OnAfterRender(bool firstRender)
-    {
 
-        if (firstRender)
-        {
-            if (!string.IsNullOrEmpty(DefaultSortedField))
-            {
-                Sort(DefaultSortedField);
-            }
+    // sortera
+    // filtera
+    // paginera
 
-            if (IsPaginated)
-            {
-                paginator.PaginationState.SetTotalItemsAsync(Items.Count());
-            }
+    public IEnumerable<TGridItem> TotalItems => SortedItems
+        ?.Where(x => true)
+        .ToList()
+        ?? new();
 
-            items = PaginatedItems;
-        }
+    // protected override void OnAfterRender(bool firstRender)
+    // {
 
-    }
+    //     if (firstRender)
+    //     {
+    //         if (!string.IsNullOrEmpty(DefaultSortedField))
+    //         {
+    //             Sort(DefaultSortedField);
+    //         }
+
+    //         if (IsPaginated)
+    //         {
+    //             paginator.PaginationState.SetTotalItemsAsync(Items.Count());
+    //         }
+
+    //         items = PaginatedItems;
+    //     }
+
+    // }
 
     internal void HandlePagination(PaginationState state)
     {
@@ -116,13 +126,13 @@
 
         if (field != SortedField)
         {
-            IsAscending = DefaultSortDirection == SortDirection.Ascending ? true : false;
+            isAscending = DefaultSortDirection == SortDirection.Ascending ? true : false;
             SortedField = field;
         }
         else
-            IsAscending = !IsAscending;
+            isAscending = !isAscending;
 
-        gridItems.Where(x => x.Field == field).FirstOrDefault().IsAscending = IsAscending;
+        gridItems.Where(x => x.Field == field).FirstOrDefault().IsAscending = isAscending;
 
 
         // if (IsPaginated && paginator is not null)
@@ -199,7 +209,7 @@
             if (!string.IsNullOrEmpty(SortedField))
             {
                 var property = typeof(TGridItem).GetProperty(SortedField);
-                if (IsAscending)
+                if (isAscending)
                     return Items.OrderBy(item => (string)property.GetValue(item));
                 else
                     return Items.OrderByDescending(item => (string)property.GetValue(item));
