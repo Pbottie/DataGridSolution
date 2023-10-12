@@ -3,33 +3,106 @@
 
 @code
 {
-    // [TestMethod]
-    // public void DataGridComponentRendersCorrectly()
-    // {
-    //     // Act
-    //     var cut = Render(@<DataGrid TItem="object" />);
-    //     // Assert
-    //     cut.MarkupMatches(
-    //         @<table class="table">
-    //             <thead diff:ignoreChildren></thead>
-    //             <tbody></tbody>
-    //         </table>
-    //     );
-    // }
+
+    private List<SearchMeasurementListItem> testData;
 
     // [TestMethod]
-    // public void DataGridHeaderComponentRendersCorrectly()
+    // public void DataGridRendersDefault()
     // {
-    //     var cut = Render(@<DataGrid TItem="object" />);
+    // var testData = DataGridProject.BogusData.GetData();
+    //     var cut = Render(
+    // @<DataGrid Items="testData" class="table-striped">
 
-    //     var dataGridHeader = cut.FindComponent<DataGridHeader<object>>();
+    // </DataGrid>
+    //      );
 
-    //     cut.Find("thead")
-    //     .ChildNodes
-    //     .MarkupMatches(dataGridHeader);
+    //     var test = DataGridUtils.GetItemsPropertyInfo<SearchMeasurementListItem>()
+    //   .Select(x => x.GetValue(testData));
+
     // }
 
-   
+    [TestInitialize]
+    public void Init()
+    {
+        testData = DataGridProject.BogusData.GetData(10);
+    }
+
+
+    [TestMethod]
+    public void GridItemTestDoesNotIndependentlyRender()
+    {
+        Assert.ThrowsException<ArgumentNullException>(
+        () => Render(
+    @<GridItem TGridItem="object"></GridItem>
+        ));
+
+    }
+
+    [TestMethod]
+    public void DataGridRendersWithoutErrors()
+    {
+
+        var cut = Render(
+    @<DataGrid Items="testData" class="table-striped">
+
+        <GridItem Field="Id"></GridItem>
+        <GridItem Field="MeasurementName">Name</GridItem>
+        <GridItem>Cold</GridItem>
+
+    </DataGrid>
+    );
+
+    }
+
+    [TestMethod]
+    public void DataGridRendersCorrectly()
+    {
+
+        var cut = Render(
+    @<DataGrid Items="testData" class="table-striped">
+
+        <GridItem Field="Id"></GridItem>
+        <GridItem Field="MeasurementName">Name</GridItem>
+        <GridItem>Cold</GridItem>
+
+    </DataGrid>
+        );
+
+        cut.MarkupMatches(
+    @<table class="table  table-striped">
+    <thead>
+        <tr diff:ignoreChildren>
+        </tr>
+    </thead>
+    <tbody diff:ignoreChildren>
+    </tbody>
+</table>
+        );
+
+    }
+
+    [TestMethod]
+    public void DataGridDuplicateFieldThrowsException()
+    {
+
+        Assert.ThrowsException<Exception>(() =>
+        Render(
+    @<DataGrid Items="testData" class="table-striped">
+
+        <GridItem Field="Id"></GridItem>
+        <GridItem Field="Id"></GridItem>
+        <GridItem Field="MeasurementName">Name</GridItem>
+        <GridItem>Cold</GridItem>
+
+    </DataGrid>
+        )
+        );
+
+    }
+
+
+
+
 
 
 

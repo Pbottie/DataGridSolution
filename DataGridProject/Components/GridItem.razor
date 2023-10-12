@@ -2,32 +2,165 @@
 @typeparam TGridItem
 
 
+<th attribute="@AdditionalAttributes" class="@ClassNames">
+    <div class="header-content">
+        @if (IsFilterable)
+        {
+            <button class="@(string.IsNullOrEmpty(filterText) ? "filter-option":"filter-option-full")" type="button" @onclick="@HandleFilter"></button>
+        }
+        <span @onclick=@HandleClick @onmouseover="@HandleMouseOver" @onmouseout="@HandleMouseOut">
+            @if (HeaderTemplate != null)
+            {
+                @HeaderTemplate
+            }
+            else if (!string.IsNullOrEmpty(Title))
+            {
+                @Title
+            }
+            else
+            {
+                @GetColumnName()
+            }
+            @if (IsSortable)
+            {
+                @if (IsAscending)
+                {
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-up @isVisibleClass" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z" />
+                    </svg>
+                }
+                else
+                {
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down @isVisibleClass" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+                    </svg>
+                }
+            }
+        </span>
+        @if (isShowingFilterInput)
+        {
+            <div class="filter">
+                @if (FilterTemplate != null)
+                {
+                @FilterTemplate
+                }
+                else
+                {
+                <div class="search-box">
+                    <input type="search" autofocus @bind="filterText" @oninput="FilterFromInput" placeholder="Filter..." />
+                </div>
+                }
+            </div>
+        }
+    </div>
+</th>
+
+
+
 @code {
+    //FilterTemplate (RF) ska rendera den istället för fritext
+
     [CascadingParameter]
     public DataGrid<TGridItem> ParentGrid { get; set; }
 
     [Parameter]
-    public RenderFragment ChildContent { get; set; }
+    public RenderFragment HeaderTemplate { get; set; }
+    [Parameter]
+    public RenderFragment FilterTemplate { get; set; }
+    [Parameter]
+    public RenderFragment<TGridItem> ColumnTemplate { get; set; }
+
     [Parameter]
     public string Field { get; set; }
+    [Parameter]
+    public string Title { get; set; }
+    [Parameter]
+    public TGridItem Item { get; set; }
+    [Parameter]
+    public bool IsSortable { get; set; }
+    [Parameter]
+    public bool IsFilterable { get; set; }
+
+
+    public bool IsSorted => Field == (ParentGrid.SortedField ?? "-x-");
+    public bool IsAscending;
+
+    private bool isShowingFilterInput;
+    private bool isHovering;
+    private string filterText;
+    private string isVisibleClass => IsSorted || (!IsSorted && isHovering) ? "visible" : "hidden";
 
     public RenderFragment ItemHeader;
 
     protected override void OnInitialized()
     {
+        if (FieldDoesNotExistInItem() && !string.IsNullOrEmpty(Field))
+            throw new ArgumentException("Field name " + Field + " does not exist in item");
+
+        if (string.IsNullOrEmpty(Field) && (string.IsNullOrEmpty(Title) && HeaderTemplate == null))
+            throw new ArgumentNullException("No Template found. Field and Title can't both be empty");
+
+        if (string.IsNullOrEmpty(Field) && IsFilterable)
+            throw new ArgumentException("Can't filter with an empty Field");
+
         if (ParentGrid == null)
             throw new ArgumentNullException("Component must be used with DataGrid");
 
-        if (Field.IsNullOrEmpty())
-        {
-            ItemHeader = @<th>@ChildContent</th>;
-        }
-        else
-        {
-            ItemHeader = @<th>@Field</th>;
-        }
+        if (string.IsNullOrEmpty(Field))
+            Field = Guid.NewGuid().ToString();
+
+        if (FilterTemplate != null)
+            IsFilterable = true;
+
         ParentGrid.AddItem(this);
     }
+
+    protected override void OnParametersSet()
+    {
+        classBuilder
+        .Begin("")
+        .AddClass("cursor-pointer", IsSortable || IsFilterable)
+        .GetClass(); ;
+    }
+
+    private bool FieldDoesNotExistInItem()
+    {
+        var propertyInfo = DataGridUtils.GetItemsPropertyInfo<TGridItem>()
+        .Where(x => x.Name == Field);
+
+        return (propertyInfo.Count() == 0) ? true : false;
+
+    }
+
+    //Use below for ItemHeader renderfragment instead
+    // private void SetHeader()
+    // {
+    //     var styles = new ClassBuilder()
+    //     .Begin("")
+    //     .AddClass("cursor-pointer", IsSortable)
+    //     .GetClass();
+
+    //     if (ChildContent != null)
+    //     {
+    //         ItemHeader = @<th class="@styles">@ChildContent</th>;
+    //     }
+    //     else
+    //     {
+    //         ItemHeader = @<th class="@styles">@GetColumnName()</th>;
+    //     }
+
+    // }
+    private void HandleMouseOver() => isHovering = true;
+    private void HandleMouseOut() => isHovering = false;
+
+    private void HandleClick()
+    {
+        if (IsSortable)
+        {
+            ParentGrid.Sort(Field);
+        }
+    }
+
 
     private string GetColumnName()
      => DataGridUtils.GetItemsPropertyInfo<TGridItem>()
@@ -35,7 +168,16 @@
      .Where(x => x == Field)
      .FirstOrDefault();
 
-    private IEnumerable<object> GetItemData(TGridItem item)
-      => DataGridUtils.GetItemsPropertyInfo<TGridItem>()
-          .Select(x => x.GetValue(item));
+    private void FilterFromInput(ChangeEventArgs e)
+    {
+        filterText = e.Value.ToString();
+        ParentGrid.Filter(this, filterText);
+    }
+    private void HandleFilter()
+    {
+        isShowingFilterInput = !isShowingFilterInput;
+    }
+
+
+
 }

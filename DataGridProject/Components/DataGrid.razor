@@ -9,46 +9,205 @@
         <table class="@ClassNames">
             <thead>
                 <tr>
-                    @foreach (var item in GridItems)
-                    {
-                        @item.ItemHeader;                   
-                    }
+                    @ChildContent
                 </tr>
             </thead>
             <tbody>
+                <GridRow Items="items" ColumnFields="ColumnFields" />
             </tbody>
-
         </table>
-        @ChildContent
+        @if (IsPaginated)
+        {
+            <Paginator OnPaginate="HandlePagination" @ref="paginator" />
+        }
     </CascadingValue>
 
 }
 
-
-
-
 @code {
-
-
     [Parameter]
-    public IEnumerable<TGridItem> Items { get; set; } = Enumerable.Empty<TGridItem>();
+    public IEnumerable<TGridItem> Items { get; set; } /* = Enumerable.Empty<TGridItem>(); */
 
     [Parameter]
     public RenderFragment ChildContent { get; set; }
 
-    private List<GridItem<TGridItem>> GridItems { get; set; } = new();
+    [Parameter]
+    public string DefaultSortedField { get; set; }
+
+    [Parameter]
+    public SortDirection DefaultSortDirection { get; set; }
+
+    [Parameter]
+    public bool IsPaginated { get; set; }
+
+
+    public string SortedField { get; private set; }
+    public bool IsAscending { get; private set; }
+    public List<GridItem<TGridItem>> GridItems { get; private set; } = new();
+
+    private Dictionary<GridItem<TGridItem>, string> filterTextDict = new();
+    private List<string> ColumnFields { get; set; } = new();
+    private RenderFragment Rows { get; set; }
+    private Paginator paginator;
+
+    private IEnumerable<TGridItem> items;
+    private IEnumerable<TGridItem> ogItems;
 
     protected override void OnParametersSet()
     {
+
         classBuilder
-            .Begin("table");
+           .Begin("table");
+
+        if (ogItems != Items)
+        {
+            ogItems = Items;
+            
+            paginator.PaginationState.SetTotalItemsAsync(SortedItems.Count());
+            
+            // items = FilteredItems; //Här är felet...
+        }
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+
+        if (firstRender)
+        {
+            if (!string.IsNullOrEmpty(DefaultSortedField))
+            {
+                Sort(DefaultSortedField);
+            }
+
+            if (IsPaginated)
+            {
+                paginator.PaginationState.SetTotalItemsAsync(Items.Count());
+            }
+
+            items = PaginatedItems;
+        }
+
+    }
+
+    internal void HandlePagination(PaginationState state)
+    {
+        items = PaginatedItems;
+    }
+
+    internal void UpdateColumnFields(string field)
+    {
+        if (!ColumnFields.Contains(field) || string.IsNullOrEmpty(field))
+        {
+            ColumnFields.Add(field);
+        }
+        else
+        {
+            throw new Exception("Field already exists!");
+        }
     }
 
 
     internal void AddItem(GridItem<TGridItem> gridItem)
     {
         GridItems.Add(gridItem);
+        UpdateColumnFields(gridItem.Field);
+    }
+
+    internal void Sort(string field)
+    {
+
+        if (field != SortedField)
+        {
+            IsAscending = DefaultSortDirection == SortDirection.Ascending ? true : false;
+            SortedField = field;
+        }
+        else
+            IsAscending = !IsAscending;
+
+        GridItems.Where(x => x.Field == field).FirstOrDefault().IsAscending = IsAscending;
+
+
+        // if (IsPaginated && paginator is not null)
+        // {
+        //     items = FilteredItems.Skip(paginator.PaginationState.ItemsPerPage * paginator.PaginationState.PageIndex - 1).Take(paginator.PaginationState.ItemsPerPage);
+        // }
+        // else
+        items = PaginatedItems;
+
         StateHasChanged();
     }
 
+    public IEnumerable<TGridItem> PaginatedItems
+    {
+        get
+        {
+            var result = FilteredItems.Skip(paginator.PaginationState.ItemsPerPage * paginator.PaginationState.PageIndex - 1).Take(paginator.PaginationState.ItemsPerPage);
+            return result;
+
+        }
+    }
+
+
+    public IEnumerable<TGridItem> FilteredItems
+    {
+        get
+        {
+            List<IEnumerable<TGridItem>> filterResults = new();
+            var sortedItems = SortedItems;
+
+            foreach (var (gridKey, filterString) in filterTextDict)
+            {
+                var property = typeof(TGridItem).GetProperty(gridKey.Field);
+
+                if (string.IsNullOrEmpty(filterString))
+                    continue;
+
+                sortedItems = sortedItems
+               .Where(item => property.GetValue(item).ToString().ToLower().Contains(filterString.ToLower()));
+
+                if (sortedItems.Count() == 0)
+                    break;
+
+            }
+            return sortedItems;
+
+        }
+    }
+
+    public void Filter(GridItem<TGridItem> gridItem, string filterText)
+    {
+        var property = typeof(TGridItem).GetProperty(gridItem.Field);
+
+        //Update Filtered Dictionary?
+        if (filterTextDict.ContainsKey(gridItem))
+            filterTextDict[gridItem] = filterText;
+        else
+            filterTextDict.Add(gridItem, filterText);
+
+        // paginator.PaginationState.SetTotalItemsAsync(FilteredItems.Count());
+        // if (IsPaginated)
+        //     items = FilteredItems.Skip(paginator.PaginationState.ItemsPerPage * paginator.PaginationState.PageIndex - 1).Take(paginator.PaginationState.ItemsPerPage);
+        // else
+        items = PaginatedItems;
+
+        StateHasChanged();
+    }
+
+    public IEnumerable<TGridItem>
+        SortedItems
+    {
+        get
+        {
+            if (!string.IsNullOrEmpty(SortedField))
+            {
+                var property = typeof(TGridItem).GetProperty(SortedField);
+                if (IsAscending)
+                    return Items.OrderBy(item => (string)property.GetValue(item));
+                else
+                    return Items.OrderByDescending(item => (string)property.GetValue(item));
+            }
+
+            return Items;
+        }
+    }
 }

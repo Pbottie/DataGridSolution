@@ -5,7 +5,7 @@
 
 <h1>Datagrid</h1>
 
-<p>This component demonstrates displaying data from the server.</p>
+<p>This component demonstrates displaying data</p>
 
 @if (testData == null)
 {
@@ -13,39 +13,55 @@
 }
 else
 {
-    //Usage with rendering directly from list of objects
-    @* <DataGrid Items="testData" class="table-striped" /> *@
+    <DataGrid Items="FilteredData" IsPaginated class="table-striped w-100">
+             <GridItem Field="@nameof(SearchMeasurementListItem.Id)" />
+             <GridItem Title="GUID">
+                 <ColumnTemplate>
+                     <div class="d-flex align-items-center">
+                         @context.MeasurementId
+                         @context.FormattedStartDate
+                     </div>
+                     <div class="d-flex align-items-center">
+                         @context.MeasurementPath
+                         @context.TotalEffect
+                     </div>
+                 </ColumnTemplate>
+                 <FilterTemplate>
+                     <p>Min: <input type="range" @bind="minEffect" @bind:event="oninput" min="0" max="190" /> <span class="inline-block w-10">@minEffect</span></p>
+                     <p>Max: <input type="range" @bind="maxEffect" @bind:event="oninput" min="@minEffect" max="200" /> <span class="inline-block w-10">@maxEffect</span></p>
+                 </FilterTemplate>
+             </GridItem>
 
-    //Usage with templated header
-    <DataGrid Items="forecasts" class="table-striped">
-        @* <GridColumn></GridColumn>  Header, Value, hardcoded *@
-        @* <GridColumn></GridColumn>  Header, Value, hardcoded *@
-     
-            <GridItem Field="Id"></GridItem>
-            <GridItem>Test3</GridItem>
+             <GridItem Field="CustomerName" Title="Name" IsSortable IsFilterable />
+         <GridItem Title="Cold" />
+         <GridItem Field="@nameof(SearchMeasurementListItem.MeasurementName)" IsSortable IsFilterable />
+         <GridItem Field="@nameof(SearchMeasurementListItem.BrandName)" />
+     </DataGrid>
 
-        
-    </DataGrid>
 }
 
 @code {
-    private WeatherForecast[] forecasts;
+
     private List<SearchMeasurementListItem> testData;
 
-    protected override async Task OnInitializedAsync()
+    double minEffect;
+    double maxEffect = 200;
+
+    List<SearchMeasurementListItem> FilteredData
     {
-        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
-        testData = BogusData.GetData();
+        get
+        {
+            var result = testData.Where(x => x.TotalEffect <= maxEffect);
+
+            if (minEffect > 0)
+                result = result.Where(x => x.TotalEffect >= minEffect);
+            return result.ToList();
+        }
     }
 
-    public class WeatherForecast
+
+    protected override void OnInitialized()
     {
-        public DateOnly Date { get; set; }
-
-        public int TemperatureC { get; set; }
-
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-
-        public string Summary { get; set; }
+        testData = BogusData.GetData(103);
     }
 }

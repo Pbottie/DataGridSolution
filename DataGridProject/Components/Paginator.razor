@@ -1,0 +1,40 @@
+﻿
+
+<div class="paginator">
+    <div class="summary">
+        <text><strong>@state.TotalItemCount</strong> items</text>
+    </div>
+    <nav role="navigation">
+        <button class="go-first" type="button" @onclick="GoFirstAsync" disabled="@(!CanGoBack)" title="Go to first page" aria-title="Go to first page"></button>
+        <button class="go-previous" type="button" @onclick="GoPreviousAsync" disabled="@(!CanGoBack)" title="Go to previous page" aria-title="Go to previous page"></button>
+        <div class="pagination-text">
+            Page <strong>@(state.PageIndex + 1)</strong>
+            of <strong>@(state.LastPageIndex + 1)</strong>
+        </div>
+        <button class="go-next" type="button" @onclick="GoNextAsync" disabled="@(!CanGoForwards)" title="Go to next page" aria-title="Go to next page"></button>
+        <button class="go-last" type="button" @onclick="GoLastAsync" disabled="@(!CanGoForwards)" title="Go to last page" aria-title="Go to last page"></button>
+    </nav>
+</div>
+
+
+@code {
+
+    [Parameter]
+    public EventCallback<PaginationState> OnPaginate { get; set; }
+
+    public PaginationState PaginationState => state;
+    public bool CanGoBack => state.PageIndex > 0;
+    public bool CanGoForwards => state.PageIndex < state.LastPageIndex;
+
+    private PaginationState state = new();
+    private Task GoFirstAsync() => GoToPageAsync(0);
+    private Task GoPreviousAsync() => GoToPageAsync(state.PageIndex - 1);
+    private Task GoNextAsync() => GoToPageAsync(state.PageIndex + 1);
+    private Task GoLastAsync() => GoToPageAsync(state.LastPageIndex);
+
+    private async Task GoToPageAsync(int pageIndex)
+    {
+        await state.SetPageIndexAsync(pageIndex);
+        await OnPaginate.InvokeAsync(state);
+    }
+}

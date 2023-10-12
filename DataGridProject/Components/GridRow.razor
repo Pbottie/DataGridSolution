@@ -1,0 +1,57 @@
+﻿@typeparam TGridItem
+
+@if (Items is not null)
+{
+    foreach (var item in Items)
+    {
+        List<object> rowData = new();
+
+        foreach (var field in ColumnFields)
+        {
+            var columnTemplate = ParentGrid.GridItems.Where(grid => grid.Field == field).Select(item => item.ColumnTemplate).FirstOrDefault();
+            var columnData = DataGridUtils
+                 .GetItemsPropertyInfo<TGridItem>()
+                 .Where(x => x.Name == field)
+                 .Select(y => y.GetValue(item))
+                 .FirstOrDefault();
+            if (columnTemplate != null)
+                rowData.Add(columnTemplate(item));
+            else if (columnData != null)
+                rowData.Add(columnData);
+            else
+                rowData.Add(string.Empty);
+        }
+
+        <tr>
+            @foreach (var columnData in rowData)
+            {
+
+                if (columnData is RenderFragment)
+                {
+                    <td>
+                        @(columnData as RenderFragment)
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        @columnData
+                    </td>
+                }
+            }
+</tr>
+;
+
+    }
+}
+
+
+@code {
+    [CascadingParameter]
+    DataGrid<TGridItem> ParentGrid { get; set; }
+    [Parameter, EditorRequired]
+    public IEnumerable<TGridItem> Items { get; set; }
+    [Parameter, EditorRequired]
+    public List<string> ColumnFields { get; set; }
+
+}
