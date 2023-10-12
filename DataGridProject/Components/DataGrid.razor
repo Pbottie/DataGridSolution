@@ -16,10 +16,10 @@
                 <GridRow Items="TotalItems" ColumnFields="columnFields" GridItems="gridItems" />
             </tbody>
         </table>
-        @if (IsPaginated)
-        {
-            <Paginator OnPaginate="HandlePagination" @ref="paginator" />
-        }
+        @* @if (IsPaginated)
+    {
+    <Paginator OnPaginate="HandlePagination" @ref="paginator" />
+    } *@
     </CascadingValue>
 
 }
@@ -61,6 +61,7 @@
         {
             ogItems = Items;
             items = Items;
+
             // paginator.PaginationState.SetTotalItemsAsync(SortedItems.Count());
 
             // items = FilteredItems; //Här är felet...
@@ -73,9 +74,48 @@
     // paginera
 
     public IEnumerable<TGridItem> TotalItems => SortedItems
-        ?.Where(x => true)
+        ?.Where(x =>
+        {
+            bool satisfiesAllFilters = true;
+            foreach (var (gridKey, filterString) in filterTextDict)
+            {
+                var property = typeof(TGridItem).GetProperty(gridKey.Field);
+
+                if (!property.GetValue(x).ToString().ToLower().Contains(filterString.ToLower()))
+                    satisfiesAllFilters = false;
+            }
+
+            return satisfiesAllFilters;
+        })
+        // ?.Where(x => filterTextDict.)
         .ToList()
         ?? new();
+
+    // public IEnumerable<TGridItem> FilteredItems
+    // {
+    //     get
+    //     {
+    //         List<IEnumerable<TGridItem>> filterResults = new();
+    //         var sortedItems = items;
+
+    //         foreach (var (gridKey, filterString) in filterTextDict)
+    //         {
+    //             var property = typeof(TGridItem).GetProperty(gridKey.Field);
+
+    //             if (string.IsNullOrEmpty(filterString))
+    //                 continue;
+
+    //             sortedItems = sortedItems
+    //            .Where(item => property.GetValue(item).ToString().ToLower().Contains(filterString.ToLower()));
+
+    //             if (sortedItems.Count() == 0)
+    //                 break;
+
+    //         }
+    //         return sortedItems;
+
+    //     }
+    // }
 
     // protected override void OnAfterRender(bool firstRender)
     // {
@@ -97,10 +137,10 @@
 
     // }
 
-    internal void HandlePagination(PaginationState state)
-    {
-        items = PaginatedItems;
-    }
+    // internal void HandlePagination(PaginationState state)
+    // {
+    //     items = PaginatedItems;
+    // }
 
     internal void UpdateColumnFields(string field)
     {
@@ -140,47 +180,46 @@
         //     items = FilteredItems.Skip(paginator.PaginationState.ItemsPerPage * paginator.PaginationState.PageIndex - 1).Take(paginator.PaginationState.ItemsPerPage);
         // }
         // else
-        items = PaginatedItems;
+        // items = PaginatedItems;
 
-        StateHasChanged();
+        // StateHasChanged();
     }
 
-    public IEnumerable<TGridItem> PaginatedItems
-    {
-        get
-        {
-            var result = FilteredItems.Skip(paginator.PaginationState.ItemsPerPage * paginator.PaginationState.PageIndex - 1).Take(paginator.PaginationState.ItemsPerPage);
-            return result;
+    // public IEnumerable<TGridItem> PaginatedItems
+    // {
+    //     get
+    //     {
+    //         var result = FilteredItems.Skip(paginator.PaginationState.ItemsPerPage * paginator.PaginationState.PageIndex - 1).Take(paginator.PaginationState.ItemsPerPage);
+    //         return result;
 
-        }
-    }
+    //     }
+    // }
 
 
-    public IEnumerable<TGridItem> FilteredItems
-    {
-        get
-        {
-            List<IEnumerable<TGridItem>> filterResults = new();
-            var sortedItems = SortedItems;
+    // public IEnumerable<TGridItem> FilteredItems
+    // {
+    //     get
+    //     {
+    // List<IEnumerable<TGridItem>> filterResults = new();
+    // var sortedItems = SortedItems;
 
-            foreach (var (gridKey, filterString) in filterTextDict)
-            {
-                var property = typeof(TGridItem).GetProperty(gridKey.Field);
+    // foreach (var (gridKey, filterString) in filterTextDict)
+    // {
+    //     var property = typeof(TGridItem).GetProperty(gridKey.Field);
 
-                if (string.IsNullOrEmpty(filterString))
-                    continue;
+    //     if (string.IsNullOrEmpty(filterString))
+    //         continue;
 
-                sortedItems = sortedItems
-               .Where(item => property.GetValue(item).ToString().ToLower().Contains(filterString.ToLower()));
+    //     sortedItems = sortedItems
+    //    .Where(item => property.GetValue(item).ToString().ToLower().Contains(filterString.ToLower()));
 
-                if (sortedItems.Count() == 0)
-                    break;
+    //     if (sortedItems.Count() == 0)
+    //         break;
 
-            }
-            return sortedItems;
-
-        }
-    }
+    // }
+    // return sortedItems;
+    //     }
+    // }
 
     public void Filter(GridItem<TGridItem> gridItem, string filterText)
     {
@@ -196,10 +235,33 @@
         // if (IsPaginated)
         //     items = FilteredItems.Skip(paginator.PaginationState.ItemsPerPage * paginator.PaginationState.PageIndex - 1).Take(paginator.PaginationState.ItemsPerPage);
         // else
-        items = PaginatedItems;
+        // items = PaginatedItems;
 
         StateHasChanged();
     }
+
+    // public IEnumerable<TGridItem>
+    //     SortedItems
+    // {
+    //     get
+    //     {
+    //         if (items != null)
+    //         {
+    //             Console.WriteLine("ITEMS IS NULL WTF?!");
+    //             if (!string.IsNullOrEmpty(SortedField))
+    //             {
+    //                 var property = typeof(TGridItem).GetProperty(SortedField);
+    //                 if (isAscending)
+    //                     return items.OrderBy(item => (string)property.GetValue(item));
+    //                 else
+    //                     return items.OrderByDescending(item => (string)property.GetValue(item));
+    //             }
+    //         }
+    //         return new List<TGridItem>();
+    //     }
+    // }
+
+
 
     public IEnumerable<TGridItem>
         SortedItems
