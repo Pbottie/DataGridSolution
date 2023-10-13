@@ -6,25 +6,37 @@
 @if (!NoRender)
 {
     <CascadingValue Value="this">
-        <table class="@ClassNames">
-            <thead>
-                <tr>
-                    @ChildContent
-                </tr>
-            </thead>
-            <tbody>
-                <GridRow Items="TotalItems" ColumnFields="columnFields" GridItems="gridItems" />
-            </tbody>
-        </table>
-        @if (IsPaginated)
-        {
-            <Paginator PaginationState="paginationState" />
-        }
+        <div>
+            @foreach (var kvp in filterTextDict)
+            {
+                if (kvp.Value != "")
+                {
+                    <span @key="kvp" class="badge badge-secondary" @onclick="()=>RemoveFilter(kvp.Key)">
+                        @(string.IsNullOrEmpty(kvp.Key.Title) ? kvp.Key.Field : kvp.Key.Title)
+                    </span>
+                }
+            }
+            <table class="@ClassNames">
+                <thead>
+                    <tr>
+                        @ChildContent
+                    </tr>
+                </thead>
+                <tbody>
+                    <GridRow Items="TotalItems" ColumnFields="columnFields" GridItems="gridItems" />
+                </tbody>
+            </table>
+            @if (IsPaginated)
+            {
+                <Paginator PaginationState="paginationState" OnPaginate="HandlePagination" />
+            }
+        </div>
     </CascadingValue>
 
 }
 
 @code {
+    //Onclick eventcallback för att "hämta" data
     [Parameter]
     public IEnumerable<TGridItem> Items { get; set; } /* = Enumerable.Empty<TGridItem>(); */
 
@@ -56,9 +68,8 @@
 
     protected override void OnParametersSet()
     {
-
         classBuilder
-           .Begin("table");
+        .Begin("table");
 
         if (ogItems != Items)
         {
@@ -82,26 +93,20 @@
 
     }
 
-    // paginera
-
     public IEnumerable<TGridItem> TotalItems
     {
         get
         {
             var result = SortedItems
-        ?.Where(x => IsFiltered(x))
-            // .Where(x=> x)
-
+            ?.Where(x => IsFiltered(x))
             .ToList()
             ?? new();
-
 
             if (IsPaginated)
             {
                 paginationState.SetTotalItemsAsync(result.Count);
                 result = result.Skip(paginationState.ItemsPerPage * paginationState.PageIndex).Take(paginationState.ItemsPerPage).ToList();
             }
-
 
             return result;
         }
@@ -110,16 +115,7 @@
 
     internal bool IsFiltered(TGridItem item)
     {
-        bool satisfiesAllFilters = true;
-        foreach (var (gridKey, filterString) in filterTextDict)
-        {
-            var property = typeof(TGridItem).GetProperty(gridKey.Field);
-
-            if (!property.GetValue(item).ToString().ToLower().Contains(filterString.ToLower()))
-                satisfiesAllFilters = false;
-        }
-
-        return satisfiesAllFilters;
+        return filterTextDict.All((kvp) => typeof(TGridItem).GetProperty(kvp.Key.Field).GetValue(item).ToString().ToLower().Contains(kvp.Value.ToLower()));
     }
 
 
@@ -135,7 +131,13 @@
         }
     }
 
+    internal void RemoveFilter(GridItem<TGridItem> gridItem)
+    {
+        gridItem.RemoveFilter();
+        Filter(gridItem, "");
+    }
 
+    private Dictionary<GridItem<TGridItem>, RenderFragment> rfDict = new();
     internal void AddItem(GridItem<TGridItem> gridItem)
     {
         gridItems.Add(gridItem);
@@ -155,6 +157,7 @@
 
         gridItems.Where(x => x.Field == field).FirstOrDefault().IsAscending = isAscending;
 
+        StateHasChanged();
     }
 
 
@@ -188,6 +191,11 @@
 
             return Items;
         }
+    }
+
+    internal void HandlePagination()
+    {
+        //Basically just for ReRendering?
     }
 
 }

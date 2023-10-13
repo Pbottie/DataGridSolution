@@ -52,16 +52,14 @@
             </div>
         }
     </div>
-            <span class="fullscreen @(isShowingFilterInput ? "" : "hidden")" @onclick=CloseFilter>
-            </span>
+    <span class="fullscreen @(isShowingFilterInput ? "" : "hidden")" @onclick=CloseFilter>
+    </span>
 </th>
 
 
 
 
 @code {
-    //FilterTemplate (RF) ska rendera den istället för fritext
-
     [CascadingParameter]
     public DataGrid<TGridItem> ParentGrid { get; set; }
 
@@ -93,6 +91,8 @@
     private string isVisibleClass => IsSorted || (!IsSorted && isHovering) ? "visible" : "hidden";
 
     public RenderFragment ItemHeader;
+
+    
 
     protected override void OnInitialized()
     {
@@ -134,24 +134,6 @@
 
     }
 
-    //Use below for ItemHeader renderfragment instead
-    // private void SetHeader()
-    // {
-    //     var styles = new ClassBuilder()
-    //     .Begin("")
-    //     .AddClass("cursor-pointer", IsSortable)
-    //     .GetClass();
-
-    //     if (ChildContent != null)
-    //     {
-    //         ItemHeader = @<th class="@styles">@ChildContent</th>;
-    //     }
-    //     else
-    //     {
-    //         ItemHeader = @<th class="@styles">@GetColumnName()</th>;
-    //     }
-
-    // }
     private void HandleMouseOver() => isHovering = true;
     private void HandleMouseOut() => isHovering = false;
 
@@ -166,7 +148,6 @@
         }
     }
 
-
     private string GetColumnName()
      => DataGridUtils.GetItemsPropertyInfo<TGridItem>()
      .Select(x => x.Name)
@@ -178,9 +159,15 @@
         filterText = e.Value.ToString();
         ParentGrid.Filter(this, filterText);
     }
+
     private void HandleFilter()
     {
         isShowingFilterInput = !isShowingFilterInput;
+    }
+
+    public void RemoveFilter()
+    {
+        filterText = "";
     }
 
 

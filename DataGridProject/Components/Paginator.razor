@@ -19,8 +19,8 @@
 
 @code {
 
-    // [Parameter]
-    // public EventCallback<PaginationState> OnPaginate { get; set; }
+    [Parameter]
+    public EventCallback<PaginationState> OnPaginate { get; set; }
 
 
     [Parameter, EditorRequired]
@@ -37,6 +37,6 @@
     private async Task GoToPageAsync(int pageIndex)
     {
         await PaginationState.SetPageIndexAsync(pageIndex);
-        // await OnPaginate.InvokeAsync(PaginationState);
+        await OnPaginate.InvokeAsync();
     }
 }
