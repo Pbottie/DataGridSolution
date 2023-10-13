@@ -15,7 +15,7 @@ else
 {
     <DataGrid Items="FilteredData" IsPaginated class="table-striped w-100">
              <GridItem Field="@nameof(SearchMeasurementListItem.Id)" />
-             <GridItem Title="GUID">
+             <GridItem Title="GUID" DefaultFilterValueHasChanged="FilterHasChanged">
                  <ColumnTemplate>
                      <div class="d-flex align-items-center">
                          @context.MeasurementId 
@@ -48,6 +48,8 @@ else
 
     double minEffect;
     double maxEffect = 200;
+
+    public bool FilterHasChanged => (minEffect > 0 || maxEffect < 200);
 
     List<SearchMeasurementListItem> FilteredData
     {

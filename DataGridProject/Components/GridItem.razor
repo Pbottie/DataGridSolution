@@ -5,7 +5,7 @@
     <div class="header-content">
         @if (IsFilterable)
         {
-            <button class="@(string.IsNullOrEmpty(filterText) ? "filter-option":"filter-option-full")" type="button" @onclick="@HandleFilter"></button>
+            <button class="@(DefaultFilterValueHasChanged ? "filter-option-full":"filter-option")" type="button" @onclick="@HandleFilter"></button>
         }
         <span @onclick=@HandleClick @onmouseover="@HandleMouseOver" @onmouseout="@HandleMouseOut">
             @if (HeaderTemplate != null)
@@ -80,7 +80,8 @@
     public bool IsSortable { get; set; }
     [Parameter]
     public bool IsFilterable { get; set; }
-
+    [Parameter]
+    public bool DefaultFilterValueHasChanged { get; set; }
 
     public bool IsSorted => Field == (ParentGrid.SortedField ?? "-x-");
     public bool IsAscending;
@@ -92,7 +93,7 @@
 
     public RenderFragment ItemHeader;
 
-    
+
 
     protected override void OnInitialized()
     {
@@ -139,6 +140,13 @@
 
     private void CloseFilter() => isShowingFilterInput = false;
 
+    private void CheckFilterStatus()
+    {
+        if (string.IsNullOrEmpty(filterText))
+            DefaultFilterValueHasChanged = false;
+        else
+            DefaultFilterValueHasChanged = true;
+    }
 
     private void HandleClick()
     {
@@ -158,6 +166,7 @@
     {
         filterText = e.Value.ToString();
         ParentGrid.Filter(this, filterText);
+        CheckFilterStatus();
     }
 
     private void HandleFilter()
