@@ -2,7 +2,7 @@
 @typeparam TGridItem
 
 <th attribute="@AdditionalAttributes" class="@ClassNames">
-    <div class="header-content">
+    <div class="header-content" @onkeyup="HandleKeyUp">
         @if (IsFilterable)
         {
             <button class="@(DefaultFilterValueHasChanged ? "filter-option-full":"filter-option")" type="button" @onclick="@HandleFilter"></button>
@@ -69,7 +69,6 @@
     public RenderFragment FilterTemplate { get; set; }
     [Parameter]
     public RenderFragment<TGridItem> ColumnTemplate { get; set; }
-
     [Parameter]
     public string Field { get; set; }
     [Parameter]
@@ -92,8 +91,6 @@
     private string isVisibleClass => IsSorted || (!IsSorted && isHovering) ? "visible" : "hidden";
 
     public RenderFragment ItemHeader;
-
-
 
     protected override void OnInitialized()
     {
@@ -154,6 +151,12 @@
         {
             ParentGrid.Sort(Field);
         }
+    }
+
+    private void HandleKeyUp(KeyboardEventArgs e)
+    {
+        if (e.Key == "Escape")
+            CloseFilter();
     }
 
     private string GetColumnName()

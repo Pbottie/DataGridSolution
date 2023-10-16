@@ -13,7 +13,7 @@
 }
 else
 {
-    <DataGrid Items="FilteredData" IsPaginated class="table-striped table-hover table-fixed w-100" DefaultItemsPerPage="15">
+    <DataGrid Items="FilteredData" IsPaginated class="table-striped table-hover w-100" DefaultItemsPerPage="15">
              <GridItem Field="@nameof(SearchMeasurementListItem.Id)" />
              <GridItem Title="GUID" DefaultFilterValueHasChanged="EffectFilterHasChanged">
                  <ColumnTemplate>
@@ -99,6 +99,6 @@ else
 
     protected override void OnInitialized()
     {
-        testData = BogusData.GetData(10003);
+        testData = BogusData.GetData(1003);
     }
 }

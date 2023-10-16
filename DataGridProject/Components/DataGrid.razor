@@ -7,23 +7,23 @@
 {
     <CascadingValue Value="this">
         <div>
-@*             @foreach (var kvp in filterTextDict)
-            {
-                if (kvp.Value != "")
-                {
-                    <span @key="kvp" class="badge badge-secondary" @onclick="()=>RemoveFilter(kvp.Key)">
-                        @(string.IsNullOrEmpty(kvp.Key.Title) ? kvp.Key.Field : kvp.Key.Title)
-                    </span>
-                }
-            } *@
+            @*             @foreach (var kvp in filterTextDict)
+        {
+        if (kvp.Value != "")
+        {
+        <span @key="kvp" class="badge badge-secondary" @onclick="()=>RemoveFilter(kvp.Key)">
+        @(string.IsNullOrEmpty(kvp.Key.Title) ? kvp.Key.Field : kvp.Key.Title)
+        </span>
+        }
+        } *@
             <table class="@ClassNames">
                 <thead>
                     <tr>
                         @ChildContent
                     </tr>
                 </thead>
-                <tbody>
-                    <GridRow Items="TotalItems" ColumnFields="columnFields" GridItems="gridItems" />
+                <tbody>       
+                        <GridRow Items="TotalItems" ColumnFields="columnFields" GridItems="gridItems" />
                 </tbody>
             </table>
             @if (IsPaginated)
@@ -36,9 +36,8 @@
 }
 
 @code {
-    //Onclick eventcallback för att "hämta" data
     [Parameter]
-    public IEnumerable<TGridItem> Items { get; set; } /* = Enumerable.Empty<TGridItem>(); */
+    public IEnumerable<TGridItem> Items { get; set; }
 
     [Parameter]
     public RenderFragment ChildContent { get; set; }
@@ -127,7 +126,7 @@
         }
         else
         {
-            throw new Exception("Field already exists!");
+            throw new Exception("Field " + field + " already exists!");
         }
     }
 
@@ -195,7 +194,7 @@
 
     internal void HandlePagination()
     {
-        //Basically just for ReRendering?
+        //Basically just for ReRendering
     }
 
 }
