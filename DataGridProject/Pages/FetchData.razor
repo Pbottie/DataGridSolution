@@ -13,12 +13,12 @@
 }
 else
 {
-    <DataGrid Items="FilteredData" IsPaginated class="table-striped w-100">
+    <DataGrid Items="FilteredData" IsPaginated class="table-striped table-hover table-fixed w-100" DefaultItemsPerPage="15">
              <GridItem Field="@nameof(SearchMeasurementListItem.Id)" />
-             <GridItem Title="GUID" DefaultFilterValueHasChanged="FilterHasChanged">
+             <GridItem Title="GUID" DefaultFilterValueHasChanged="EffectFilterHasChanged">
                  <ColumnTemplate>
                      <div class="d-flex align-items-center">
-                         @context.MeasurementId 
+                         @context.MeasurementId
                          @context.StartDate
                      </div>
                      <div class="d-flex align-items-center">
@@ -35,8 +35,31 @@ else
              </GridItem>
 
              <GridItem Field="CustomerName" Title="Name" IsSortable IsFilterable />
-         <GridItem Title="Cold" />
-         <GridItem Field="@nameof(SearchMeasurementListItem.MeasurementName)" IsSortable IsFilterable />
+         <GridItem Title="Quick checks" DefaultFilterValueHasChanged="BreakdownReportFilterHasChanged">
+             <ColumnTemplate>
+                 <div >
+                     @if (context.HasBreakdowns)
+                    {
+                        <span>Has Breakdowns</span>
+                    }
+                    else
+                    {
+                        <span><strong>No</strong> Breakdowns found</span>
+                    }
+                </div>
+                <div>
+                    @if (context.HasCustomReport)
+                    {
+                        <span>Has @context.CustomReports.Count custom reports</span>
+                    }
+                </div>
+            </ColumnTemplate>
+            <FilterTemplate>
+                <p><input type="checkbox" @bind=hasBreakdowns @bind:event="onchange"> Has Breakdowns</p>
+                <p><input type="checkbox" @bind=hasCustomReports @bind:event="onchange" /> Has Custom Reports</p>
+            </FilterTemplate>
+        </GridItem>
+        <GridItem Field="@nameof(SearchMeasurementListItem.MeasurementName)" IsSortable IsFilterable />
          <GridItem Field="@nameof(SearchMeasurementListItem.BrandName)" />
      </DataGrid>
 
@@ -48,8 +71,11 @@ else
 
     double minEffect;
     double maxEffect = 200;
+    bool hasBreakdowns;
+    bool hasCustomReports;
 
-    public bool FilterHasChanged => (minEffect > 0 || maxEffect < 200);
+    public bool EffectFilterHasChanged => (minEffect > 0 || maxEffect < 200);
+    public bool BreakdownReportFilterHasChanged => (hasBreakdowns || hasCustomReports);
 
     List<SearchMeasurementListItem> FilteredData
     {
@@ -59,6 +85,13 @@ else
 
             if (minEffect > 0)
                 result = result.Where(x => x.TotalEffect >= minEffect);
+
+            if (hasBreakdowns)
+                result = result.Where(x => x.HasBreakdowns);
+
+            if (hasCustomReports)
+                result = result.Where(x => x.HasCustomReport);
+
             return result.ToList();
         }
     }
@@ -66,6 +99,6 @@ else
 
     protected override void OnInitialized()
     {
-        testData = BogusData.GetData(103);
+        testData = BogusData.GetData(10003);
     }
 }

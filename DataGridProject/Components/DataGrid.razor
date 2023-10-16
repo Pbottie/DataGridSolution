@@ -7,7 +7,7 @@
 {
     <CascadingValue Value="this">
         <div>
-            @foreach (var kvp in filterTextDict)
+@*             @foreach (var kvp in filterTextDict)
             {
                 if (kvp.Value != "")
                 {
@@ -15,7 +15,7 @@
                         @(string.IsNullOrEmpty(kvp.Key.Title) ? kvp.Key.Field : kvp.Key.Title)
                     </span>
                 }
-            }
+            } *@
             <table class="@ClassNames">
                 <thead>
                     <tr>
