@@ -32,9 +32,9 @@
     public void GridItemTestDoesNotIndependentlyRender()
     {
         Assert.ThrowsException<ArgumentNullException>(
-        () => Render(
+    () => Render(
     @<GridItem TGridItem="object"></GridItem>
-        ));
+    ));
 
     }
 
@@ -46,39 +46,46 @@
     @<DataGrid Items="testData" class="table-striped">
 
         <GridItem Field="Id"></GridItem>
-        <GridItem Field="MeasurementName">Name</GridItem>
-        <GridItem>Cold</GridItem>
+        <GridItem Field="MeasurementName"></GridItem>
+        <GridItem Field="HasBreakdowns"></GridItem>
+        <GridItem Title="HasBreakdowns"></GridItem>
 
     </DataGrid>
-    );
-
+        );
     }
 
     [TestMethod]
     public void DataGridRendersCorrectly()
     {
-
+        //Should this throw an error since it does not render "Name" anywhere?
         var cut = Render(
     @<DataGrid Items="testData" class="table-striped">
 
         <GridItem Field="Id"></GridItem>
         <GridItem Field="MeasurementName">Name</GridItem>
-        <GridItem>Cold</GridItem>
-
     </DataGrid>
-        );
+    );
 
         cut.MarkupMatches(
-    @<table class="table  table-striped">
-    <thead>
-        <tr diff:ignoreChildren>
-        </tr>
-    </thead>
-    <tbody diff:ignoreChildren>
-    </tbody>
-</table>
-        );
+    @<div>
+        <table class="table table-striped">
+            <thead>
+                <tr diff:ignoreChildren>
+                </tr>
+            </thead>
+            <tbody diff:ignoreChildren>
+            </tbody>
+        </table>
+    </div>
+    );
 
+        var headers = cut.FindAll("th");
+        headers.Count.Should().Be(2);
+        headers.First().TextContent.Trim().Should().Be("Id");
+        headers.Last().TextContent.Trim().Should().Be("MeasurementName");
+
+        var tableBody = cut.Find("tbody");
+        tableBody.ChildElementCount.Should().Be(10);
     }
 
     [TestMethod]
@@ -86,14 +93,12 @@
     {
 
         Assert.ThrowsException<Exception>(() =>
-        Render(
+    Render(
     @<DataGrid Items="testData" class="table-striped">
 
         <GridItem Field="Id"></GridItem>
         <GridItem Field="Id"></GridItem>
         <GridItem Field="MeasurementName">Name</GridItem>
-        <GridItem>Cold</GridItem>
-
     </DataGrid>
         )
         );

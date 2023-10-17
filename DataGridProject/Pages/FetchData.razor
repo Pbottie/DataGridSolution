@@ -1,5 +1,4 @@
 ﻿@using DataGridProject.Components
-@inject HttpClient Http
 
 <PageTitle>DataGrid</PageTitle>
 
@@ -60,7 +59,7 @@ else
             </FilterTemplate>
         </GridItem>
         <GridItem Field="@nameof(SearchMeasurementListItem.MeasurementName)" IsSortable IsFilterable />
-         <GridItem Field="@nameof(SearchMeasurementListItem.BrandName)" />
+         <GridItem Field="@nameof(SearchMeasurementListItem.BrandName)"/>
      </DataGrid>
 
 }
