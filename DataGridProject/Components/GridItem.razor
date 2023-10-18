@@ -153,6 +153,10 @@
         {
             ParentGrid.Sort(Field);
         }
+        else if(IsFilterable)
+        {
+            HandleFilter();
+        }
     }
 
     private void HandleKeyUp(KeyboardEventArgs e)

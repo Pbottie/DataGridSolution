@@ -22,8 +22,8 @@
                         @ChildContent
                     </tr>
                 </thead>
-                <tbody>       
-                        <GridRow Items="TotalItems" ColumnFields="columnFields" GridItems="gridItems" />
+                <tbody>
+                    <GridRow Items="TotalItems" ColumnFields="columnFields" GridItems="gridItems" />
                 </tbody>
             </table>
             @if (IsPaginated)
@@ -135,8 +135,7 @@
         gridItem.RemoveFilter();
         Filter(gridItem, "");
     }
-
-    private Dictionary<GridItem<TGridItem>, RenderFragment> rfDict = new();
+    
     internal void AddItem(GridItem<TGridItem> gridItem)
     {
         gridItems.Add(gridItem);

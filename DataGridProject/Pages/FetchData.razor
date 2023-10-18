@@ -36,7 +36,7 @@ else
              <GridItem Field="CustomerName" Title="Name" IsSortable IsFilterable />
          <GridItem Title="Quick checks" DefaultFilterValueHasChanged="BreakdownReportFilterHasChanged">
              <ColumnTemplate>
-                 <div >
+                 <div>
                      @if (context.HasBreakdowns)
                     {
                         <span>Has Breakdowns</span>
@@ -59,9 +59,8 @@ else
             </FilterTemplate>
         </GridItem>
         <GridItem Field="@nameof(SearchMeasurementListItem.MeasurementName)" IsSortable IsFilterable />
-         <GridItem Field="@nameof(SearchMeasurementListItem.BrandName)"/>
+         <GridItem Field="@nameof(SearchMeasurementListItem.BrandName)" />
      </DataGrid>
-
 }
 
 @code {

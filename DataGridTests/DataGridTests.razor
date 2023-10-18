@@ -27,17 +27,7 @@
         testData = DataGridProject.BogusData.GetData(10);
     }
 
-
-    [TestMethod]
-    public void GridItemDoesNotIndependentlyRender()
-    {
-        Assert.ThrowsException<ArgumentNullException>(
-        () => Render(
-    @<GridItem TGridItem="object"></GridItem>
-        ));
-
-    }
-
+    #region DataGrid Tests
     [TestMethod]
     public void DataGridRendersWithoutErrors()
     {
@@ -104,6 +94,17 @@
     );
 
     }
+    #endregion
+    #region GridItem Tests
+    [TestMethod]
+    public void GridItemDoesNotIndependentlyRender()
+    {
+        Assert.ThrowsException<ArgumentNullException>(
+        () => Render(
+    @<GridItem TGridItem="object"></GridItem>
+        ));
+
+    }
 
     [TestMethod]
     public void GridItemThrowsExceptionForInvalidField()
@@ -138,7 +139,6 @@
 
     }
 
-
     [TestMethod]
     public void GridItemSetsFieldCorrectly()
     {
@@ -151,4 +151,103 @@
         gridItem.Field.Should().NotBeEmpty();
         gridItem.Field.Should().NotBe("Testing");
     }
+
+    [TestMethod]
+    public void GridItemIsNotSortableorFilterableByDefault()
+    {
+
+        var cut = Render(
+    @<DataGrid Items="testData" class="table-striped">
+        <GridItem Title="Testing">
+        </GridItem>
+    </DataGrid>
+    );
+        var gridItem = cut.FindComponent<GridItem<SearchMeasurementListItem>>().Instance;
+        gridItem.IsSortable.Should().BeFalse();
+        gridItem.IsFilterable.Should().BeFalse();
+    }
+
+    [TestMethod]
+    public void GridItemIsSortableWhenSet()
+    {
+
+        var cut = Render(
+    @<DataGrid Items="testData" class="table-striped">
+        <GridItem Title="Testing" IsSortable>
+        </GridItem>
+    </DataGrid>
+        );
+        var gridItem = cut.FindComponent<GridItem<SearchMeasurementListItem>>().Instance;
+        gridItem.IsSortable.Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void GridItemIsFilterableWhenSet()
+    {
+
+        var cut = Render(
+    @<DataGrid Items="testData" class="table-striped">
+        <GridItem Field="EndDate" IsFilterable />
+     </DataGrid>
+        );
+        var gridItem = cut.FindComponent<GridItem<SearchMeasurementListItem>>().Instance;
+        gridItem.IsFilterable.Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void GridItemIsFilterableWithTemplate()
+    {
+        var sliderValue = 0;
+        var cut = Render(
+    @<DataGrid Items="testData" class="table-striped">
+        <GridItem Title="Testing">
+            <FilterTemplate>
+                <p>Value: <input type="range" @bind="sliderValue" @bind:event="oninput" min="0" max="250" /> <span class="inline-block w-10">@sliderValue</span></p>
+            </FilterTemplate>
+        </GridItem>
+    </DataGrid>
+        );
+        var gridItem = cut.FindComponent<GridItem<SearchMeasurementListItem>>().Instance;
+        gridItem.IsFilterable.Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void GridItemsGetsCorrectClasses()
+    {
+
+        var cut = Render(
+    @<DataGrid Items="testData" class="table-striped">
+        <GridItem Field="Id" IsSortable />
+         <GridItem Field="BrandName" IsFilterable />
+     </DataGrid>
+        );
+        var gridItems = cut.FindComponents<GridItem<SearchMeasurementListItem>>();
+
+        gridItems.All(x => x.Instance.ClassNames.Contains("cursor-pointer")).Should().BeTrue();
+
+    }
+    #endregion
+    #region GridRow Tests
+    [TestMethod]
+    public void GridRowRendersCorrectly()
+    {
+
+        var cut = Render(
+    @<DataGrid Items="testData" class="table-striped">
+        <GridItem Field="Id" IsSortable />
+         <GridItem Field="BrandName" IsFilterable />
+     </DataGrid>
+    );
+        var gridRow = cut.FindComponent<GridRow<SearchMeasurementListItem>>();
+        var fields = cut.FindComponents<GridItem<SearchMeasurementListItem>>()
+        .Select(x => x.Instance.Field)
+        .ToList();
+
+        gridRow.Nodes.Length.Should().Be(10);
+        gridRow.Instance.Items.Except(testData).Count().Should().Be(0);
+        gridRow.Instance.ColumnFields.Except(fields).Count().Should().Be(0);
+    }
+
+
+    #endregion
 }
