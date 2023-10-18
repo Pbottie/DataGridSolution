@@ -29,12 +29,12 @@
 
 
     [TestMethod]
-    public void GridItemTestDoesNotIndependentlyRender()
+    public void GridItemDoesNotIndependentlyRender()
     {
         Assert.ThrowsException<ArgumentNullException>(
-    () => Render(
+        () => Render(
     @<GridItem TGridItem="object"></GridItem>
-    ));
+        ));
 
     }
 
@@ -51,7 +51,7 @@
         <GridItem Title="HasBreakdowns"></GridItem>
 
     </DataGrid>
-        );
+    );
     }
 
     [TestMethod]
@@ -64,7 +64,7 @@
         <GridItem Field="Id"></GridItem>
         <GridItem Field="MeasurementName">Name</GridItem>
     </DataGrid>
-    );
+        );
 
         cut.MarkupMatches(
     @<div>
@@ -77,7 +77,7 @@
             </tbody>
         </table>
     </div>
-    );
+        );
 
         var headers = cut.FindAll("th");
         headers.Count.Should().Be(2);
@@ -93,7 +93,7 @@
     {
 
         Assert.ThrowsException<Exception>(() =>
-    Render(
+        Render(
     @<DataGrid Items="testData" class="table-striped">
 
         <GridItem Field="Id"></GridItem>
@@ -101,16 +101,54 @@
         <GridItem Field="MeasurementName">Name</GridItem>
     </DataGrid>
         )
-        );
+    );
+
+    }
+
+    [TestMethod]
+    public void GridItemThrowsExceptionForInvalidField()
+    {
+        Assert.ThrowsException<ArgumentException>(() => Render(
+    @<DataGrid Items="testData" class="table-striped">
+        <GridItem Field="Test"></GridItem>
+    </DataGrid>
+        ));
+
+    }
+
+    [TestMethod]
+    public void GridItemThrowsExceptionForEmptyFieldWithSortable()
+    {
+        Assert.ThrowsException<ArgumentException>(() => Render(
+    @<DataGrid Items="testData" class="table-striped">
+        <GridItem Title="Name" IsFilterable></GridItem>
+     </DataGrid>
+        ));
+
+    }
+
+    [TestMethod]
+    public void GridItemThrowsNullExceptionForEmptyFieldTitleTemplate()
+    {
+        Assert.ThrowsException<ArgumentNullException>(() => Render(
+    @<DataGrid Items="testData" class="table-striped">
+        <GridItem></GridItem>
+    </DataGrid>
+    ));
 
     }
 
 
-
-
-
-
-
-
-
+    [TestMethod]
+    public void GridItemSetsFieldCorrectly()
+    {
+        var cut = Render(
+    @<DataGrid Items="testData" class="table-striped">
+        <GridItem Title="Testing" />
+    </DataGrid>
+    );
+        var gridItem = cut.FindComponent<GridItem<SearchMeasurementListItem>>().Instance;
+        gridItem.Field.Should().NotBeEmpty();
+        gridItem.Field.Should().NotBe("Testing");
+    }
 }
