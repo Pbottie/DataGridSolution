@@ -12,7 +12,8 @@
 }
 else
 {
-    <DataGrid Items="FilteredData" IsPaginated class="table-striped table-hover w-100" DefaultItemsPerPage="15">
+    <DataGrid Items="FilteredData" IsPaginated class="table-striped table-hover" DefaultItemsPerPage="15" TGridItem="SearchMeasurementListItem" RowClick="Click">
+             <GridItem Field="@nameof(SearchMeasurementListItem.MeasurementId)" />
              <GridItem Field="@nameof(SearchMeasurementListItem.Id)" />
              <GridItem Title="GUID" DefaultFilterValueHasChanged="EffectFilterHasChanged">
                  <ColumnTemplate>
@@ -92,6 +93,11 @@ else
 
             return result.ToList();
         }
+    }
+
+    public void Click(SearchMeasurementListItem item)
+    {
+        Console.WriteLine(item.Id);
     }
 
 

@@ -22,7 +22,7 @@
                 rowData.Add(string.Empty);
         }
 
-        <tr @key="item">
+        <tr @key="item" @onclick="()=>HandleClick(item)">
             @foreach (var columnData in rowData)
             {
 
@@ -39,8 +39,8 @@
                     </td>
                 }
             }
-</tr>
-;
+        </tr>
+        ;
 
     }
 }
@@ -53,7 +53,17 @@
     public IEnumerable<TGridItem> Items { get; set; }
     [Parameter, EditorRequired]
     public List<string> ColumnFields { get; set; }
+    [Parameter]
+    public EventCallback<TGridItem> Clicked { get; set; }
 
     [Parameter, EditorRequired]
     public List<GridItem<TGridItem>> GridItems { get; set; }
+
+
+    public async Task HandleClick(TGridItem item)
+    {
+        if (Clicked.HasDelegate)
+            await Clicked.InvokeAsync(item);
+
+    }
 }

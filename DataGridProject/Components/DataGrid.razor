@@ -23,7 +23,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <GridRow Items="TotalItems" ColumnFields="columnFields" GridItems="gridItems" />
+                    @if (RowClick.HasDelegate)
+                    {
+                        <GridRow Items="TotalItems" ColumnFields="columnFields" GridItems="gridItems" Clicked="RowClick"/>
+                    }
+                    else
+                    {
+                        <GridRow Items="TotalItems" ColumnFields="columnFields" GridItems="gridItems" />
+                    }
                 </tbody>
             </table>
             @if (IsPaginated)
@@ -53,6 +60,9 @@
 
     [Parameter]
     public int DefaultItemsPerPage { get; set; }
+
+    [Parameter]
+    public EventCallback<TGridItem> RowClick { get; set; }
 
     public string SortedField { get; private set; }
 
@@ -135,7 +145,7 @@
         gridItem.RemoveFilter();
         Filter(gridItem, "");
     }
-    
+
     internal void AddItem(GridItem<TGridItem> gridItem)
     {
         gridItems.Add(gridItem);

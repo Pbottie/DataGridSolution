@@ -1,7 +1,7 @@
 ﻿@inherits UIComponentBase
 @typeparam TGridItem
 
-<th attribute="@AdditionalAttributes" class="@ClassNames">
+<th attribute="@AdditionalAttributes" class="@ClassNames" width="@(ColumnWidth != 0 ? ColumnWidth : null)">
     <div class="header-content" @onkeyup="HandleKeyUp">
         @if (IsFilterable)
         {
@@ -81,6 +81,9 @@
     public bool IsFilterable { get; set; }
     [Parameter]
     public bool DefaultFilterValueHasChanged { get; set; }
+
+    [Parameter]
+    public int ColumnWidth { get; set; }
 
     public bool IsSorted => Field == (ParentGrid.SortedField ?? "-x-");
     public bool IsAscending;

@@ -41,7 +41,7 @@
         <GridItem Title="HasBreakdowns"></GridItem>
 
     </DataGrid>
-    );
+        );
     }
 
     [TestMethod]
@@ -54,7 +54,7 @@
         <GridItem Field="Id"></GridItem>
         <GridItem Field="MeasurementName">Name</GridItem>
     </DataGrid>
-        );
+    );
 
         cut.MarkupMatches(
     @<div>
@@ -67,7 +67,7 @@
             </tbody>
         </table>
     </div>
-        );
+    );
 
         var headers = cut.FindAll("th");
         headers.Count.Should().Be(2);
@@ -83,15 +83,15 @@
     {
 
         Assert.ThrowsException<Exception>(() =>
-        Render(
+    Render(
     @<DataGrid Items="testData" class="table-striped">
 
         <GridItem Field="Id"></GridItem>
         <GridItem Field="Id"></GridItem>
         <GridItem Field="MeasurementName">Name</GridItem>
     </DataGrid>
-        )
-    );
+    )
+        );
 
     }
     #endregion
@@ -100,9 +100,9 @@
     public void GridItemDoesNotIndependentlyRender()
     {
         Assert.ThrowsException<ArgumentNullException>(
-        () => Render(
+    () => Render(
     @<GridItem TGridItem="object"></GridItem>
-        ));
+    ));
 
     }
 
@@ -113,7 +113,7 @@
     @<DataGrid Items="testData" class="table-striped">
         <GridItem Field="Test"></GridItem>
     </DataGrid>
-        ));
+    ));
 
     }
 
@@ -124,7 +124,7 @@
     @<DataGrid Items="testData" class="table-striped">
         <GridItem Title="Name" IsFilterable></GridItem>
      </DataGrid>
-        ));
+    ));
 
     }
 
@@ -135,7 +135,7 @@
     @<DataGrid Items="testData" class="table-striped">
         <GridItem></GridItem>
     </DataGrid>
-    ));
+        ));
 
     }
 
@@ -146,7 +146,7 @@
     @<DataGrid Items="testData" class="table-striped">
         <GridItem Title="Testing" />
     </DataGrid>
-    );
+        );
         var gridItem = cut.FindComponent<GridItem<SearchMeasurementListItem>>().Instance;
         gridItem.Field.Should().NotBeEmpty();
         gridItem.Field.Should().NotBe("Testing");
@@ -161,7 +161,7 @@
         <GridItem Title="Testing">
         </GridItem>
     </DataGrid>
-    );
+        );
         var gridItem = cut.FindComponent<GridItem<SearchMeasurementListItem>>().Instance;
         gridItem.IsSortable.Should().BeFalse();
         gridItem.IsFilterable.Should().BeFalse();
@@ -176,7 +176,7 @@
         <GridItem Title="Testing" IsSortable>
         </GridItem>
     </DataGrid>
-        );
+    );
         var gridItem = cut.FindComponent<GridItem<SearchMeasurementListItem>>().Instance;
         gridItem.IsSortable.Should().BeTrue();
     }
@@ -189,7 +189,7 @@
     @<DataGrid Items="testData" class="table-striped">
         <GridItem Field="EndDate" IsFilterable />
      </DataGrid>
-        );
+    );
         var gridItem = cut.FindComponent<GridItem<SearchMeasurementListItem>>().Instance;
         gridItem.IsFilterable.Should().BeTrue();
     }
@@ -206,7 +206,7 @@
             </FilterTemplate>
         </GridItem>
     </DataGrid>
-        );
+    );
         var gridItem = cut.FindComponent<GridItem<SearchMeasurementListItem>>().Instance;
         gridItem.IsFilterable.Should().BeTrue();
     }
@@ -220,7 +220,7 @@
         <GridItem Field="Id" IsSortable />
          <GridItem Field="BrandName" IsFilterable />
      </DataGrid>
-        );
+    );
         var gridItems = cut.FindComponents<GridItem<SearchMeasurementListItem>>();
 
         gridItems.All(x => x.Instance.ClassNames.Contains("cursor-pointer")).Should().BeTrue();
@@ -247,7 +247,15 @@
         gridRow.Instance.Items.Except(testData).Count().Should().Be(0);
         gridRow.Instance.ColumnFields.Except(fields).Count().Should().Be(0);
     }
+    #endregion
+    #region Paginator Tests
 
+    [TestMethod]
+    public void PaginatorRendersCorrectly()
+    {
+
+   
+    }
 
     #endregion
 }
