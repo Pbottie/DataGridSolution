@@ -6,16 +6,16 @@
 @if (!NoRender)
 {
     <CascadingValue Value="this">
-        <div>
-            @*             @foreach (var kvp in filterTextDict)
+        <div class="mx-3 pt-4">
+            @foreach (var kvp in filterTextDict)
         {
         if (kvp.Value != "")
         {
-        <span @key="kvp" class="badge badge-secondary" @onclick="()=>RemoveFilter(kvp.Key)">
-        @(string.IsNullOrEmpty(kvp.Key.Title) ? kvp.Key.Field : kvp.Key.Title)
+                    <span role="button" @key="kvp" class="badge bg-secondary mx-1" @onclick="()=>RemoveFilter(kvp.Key)">
+                        @(string.IsNullOrEmpty(kvp.Key.Title) ? kvp.Key.Field : kvp.Key.Title): @kvp.Value
         </span>
         }
-        } *@
+            }
             <table class="@ClassNames">
                 <thead>
                     <tr>
@@ -25,7 +25,7 @@
                 <tbody>
                     @if (RowClick.HasDelegate)
                     {
-                        <GridRow Items="TotalItems" ColumnFields="columnFields" GridItems="gridItems" Clicked="RowClick"/>
+                        <GridRow Items="TotalItems" ColumnFields="columnFields" GridItems="gridItems" Clicked="RowClick" />
                     }
                     else
                     {
