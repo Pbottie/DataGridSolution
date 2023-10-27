@@ -1,0 +1,9 @@
+﻿.filter-container {
+    background-color: fuchsia;
+    justify-content: space-around;
+    margin: 1rem;
+}
+
+.filter-item {
+    margin: .25rem;
+}

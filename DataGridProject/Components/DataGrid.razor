@@ -2,19 +2,18 @@
 @typeparam TGridItem
 @attribute [CascadingTypeParameter(nameof(TGridItem))]
 
-
 @if (!NoRender)
 {
     <CascadingValue Value="this">
         <div class="mx-3 pt-4">
             @foreach (var kvp in filterTextDict)
-        {
-        if (kvp.Value != "")
-        {
+            {
+                if (kvp.Value != "")
+                {
                     <span role="button" @key="kvp" class="badge bg-secondary mx-1" @onclick="()=>RemoveFilter(kvp.Key)">
                         @(string.IsNullOrEmpty(kvp.Key.Title) ? kvp.Key.Field : kvp.Key.Title): @kvp.Value
-        </span>
-        }
+                    </span>
+                }
             }
             <table class="@ClassNames">
                 <thead>
@@ -83,8 +82,7 @@
         if (ogItems != Items)
         {
             ogItems = Items;
-            items = Items;
-
+            items = ogItems;
         }
     }
 
@@ -97,7 +95,7 @@
             {
                 paginationState.ItemsPerPage = DefaultItemsPerPage;
             }
-            paginationState.SetTotalItemsAsync(Items.Count());
+            paginationState.SetTotalItemsAsync(Items?.Count() ?? 0);
         }
 
     }
@@ -121,12 +119,10 @@
         }
     }
 
-
     internal bool IsFiltered(TGridItem item)
     {
         return filterTextDict.All((kvp) => typeof(TGridItem).GetProperty(kvp.Key.Field).GetValue(item).ToString().ToLower().Contains(kvp.Value.ToLower()));
     }
-
 
     internal void UpdateColumnFields(string field)
     {
@@ -168,8 +164,6 @@
         StateHasChanged();
     }
 
-
-
     public void Filter(GridItem<TGridItem> gridItem, string filterText)
     {
         var property = typeof(TGridItem).GetProperty(gridItem.Field);
@@ -205,5 +199,4 @@
     {
         //Basically just for ReRendering
     }
-
 }

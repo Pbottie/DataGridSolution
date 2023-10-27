@@ -1,0 +1,111 @@
+﻿@typeparam TDataItem
+
+<div class="filter-item d-flex flex-column justify-content-center">
+    <label>@(string.IsNullOrEmpty(Label) ? Field : Label)</label>
+    @if (FilterType == FilterTypes.String)
+    {
+
+        <input type="search" autofocus @bind="filterText" @oninput="OnTextFilterValueChanged" placeholder="Filter..." />
+    }
+    else if (FilterType == FilterTypes.Int)
+    {
+        <span>Min: <input type="number" @bind=filterIntMin @bind:event="oninput" @onmouseup="OnMinMaxFilterValueChanged" @onkeyup="OnMinMaxFilterValueChanged" /> </span>
+    }
+    else if (FilterType == FilterTypes.MinMax)
+    {
+        <span>
+            Min:<input type="range" min="0" max="250" @bind=filterIntMin @bind:event="oninput" @onmouseup="OnMinMaxFilterValueChanged" @onkeyup="OnMinMaxFilterValueChanged" /> <span class="slider-value">@filterIntMin</span>
+        </span>
+        <span>
+            Max:<input type="range" min="0" max="250" @bind=filterIntMax @bind:event="oninput" @onmouseup="OnMinMaxFilterValueChanged" @onkeyup="OnMinMaxFilterValueChanged" /> <span class="slider-value">@filterIntMax</span>
+        </span>
+    }
+    else if (FilterType == FilterTypes.DateTime)
+    {
+        <span>
+            <input type="date" @bind:get="filterDateTime" @bind:set="OnDateFilterValueChanged" />
+            <button class="btn btn-primary @(IsActive ? "":"disabled")" @onclick="()=> IsActive = !IsActive">@(IsActive ? "X" : "-")</button>
+        </span>
+    }
+</div>
+
+
+
+@code {
+    [CascadingParameter]
+    public DataFilter<TDataItem> ParentFilter { get; set; }
+
+    [Parameter]
+    public FilterTypes FilterType { get; set; }
+    [Parameter]
+    public string Field { get; set; }
+    [Parameter]
+    public string Label { get; set; }
+
+    public bool IsActive;
+
+    public string FilterValue
+    {
+        get
+        {
+            if (FilterType == FilterTypes.String)
+                return filterText;
+            if (FilterType == FilterTypes.Int)
+                return filterIntMin.ToString();
+            if (FilterType == FilterTypes.MinMax)
+                return $"{filterIntMin}_{filterIntMax}";
+            if (FilterType == FilterTypes.DateTime)
+                return filterDateTime.ToShortDateString();
+
+            return string.Empty;
+            //Better way?
+        }
+    }
+
+    Type type;
+    string filterText = string.Empty;
+    int filterIntMin = 0;
+    int filterIntMax = 0;
+    DateTime filterDateTime = DateTime.Now.Date;
+
+    protected override void OnInitialized()
+    {
+        //Check if property is of chosen type otherwise throw?
+        var property = DataGridUtils.GetItemsPropertyInfo<TDataItem>()
+        .Where(x => x.Name == Field)
+        .FirstOrDefault();
+
+        if (property == null)
+            throw new ArgumentNullException($"Field: {Field} does not exist in item!");
+
+        type = property.PropertyType;
+
+        // if (type.Name != FilterType.Name) //Do we want this? Many things can be "ToString()ed"
+        //     throw new ArgumentException("The type of Field and FilterType do not match");
+
+
+        ParentFilter.AddFilterItem(this);
+
+    }
+
+    private void OnTextFilterValueChanged(ChangeEventArgs e)
+    {
+        IsActive = true;
+        filterText = e.Value.ToString();
+        ParentFilter.UpdateFilter(this);
+    }
+
+    private void OnMinMaxFilterValueChanged()
+    {
+        IsActive = true;
+        ParentFilter.UpdateFilter(this);
+    }
+
+    private void OnDateFilterValueChanged(DateTime date)
+    {
+        IsActive = true;
+        filterDateTime = date;
+        ParentFilter.UpdateFilter(this);
+    }
+
+}

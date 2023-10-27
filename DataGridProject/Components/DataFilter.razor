@@ -1,0 +1,144 @@
+﻿@typeparam TDataItem
+@attribute [CascadingTypeParameter(nameof(TDataItem))]
+
+<CascadingValue Value="this">
+    <div class="d-flex flex-wrap gap-2 filter-container">
+        @ChildContent
+    </div>
+    <div class="mx-3">
+        @foreach (var filter in FieldDict)
+        {
+            <span role="button" @key="filter" class="badge bg-secondary mx-1">
+                @filter.Key: @filter.Value
+            </span>
+        }
+    </div>
+</CascadingValue>
+
+
+@code {
+
+    [Parameter, EditorRequired]
+    public IEnumerable<TDataItem> Items { get; set; }
+
+    [Inject]
+    public IFilter Filter { get; set; }
+
+    IEnumerable<TDataItem> items { get; set; }
+
+
+    protected override void OnParametersSet()
+    {
+        if (items != Items)
+        {
+            items = Items;
+            // Filter.NotifyAll();
+        }
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Filter.NotifyAll();
+        }
+    }
+
+
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    public List<FilterItem<TDataItem>> Filters = new();
+    private Dictionary<string, string?> FieldDict { get; set; } = new();
+    private Dictionary<string, FilterTypes> FilterTypeDict { get; set; } = new();
+
+
+    public void AddFilterItem(FilterItem<TDataItem> filterItem)
+    {
+        if (filterItem != null)
+        {
+            Filters.Add(filterItem);
+            FieldDict.Add(filterItem.Field, filterItem.FilterValue);
+            FilterTypeDict.Add(filterItem.Field, filterItem.FilterType);
+        }
+
+        StateHasChanged();
+    }
+
+    public void UpdateFilter(FilterItem<TDataItem> filterItem)
+    {
+        if (FieldDict.Keys.Contains(filterItem.Field))
+            FieldDict[filterItem.Field] = filterItem.FilterValue;
+
+        StateHasChanged();
+        Filter.NotifyAll();
+    }
+
+    public IEnumerable<TDataItem> FilteredItems
+    {
+        get
+        {
+            var result = items;
+            var activeFilters = Filters.Where(filter => filter.IsActive);
+            result = result
+            .Where(x => IsFiltered(x))
+            .ToList();
+
+            return result;
+        }
+    }
+
+    internal bool IsFiltered(TDataItem item)
+    {
+        //Missing minmax implementation
+        //DateTime
+        //CheckBox
+        //Radiobutton
+        var result = true;
+        foreach (var kvp in FieldDict)
+        {
+            var activeFields = Filters
+            .Where(filter => filter.IsActive)
+            .Select(filter => filter.Field)
+            .ToList();
+            if (!activeFields.Contains(kvp.Key))
+            {
+                continue;
+            }
+
+            var property = typeof(TDataItem).GetProperty(kvp.Key);
+            var value = property.GetValue(item);
+
+            if (FilterTypeDict[kvp.Key] == FilterTypes.String)
+            {
+                string stringValue = value.ToString().ToLower();
+                var filterValue = kvp.Value;
+                if (!stringValue.Contains(filterValue))
+                    return false;
+            }
+            else if (FilterTypeDict[kvp.Key] == FilterTypes.Int)
+            {
+                int intValue = (int)value;
+                var filterValue = int.Parse(kvp.Value);
+                if (intValue < filterValue)
+                    return false;
+            }
+            else if (FilterTypeDict[kvp.Key] == FilterTypes.MinMax)
+            {
+                var minMaxValues = kvp.Value.ToString().Split("_");
+                int min = int.Parse(minMaxValues[0]);
+                int max = int.Parse(minMaxValues[1]);
+                var intValue = int.Parse(value.ToString());
+                if (intValue < min || intValue > max)
+                    return false;
+            }
+
+
+        }
+
+        return result;
+    }
+
+
+}

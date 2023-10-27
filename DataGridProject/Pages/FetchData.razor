@@ -1,10 +1,9 @@
 ﻿@using DataGridProject.Components
+@implements IFilterObserver
+@implements IDisposable
+@inject IFilter FilterSubject
 
 <PageTitle>DataGrid</PageTitle>
-
-<h1>Datagrid</h1>
-
-<p>This component demonstrates displaying data</p>
 
 @if (testData == null)
 {
@@ -12,29 +11,42 @@
 }
 else
 {
-    <DataGrid Items="FilteredData" IsPaginated class="table-striped table-hover" DefaultItemsPerPage="15" TGridItem="SearchMeasurementListItem" RowClick="Click">
-             <GridItem Field="@nameof(SearchMeasurementListItem.MeasurementId)" />
-             <GridItem Field="@nameof(SearchMeasurementListItem.Id)" />
-             <GridItem Title="GUID" DefaultFilterValueHasChanged="EffectFilterHasChanged">
-                 <ColumnTemplate>
-                     <div class="d-flex align-items-center">
-                         @context.MeasurementId
-                         @context.StartDate
-                     </div>
-                     <div class="d-flex align-items-center">
-                         @context.MeasurementPath
-                         <strong>
-                             @context.TotalEffect
-                         </strong>
-                     </div>
-                 </ColumnTemplate>
-                 <FilterTemplate>
-                     <p>Min: <input type="range" @bind="minEffect" @bind:event="oninput" min="0" max="190" /> <span class="inline-block w-10">@minEffect</span></p>
-                     <p>Max: <input type="range" @bind="maxEffect" @bind:event="oninput" min="@minEffect" max="200" /> <span class="inline-block w-10">@maxEffect</span></p>
-                 </FilterTemplate>
-             </GridItem>
+    <DataFilter Items="testData" @ref="externalFilter">
+        <FilterItem FilterType="FilterTypes.String" Field="@nameof(SearchMeasurementListItem.MeasurementName)" />
+        <FilterItem FilterType="FilterTypes.Int" Field="@nameof(SearchMeasurementListItem.Id)" />
+        <FilterItem FilterType="FilterTypes.MinMax" Field="@nameof(SearchMeasurementListItem.TotalEffect)" />
+        <FilterItem FilterType="FilterTypes.String" Field="@nameof(SearchMeasurementListItem.CustomerName)" Label="Name" />
+        <FilterItem FilterType="FilterTypes.String" Field="@nameof(SearchMeasurementListItem.FormattedStartDate)" />
+        <FilterItem FilterType="FilterTypes.DateTime" Field="@nameof(SearchMeasurementListItem.StartDate)" />
+    </DataFilter>
 
-             <GridItem Field="CustomerName" Title="Name" IsSortable IsFilterable />
+    <DataGrid Items="externalFilter?.FilteredItems" class="table-striped table-hover"
+              DefaultItemsPerPage="15"
+              TGridItem="SearchMeasurementListItem"
+              RowClick="Click"
+            IsPaginated>
+     <GridItem Field="@nameof(SearchMeasurementListItem.MeasurementId)" />
+     <GridItem Field="@nameof(SearchMeasurementListItem.Id)" />
+     <GridItem Title="GUID" DefaultFilterValueHasChanged="EffectFilterHasChanged">
+         <ColumnTemplate>
+             <div class="d-flex align-items-center">
+                 @context.MeasurementId
+                 @context.StartDate
+             </div>
+             <div class="d-flex align-items-center">
+                 @context.MeasurementPath
+                 <strong>
+                     @context.TotalEffect
+                 </strong>
+             </div>
+         </ColumnTemplate>
+         <FilterTemplate>
+             <p>Min: <input type="range" @bind="minEffect" @bind:event="oninput" min="0" max="190" /> <span>@minEffect</span></p>
+             <p>Max: <input type="range" @bind="maxEffect" @bind:event="oninput" min="@minEffect" max="200" /> <span>@maxEffect</span></p>
+         </FilterTemplate>
+     </GridItem>
+
+     <GridItem Field="CustomerName" Title="Name" IsSortable IsFilterable />
          <GridItem Title="Quick checks" DefaultFilterValueHasChanged="BreakdownReportFilterHasChanged">
              <ColumnTemplate>
                  <div>
@@ -72,26 +84,43 @@ else
     double maxEffect = 200;
     bool hasBreakdowns;
     bool hasCustomReports;
+    DataFilter<SearchMeasurementListItem> externalFilter;
 
     public bool EffectFilterHasChanged => (minEffect > 0 || maxEffect < 200);
     public bool BreakdownReportFilterHasChanged => (hasBreakdowns || hasCustomReports);
+
+    List<SearchMeasurementListItem> debugList;
+
+    public void Update()
+    {
+        debugList = externalFilter?.FilteredItems.ToList();
+        StateHasChanged();
+    }
 
     List<SearchMeasurementListItem> FilteredData
     {
         get
         {
-            var result = testData.Where(x => x.TotalEffect <= maxEffect);
+            var result = testData;
 
-            if (minEffect > 0)
-                result = result.Where(x => x.TotalEffect >= minEffect);
+            if (externalFilter != null)
+            {
+                result = externalFilter.FilteredItems.ToList();
+            }
 
-            if (hasBreakdowns)
-                result = result.Where(x => x.HasBreakdowns);
+            return result;
+            // var result = testData.Where(x => x.TotalEffect <= maxEffect);
 
-            if (hasCustomReports)
-                result = result.Where(x => x.HasCustomReport);
+            // if (minEffect > 0)
+            //     result = result.Where(x => x.TotalEffect >= minEffect);
 
-            return result.ToList();
+            // if (hasBreakdowns)
+            //     result = result.Where(x => x.HasBreakdowns);
+
+            // if (hasCustomReports)
+            //     result = result.Where(x => x.HasCustomReport);
+
+            // return result.ToList();
         }
     }
 
@@ -100,9 +129,14 @@ else
 
     }
 
-
     protected override void OnInitialized()
     {
         testData = BogusData.GetData(103);
+        FilterSubject.RegisterObserver(this);
+    }
+
+    public void Dispose()
+    {
+        FilterSubject.RemoveObserver(this);
     }
 }
