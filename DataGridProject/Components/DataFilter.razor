@@ -91,7 +91,6 @@
 
     internal bool IsFiltered(TDataItem item)
     {
-        //Missing minmax implementation
         //DateTime
         //CheckBox
         //Radiobutton
@@ -113,7 +112,7 @@
             if (FilterTypeDict[kvp.Key] == FilterTypes.String)
             {
                 string stringValue = value.ToString().ToLower();
-                var filterValue = kvp.Value;
+                var filterValue = kvp.Value.ToLower();
                 if (!stringValue.Contains(filterValue))
                     return false;
             }
@@ -133,12 +132,26 @@
                 if (intValue < min || intValue > max)
                     return false;
             }
-
+            else if (FilterTypeDict[kvp.Key] == FilterTypes.DateTimeMin)
+            {
+                var dateValue = (DateTime)value;
+                var filterValue = DateTime.Parse(kvp.Value);
+                if (filterValue.IsAfterDate(dateValue))
+                {
+                    return false;
+                }
+            }
+            else if (FilterTypeDict[kvp.Key] == FilterTypes.DateTimeMax)
+            {
+                var dateValue = (DateTime)value;
+                var filterValue = DateTime.Parse(kvp.Value);
+                if (filterValue.IsBeforeDate(dateValue))
+                    return false;
+            }
 
         }
 
         return result;
     }
-
 
 }

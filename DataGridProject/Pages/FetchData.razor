@@ -17,7 +17,7 @@ else
         <FilterItem FilterType="FilterTypes.MinMax" Field="@nameof(SearchMeasurementListItem.TotalEffect)" />
         <FilterItem FilterType="FilterTypes.String" Field="@nameof(SearchMeasurementListItem.CustomerName)" Label="Name" />
         <FilterItem FilterType="FilterTypes.String" Field="@nameof(SearchMeasurementListItem.FormattedStartDate)" />
-        <FilterItem FilterType="FilterTypes.DateTime" Field="@nameof(SearchMeasurementListItem.StartDate)" />
+        <FilterItem FilterType="FilterTypes.DateTimeMin" Field="@nameof(SearchMeasurementListItem.StartDate)" />
     </DataFilter>
 
     <DataGrid Items="externalFilter?.FilteredItems" class="table-striped table-hover"
@@ -89,11 +89,11 @@ else
     public bool EffectFilterHasChanged => (minEffect > 0 || maxEffect < 200);
     public bool BreakdownReportFilterHasChanged => (hasBreakdowns || hasCustomReports);
 
-    List<SearchMeasurementListItem> debugList;
+    // List<SearchMeasurementListItem> debugList;
 
     public void Update()
     {
-        debugList = externalFilter?.FilteredItems.ToList();
+        // debugList = externalFilter?.FilteredItems.ToList();
         StateHasChanged();
     }
 

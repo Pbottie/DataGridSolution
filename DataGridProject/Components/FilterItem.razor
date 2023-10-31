@@ -20,11 +20,13 @@
             Max:<input type="range" min="0" max="250" @bind=filterIntMax @bind:event="oninput" @onmouseup="OnMinMaxFilterValueChanged" @onkeyup="OnMinMaxFilterValueChanged" /> <span class="slider-value">@filterIntMax</span>
         </span>
     }
-    else if (FilterType == FilterTypes.DateTime)
+    else if (FilterType == FilterTypes.DateTimeMin || FilterType == FilterTypes.DateTimeMax)
     {
         <span>
-            <input type="date" @bind:get="filterDateTime" @bind:set="OnDateFilterValueChanged" />
-            <button class="btn btn-primary @(IsActive ? "":"disabled")" @onclick="()=> IsActive = !IsActive">@(IsActive ? "X" : "-")</button>
+            @* <input type="date" @bind:get="filterDateTime" @bind:set="OnDateFilterValueChanged" /> *@
+            @* <button class="btn btn-primary @(IsActive ? "":"disabled")" @onclick="()=> IsActive = !IsActive">@(IsActive ? "X" : "-")</button> *@
+            <SimpleDatePicker Date="filterDateTime" DateChanged="(DateTime? dt)=>OnDateFilterValueChanged(dt)"></SimpleDatePicker>
+
         </span>
     }
 </div>
@@ -54,8 +56,8 @@
                 return filterIntMin.ToString();
             if (FilterType == FilterTypes.MinMax)
                 return $"{filterIntMin}_{filterIntMax}";
-            if (FilterType == FilterTypes.DateTime)
-                return filterDateTime.ToShortDateString();
+            if (FilterType == FilterTypes.DateTimeMin || FilterType == FilterTypes.DateTimeMax)
+                return filterDateTime?.ToShortDateString();
 
             return string.Empty;
             //Better way?
@@ -66,7 +68,7 @@
     string filterText = string.Empty;
     int filterIntMin = 0;
     int filterIntMax = 0;
-    DateTime filterDateTime = DateTime.Now.Date;
+    DateTime? filterDateTime;
 
     protected override void OnInitialized()
     {
@@ -88,6 +90,7 @@
 
     }
 
+
     private void OnTextFilterValueChanged(ChangeEventArgs e)
     {
         IsActive = true;
@@ -101,9 +104,16 @@
         ParentFilter.UpdateFilter(this);
     }
 
-    private void OnDateFilterValueChanged(DateTime date)
+    private void OnDateFilterValueChanged(DateTime? date)
     {
-        IsActive = true;
+        if (date.HasValue)
+        {
+            IsActive = true;
+        }
+        else
+        {
+            IsActive = false;
+        }
         filterDateTime = date;
         ParentFilter.UpdateFilter(this);
     }
