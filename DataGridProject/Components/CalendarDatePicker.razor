@@ -1,8 +1,30 @@
 ﻿
 <div class="calendar-view">
     <div class="select-year-month">
-        @* <span class="prev" @onclick="PrevMonth">&lt;&lt; </span>@showingMonth.ToString("Y")<span class="next" @onclick="NextMonth"> &gt;&gt;</span> *@
-        <span class="prev" @onclick="PrevMonth">&lt;&lt; </span>@showingMonth.ToString("Y")<span class="next" @onclick="NextMonth"> &gt;&gt;</span>
+        <span class="prev" @onclick="PrevMonth">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-double-left" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M8.354 1.646a.5.5 0 0 1 0 .708L2.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z" />
+                <path fill-rule="evenodd" d="M12.354 1.646a.5.5 0 0 1 0 .708L6.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z" />
+            </svg>
+        </span>
+        <select value="@month" @onchange="HandleSetMonth">
+            @for (int i = 1; i <= 12; i++)
+            {
+                <option value="@i">@months[i-1]</option>
+            }
+        </select>
+        <select value="@year" @onchange="HandleSetYear">
+            @foreach (var item in years)
+            {
+                <option value="@item">@item</option>
+            }
+        </select>
+        <span class="next" @onclick="NextMonth">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-double-right" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708z" />
+                <path fill-rule="evenodd" d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708z" />
+            </svg>
+        </span>
     </div>
     <div class="calendar-table">
         <table>
@@ -38,25 +60,63 @@
 
     private string[] abbreviatedDayNames;
     private DateTime? selectedDate;
+
+    private int month;
+    private int year;
     private DateTime showingMonth;
 
     private DateTime previousMonth => showingMonth.AddDays(-1);
     private DateTime nextMonth => showingMonth.AddDays(DateTime.DaysInMonth(showingMonth.Year, showingMonth.Month));
 
     private DayOfWeek firstDayOfShowingMonth;
+
+    private List<string> months = new();
+    private List<int> years = new();
+
+    protected override void OnInitialized()
+    {
+        for (int i = 1; i <= 12; i++)
+        {
+            months.Add(CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(i));
+        }
+        for (int i = DateTime.Now.Year - 100; i < DateTime.Now.Year + 10; i++)
+        {
+            years.Add(i);
+        }
+    }
+
     protected override void OnParametersSet()
     {
-
         if (SelectedDate.HasValue)
             showingMonth = new DateTime(SelectedDate.Value.Year, SelectedDate.Value.Month, 1);
         else
             showingMonth = DateTime.Today;
+
+        month = showingMonth.Month;
+        year = showingMonth.Year;
 
         firstDayOfShowingMonth = showingMonth.DayOfWeek;
 
         selectedDate = SelectedDate;
         abbreviatedDayNames = CultureInfo.CurrentCulture.DateTimeFormat.AbbreviatedDayNames;
 
+    }
+
+    void HandleSetMonth(ChangeEventArgs e)
+    {
+        month = int.Parse(e.Value.ToString());
+        SetShowingMonth();
+    }
+    void HandleSetYear(ChangeEventArgs e)
+    {
+        year = int.Parse(e.Value.ToString());
+        SetShowingMonth();
+    }
+
+    void SetShowingMonth()
+    {
+        showingMonth = new DateTime(year, month, 1);
+        UpdateFirstDay();
     }
 
     int GetCalendarOffset(int week, int day)
@@ -73,15 +133,27 @@
         SelectedDateChanged.InvokeAsync(date);
     }
 
-    protected void PrevMonth()
+    void PrevMonth()
     {
         showingMonth = showingMonth.AddMonths(-1);
-        firstDayOfShowingMonth = showingMonth.DayOfWeek;
+        UpdateMonthYear();
     }
 
-    protected void NextMonth()
+    void NextMonth()
     {
         showingMonth = showingMonth.AddMonths(1);
+        UpdateMonthYear();
+    }
+
+    void UpdateMonthYear()
+    {
+        month = showingMonth.Month;
+        year = showingMonth.Year;
+        UpdateFirstDay();
+    }
+
+    void UpdateFirstDay()
+    {
         firstDayOfShowingMonth = showingMonth.DayOfWeek;
     }
 

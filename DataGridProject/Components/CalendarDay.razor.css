@@ -1,7 +1,11 @@
 ﻿.selected {
-    border: 2px solid grey;
+    border: 2px solid gray;
     font-weight: 700;
     color: red;
+}
+
+.muted {
+    background-color: darkgray;
 }
 
 .today {

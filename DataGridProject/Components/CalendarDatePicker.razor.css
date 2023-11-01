@@ -8,14 +8,18 @@
     box-shadow: 0 10px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19) !important;
     position: absolute;
     background-color: white;
-    z-index:100;
+    z-index: 100;
 }
 
 .select-year-month {
-    background-color: aqua;
+    background-color: lightgray;
 }
 
-.calendar-table{
-    background-color:lightsteelblue
+.calendar-table {
+    background-color: white;
+    display: grid;
 }
 
+.next, .prev {
+    cursor: pointer;
+}

@@ -23,10 +23,7 @@
     else if (FilterType == FilterTypes.DateTimeMin || FilterType == FilterTypes.DateTimeMax)
     {
         <span>
-            @* <input type="date" @bind:get="filterDateTime" @bind:set="OnDateFilterValueChanged" /> *@
-            @* <button class="btn btn-primary @(IsActive ? "":"disabled")" @onclick="()=> IsActive = !IsActive">@(IsActive ? "X" : "-")</button> *@
             <SimpleDatePicker Date="filterDateTime" DateChanged="(DateTime? dt)=>OnDateFilterValueChanged(dt)"></SimpleDatePicker>
-
         </span>
     }
 </div>

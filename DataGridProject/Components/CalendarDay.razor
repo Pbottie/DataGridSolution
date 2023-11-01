@@ -1,4 +1,4 @@
-﻿<td class="@(isSelected?"selected":"") @(isToday? "today":"")" @onclick="HandleClick">@thisDay.Day</td>
+﻿<td class="@(isSelected?"selected":"") @(isToday? "today":"") @(isPartOfMonth? "":"muted")" @onclick="HandleClick">@thisDay.Day</td>
 
 
 @code {
@@ -17,6 +17,7 @@
     private DateTime thisDay => ShowingMonth.AddDays(Offset);
     private bool isSelected => thisDay.CompareTo(selectedDate) == 0;
     private bool isToday => thisDay.CompareTo(DateTime.Today) == 0;
+    private bool isPartOfMonth => thisDay.Month == ShowingMonth.Month;
     private DateTime selectedDate;
     protected override void OnParametersSet()
     {
