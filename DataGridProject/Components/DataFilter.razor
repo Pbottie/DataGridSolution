@@ -6,11 +6,20 @@
         @ChildContent
     </div>
     <div class="mx-3">
-        @foreach (var filter in FieldDict)
+        @*   @foreach (var filter in FieldDict)
         {
-            <span role="button" @key="filter" class="badge bg-secondary mx-1">
-                @filter.Key: @filter.Value
-            </span>
+        <span role="button" @key="filter" class="badge bg-secondary mx-1">
+        @filter.Key: @filter.Value
+        </span>
+        } *@
+        @foreach (var filter in Filters)
+        {
+            if (filter.IsActive)
+            {
+                <span role="button" @key="filter" class="badge bg-secondary mx-1" @onclick="@(()=> filter.ClearFilter())">
+                   X @filter.GetDisplayName: @(filter.FilterType == FilterTypes.MinMax ? @filter.FilterValue.Replace("_", " - ") : @filter.FilterValue)
+                </span>
+            }
         }
     </div>
 </CascadingValue>

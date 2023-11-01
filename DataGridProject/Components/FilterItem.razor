@@ -41,6 +41,7 @@
     [Parameter]
     public string Label { get; set; }
 
+    public string GetDisplayName => string.IsNullOrEmpty(Label) ? Field : Label;
     public bool IsActive;
 
     public string FilterValue
@@ -59,6 +60,21 @@
             return string.Empty;
             //Better way?
         }
+    }
+
+    public void ClearFilter()
+    {
+        if (FilterType == FilterTypes.String)
+            filterText = string.Empty;
+        if (FilterType == FilterTypes.Int)
+            filterIntMin = 0;
+        if (FilterType == FilterTypes.MinMax)
+            filterIntMin = filterIntMax = 0;
+        if (FilterType == FilterTypes.DateTimeMin || FilterType == FilterTypes.DateTimeMax)
+            filterDateTime = null;
+
+        IsActive = false;
+        ParentFilter.UpdateFilter(this);
     }
 
     Type type;
