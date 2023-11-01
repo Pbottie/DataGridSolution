@@ -1,0 +1,35 @@
+﻿<td class="@(isSelected?"selected":"") @(isToday? "today":"")" @onclick="HandleClick">@thisDay.Day</td>
+
+
+@code {
+    [Parameter]
+    public DateTime? SelectedDate { get; set; }
+
+    [Parameter, EditorRequired]
+    public int Offset { get; set; }
+
+    [Parameter, EditorRequired]
+    public DateTime ShowingMonth { get; set; }
+
+    [Parameter, EditorRequired]
+    public EventCallback<DateTime> DayChanged { get; set; }
+
+    private DateTime thisDay => ShowingMonth.AddDays(Offset);
+    private bool isSelected => thisDay.CompareTo(selectedDate) == 0;
+    private bool isToday => thisDay.CompareTo(DateTime.Today) == 0;
+    private DateTime selectedDate;
+    protected override void OnParametersSet()
+    {
+        if (SelectedDate.HasValue)
+            selectedDate = SelectedDate.Value;
+        else
+            selectedDate = ShowingMonth;
+
+        if (isSelected)
+            Console.WriteLine($"{thisDay} is compared to {selectedDate}");
+    }
+    void HandleClick()
+    {
+        DayChanged.InvokeAsync(thisDay);
+    }
+}

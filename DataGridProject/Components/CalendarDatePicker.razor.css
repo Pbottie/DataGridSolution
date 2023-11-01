@@ -1,0 +1,21 @@
+﻿.calendar-view {
+    border: 1px solid gray;
+    font-size: .8em;
+    text-align: center;
+    width: fit-content;
+    padding: .4em;
+    margin: 1.1em;
+    box-shadow: 0 10px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19) !important;
+    position: absolute;
+    background-color: white;
+    z-index:100;
+}
+
+.select-year-month {
+    background-color: aqua;
+}
+
+.calendar-table{
+    background-color:lightsteelblue
+}
+

@@ -1,0 +1,92 @@
+﻿
+<div class="calendar-view">
+    <div class="select-year-month">
+        @* <span class="prev" @onclick="PrevMonth">&lt;&lt; </span>@showingMonth.ToString("Y")<span class="next" @onclick="NextMonth"> &gt;&gt;</span> *@
+        <span class="prev" @onclick="PrevMonth">&lt;&lt; </span>@showingMonth.ToString("Y")<span class="next" @onclick="NextMonth"> &gt;&gt;</span>
+    </div>
+    <div class="calendar-table">
+        <table>
+            <tr>
+                @for (int i = 1; i <= abbreviatedDayNames.Length; i++)
+                {
+                    <th><div>@abbreviatedDayNames[i%7]</div></th>
+                }
+            </tr>
+            @for (int week = 0; week < 6; week++)
+            {
+                <tr>
+                    @for (int day = 1; day <= 7; day++)
+                    {
+                        <CalendarDay DayChanged="SetDate" Offset="GetCalendarOffset(week, day)" ShowingMonth="showingMonth" SelectedDate="selectedDate" />
+                    }
+                </tr>
+            }
+        </table>
+    </div>
+
+</div>
+
+
+
+
+@code {
+    [Parameter]
+    public DateTime? SelectedDate { get; set; }
+
+    [Parameter]
+    public EventCallback<DateTime> SelectedDateChanged { get; set; }
+
+    private string[] abbreviatedDayNames;
+    private DateTime? selectedDate;
+    private DateTime showingMonth;
+
+    private DateTime previousMonth => showingMonth.AddDays(-1);
+    private DateTime nextMonth => showingMonth.AddDays(DateTime.DaysInMonth(showingMonth.Year, showingMonth.Month));
+
+    private DayOfWeek firstDayOfShowingMonth;
+    protected override void OnParametersSet()
+    {
+
+        if (SelectedDate.HasValue)
+            showingMonth = new DateTime(SelectedDate.Value.Year, SelectedDate.Value.Month, 1);
+        else
+            showingMonth = DateTime.Today;
+
+
+        firstDayOfShowingMonth = showingMonth.DayOfWeek;
+
+        selectedDate = SelectedDate;
+        abbreviatedDayNames = CultureInfo.CurrentCulture.DateTimeFormat.AbbreviatedDayNames;
+        Console.WriteLine($"showingMonth is {showingMonth}");
+        Console.WriteLine($"SelectedDate is {SelectedDate}");
+        Console.WriteLine($"selectedDate is {selectedDate}");
+
+    }
+
+    int GetCalendarOffset(int week, int day)
+    {
+        if (firstDayOfShowingMonth == DayOfWeek.Sunday)
+            return (week * 7 + day - 7);
+        return (week * 7 + day - (int)firstDayOfShowingMonth);
+    }
+
+    void SetDate(DateTime date)
+    {
+        showingMonth = date;
+        StateHasChanged();
+        SelectedDateChanged.InvokeAsync(date);
+    }
+
+    protected void PrevMonth()
+    {
+        showingMonth = showingMonth.AddMonths(-1);
+        firstDayOfShowingMonth = showingMonth.DayOfWeek;
+    }
+
+    protected void NextMonth()
+    {
+        showingMonth = showingMonth.AddMonths(1);
+        firstDayOfShowingMonth = showingMonth.DayOfWeek;
+    }
+
+}
