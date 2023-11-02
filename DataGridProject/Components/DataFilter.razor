@@ -29,6 +29,8 @@
 
     IEnumerable<TDataItem> items { get; set; }
 
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
 
     protected override void OnParametersSet()
     {
@@ -47,11 +49,6 @@
         }
     }
 
-
-
-    [Parameter]
-    public RenderFragment ChildContent { get; set; }
-
     public List<FilterItem<TDataItem>> Filters = new();
     private Dictionary<string, string?> FieldDict { get; set; } = new();
     private Dictionary<string, FilterTypes> FilterTypeDict { get; set; } = new();
@@ -62,8 +59,16 @@
         if (filterItem != null)
         {
             Filters.Add(filterItem);
-            FieldDict.Add(filterItem.Field, filterItem.FilterValue);
-            FilterTypeDict.Add(filterItem.Field, filterItem.FilterType);
+
+            var fieldName = filterItem.Field;
+
+            if (filterItem.FilterType == FilterTypes.DateTimeMin || filterItem.FilterType == FilterTypes.DateTimeMax)
+            {
+                fieldName += filterItem.FilterType == FilterTypes.DateTimeMin ? "_Min" : "_Max";
+            }
+
+            FieldDict.Add(fieldName, filterItem.FilterValue);
+            FilterTypeDict.Add(fieldName, filterItem.FilterType);
         }
 
         if (filterItem.FilterType == FilterTypes.MinMax)
@@ -81,8 +86,16 @@
 
     public void UpdateFilter(FilterItem<TDataItem> filterItem)
     {
-        if (FieldDict.Keys.Contains(filterItem.Field))
-            FieldDict[filterItem.Field] = filterItem.FilterValue;
+        var fieldName = filterItem.Field;
+
+
+        if (filterItem.FilterType == FilterTypes.DateTimeMin || filterItem.FilterType == FilterTypes.DateTimeMax)
+        {
+            fieldName += filterItem.FilterType == FilterTypes.DateTimeMin ? "_Min" : "_Max";
+        }
+
+        if (FieldDict.Keys.Contains(fieldName))
+            FieldDict[fieldName] = filterItem.FilterValue;
 
         StateHasChanged();
         Filter.NotifyAll();
@@ -104,24 +117,30 @@
 
     internal bool IsFiltered(TDataItem item)
     {
-        //CheckBox
         //Radiobutton
         var result = true;
         foreach (var kvp in FieldDict)
         {
+            var key = kvp.Key;
+
+            if (key.Contains("_Min") || key.Contains("_Max"))
+            {
+                key = key.Split("_M")[0];
+            }
+
             var activeFields = Filters
             .Where(filter => filter.IsActive)
             .Select(filter => filter.Field)
             .ToList();
-            if (!activeFields.Contains(kvp.Key))
+            if (!activeFields.Contains(key) || kvp.Value == null)
             {
                 continue;
             }
-
-            var property = typeof(TDataItem).GetProperty(kvp.Key);
+                       
+            var property = typeof(TDataItem).GetProperty(key);
             var value = property.GetValue(item);
 
-            if (FilterTypeDict[kvp.Key] == FilterTypes.String)
+            if (FilterTypeDict[kvp.Key] == FilterTypes.String || FilterTypeDict[kvp.Key] == FilterTypes.RadioButton)
             {
                 string stringValue = value.ToString().ToLower();
                 var filterValue = kvp.Value.ToLower();

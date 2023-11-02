@@ -12,13 +12,16 @@
 else
 {
     <DataFilter Items="testData" @ref="externalFilter">
-        <FilterItem FilterType="FilterTypes.String" Field="@nameof(SearchMeasurementListItem.MeasurementName)" />
         <FilterItem FilterType="FilterTypes.Int" Field="@nameof(SearchMeasurementListItem.Id)" />
+        <FilterItem FilterType="FilterTypes.String" Field="@nameof(SearchMeasurementListItem.MeasurementName)" />
         <FilterItem FilterType="FilterTypes.MinMax" Field="@nameof(SearchMeasurementListItem.TotalEffect)" />
         <FilterItem FilterType="FilterTypes.String" Field="@nameof(SearchMeasurementListItem.CustomerName)" Label="Name" />
         <FilterItem FilterType="FilterTypes.String" Field="@nameof(SearchMeasurementListItem.FormattedStartDate)" />
         <FilterItem FilterType="FilterTypes.DateTimeMin" Field="@nameof(SearchMeasurementListItem.StartDate)" />
+        <FilterItem FilterType="FilterTypes.DateTimeMax" Field="@nameof(SearchMeasurementListItem.StartDate)" />
         <FilterItem FilterType="FilterTypes.CheckBox" Field="@nameof(SearchMeasurementListItem.HasBreakdowns)" />
+        <FilterItem FilterType="FilterTypes.RadioButton" Field="@nameof(SearchMeasurementListItem.BrandName)" Options="radioButtonOptions" DefaultSelectedOption="Spyder" />
+
     </DataFilter>
 
     <DataGrid Items="externalFilter?.FilteredItems" class="table-striped table-hover"
@@ -87,6 +90,8 @@ else
     bool hasCustomReports;
     DataFilter<SearchMeasurementListItem> externalFilter;
 
+    Dictionary<string, string> radioButtonOptions;
+
     public bool EffectFilterHasChanged => (minEffect > 0 || maxEffect < 200);
     public bool BreakdownReportFilterHasChanged => (hasBreakdowns || hasCustomReports);
 
@@ -134,6 +139,9 @@ else
     {
         testData = BogusData.GetData(103);
         FilterSubject.RegisterObserver(this);
+
+        radioButtonOptions = testData.Select(x => x.BrandName).Take(5).ToDictionary(x => x, x => x);
+
     }
 
     public void Dispose()
