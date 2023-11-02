@@ -90,7 +90,7 @@
         if (SelectedDate.HasValue)
             showingMonth = new DateTime(SelectedDate.Value.Year, SelectedDate.Value.Month, 1);
         else
-            showingMonth = DateTime.Today;
+            showingMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
 
         month = showingMonth.Month;
         year = showingMonth.Year;
@@ -122,7 +122,14 @@
     int GetCalendarOffset(int week, int day)
     {
         if (firstDayOfShowingMonth == DayOfWeek.Sunday)
+        {
             return (week * 7 + day - 7);
+        }
+        else if (firstDayOfShowingMonth == DayOfWeek.Monday)
+        {
+            return (week * 7 + day - 8);
+
+        }
         return (week * 7 + day - (int)firstDayOfShowingMonth);
     }
 
