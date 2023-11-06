@@ -1,3 +1,199 @@
+/* /Components/CalendarDatePicker.razor.rz.scp.css */
+.calendar-view[b-0bpl78kyss] {
+    border: 1px solid gray;
+    font-size: .8em;
+    text-align: center;
+    width: fit-content;
+    padding: .4em;
+    margin: 1.1em;
+    box-shadow: 0 10px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19) !important;
+    position: absolute;
+    background-color: white;
+    z-index: 100;
+}
+
+.select-year-month[b-0bpl78kyss] {
+    background-color: lightgray;
+    border-radius: 15px;
+}
+
+.calendar-table[b-0bpl78kyss] {
+    background-color: white;
+    display: grid;
+}
+
+.next[b-0bpl78kyss], .prev[b-0bpl78kyss] {
+    cursor: pointer;
+}
+/* /Components/CalendarDay.razor.rz.scp.css */
+.selected[b-9g9y3kcxen] {
+    border: 2px solid gray;
+    font-weight: 700;
+    color: red;
+}
+
+.muted[b-9g9y3kcxen] {
+    background-color: darkgray;
+}
+
+.today[b-9g9y3kcxen] {
+    background-color: lightgray;
+}
+/* /Components/DataFilter.razor.rz.scp.css */
+.filter-container[b-f576mhbayo] {
+    justify-content: space-around;
+    margin: 1rem;
+}
+
+.filter-item[b-f576mhbayo] {
+    margin: .25rem;
+}
+/* /Components/FilterItem.razor.rz.scp.css */
+.slider-value[b-8x1h8v0uwe] {
+    display: inline-block;
+    width: 2rem;
+}
+/* /Components/GridItem.razor.rz.scp.css */
+.cursor-pointer div *[b-5rteiivt5e] {
+    cursor: pointer;
+}
+
+.filter[b-5rteiivt5e] {
+    padding: 0.5rem;
+    position: absolute;
+    left: 15px;
+    top: -30px;
+    background-color: blanchedalmond;
+    box-shadow: 0 3px 8px 1px #aaa;
+    border-color: #ddd;
+    border-radius: 0.3rem;
+    z-index: 100;
+}
+
+.fullscreen[b-5rteiivt5e] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 99;
+}
+
+.visible[b-5rteiivt5e] {
+    visibility: visible;
+}
+
+.hidden[b-5rteiivt5e] {
+    visibility: hidden;
+}
+
+.filter-option[b-5rteiivt5e] {
+    border: none;
+    padding: 0;
+    width: 1rem;
+    align-self: stretch;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-funnel" viewBox="0 0 16 16"> <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2zm1 .5v1.308l4.372 4.858A.5.5 0 0 1 7 8.5v5.306l2-.666V8.5a.5.5 0 0 1 .128-.334L13.5 3.308V2h-11z"/> </svg> ') center center / 1rem no-repeat;
+}
+
+.filter-option-full[b-5rteiivt5e] {
+    border: none;
+    padding: 0;
+    width: 1rem;
+    align-self: stretch;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-funnel-fill" viewBox="0 0 16 16"> <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2z"/> </svg> ') center center / 1rem no-repeat;
+}
+
+.header-content[b-5rteiivt5e] {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+/* /Components/Paginator.razor.rz.scp.css */
+.paginator[b-gyhshhcb7x] {
+    display: flex;
+    border-top: 1px solid #ccc;
+    margin-top: 0.5rem;
+    padding: 0.25rem 0;
+    align-items: center;
+}
+
+.pagination-text[b-gyhshhcb7x] {
+    margin: 0 0.5rem;
+}
+
+nav[b-gyhshhcb7x] {
+    display: flex;
+    margin-left: auto;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+    nav button[b-gyhshhcb7x] {
+        border: 0;
+        background: none center center / 1rem no-repeat;
+        width: 2rem;
+        height: 2rem;
+    }
+
+        nav button[disabled][b-gyhshhcb7x] {
+            opacity: 0.4;
+        }
+
+        nav button:not([disabled]):hover[b-gyhshhcb7x] {
+            background-color: #eee;
+        }
+
+        nav button:not([disabled]):active[b-gyhshhcb7x] {
+            background-color: #aaa;
+        }
+
+.go-first[b-gyhshhcb7x], .go-last[b-gyhshhcb7x] {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-skip-end-fill" viewBox="0 0 16 16"> <path d="M12.5 4a.5.5 0 0 0-1 0v3.248L5.233 3.612C4.693 3.3 4 3.678 4 4.308v7.384c0 .63.692 1.01 1.233.697L11.5 8.753V12a.5.5 0 0 0 1 0V4z"/> </svg>');
+}
+
+.go-previous[b-gyhshhcb7x], .go-next[b-gyhshhcb7x] {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-play-fill" viewBox="0 0 16 16"> <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/> </svg>');
+}
+
+.go-previous[b-gyhshhcb7x], .go-first[b-gyhshhcb7x] {
+    transform: scaleX(-1);
+}
+/* /Components/SimpleDatePicker.razor.rz.scp.css */
+.input-container[b-rk0pilqs09] {
+    position: relative;
+}
+
+.calendar-button[b-rk0pilqs09] {
+    margin: 0;
+    padding: 4px;
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    position: absolute;
+    top: -9px;
+    left: 169px;
+}
+
+    .calendar-button:hover[b-rk0pilqs09] {
+        cursor: pointer;
+    }
+
+.fullscreen[b-rk0pilqs09] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 99;
+}
+
+.hidden[b-rk0pilqs09] {
+    visibility: hidden;
+}
+
+button[b-rk0pilqs09]{
+    font-size:small;
+}
 /* /Shared/MainLayout.razor.rz.scp.css */
 .page[b-o4usi3lo52] {
     position: relative;
