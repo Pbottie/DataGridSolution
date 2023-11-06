@@ -158,7 +158,6 @@
         switch (filterType)
         {
             case FilterTypes.String:
-            case FilterTypes.RadioButton:
                 return EvaluateStringFilter(value, filterValue);
             case FilterTypes.Int:
                 return EvaluateIntFilter(value, filterValue);
@@ -172,6 +171,8 @@
                 return EvaluateDateTimeMaxFilter(value, filterValue);
             case FilterTypes.CheckBox:
                 return EvaluateCheckBoxFilter(value, filterValue);
+            case FilterTypes.RadioButton:
+                return EvaluateRadioButtonFilter(value, filterValue);
             default:
                 return true;
         }
@@ -238,6 +239,12 @@
     private bool EvaluateCheckBoxFilter(object value, string filterValue)
     {
         return value.ToString().Equals(filterValue, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private bool EvaluateRadioButtonFilter(object value, string filterValue)
+    {
+        return value.ToString().ToLower() == filterValue.ToLower();
+
     }
 
 }

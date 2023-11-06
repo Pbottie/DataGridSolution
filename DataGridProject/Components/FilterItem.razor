@@ -39,9 +39,20 @@
     }
     else if (FilterType == FilterTypes.CheckBox)
     {
-        <span>
-            <input type="checkbox" @bind=filterCheckBox @oninput="OnCheckBoxChanged">
-        </span>
+        if (IsSwitch)
+        {
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" @bind=filterCheckBox @oninput="OnCheckBoxChanged">
+            </div>
+        }
+        else
+        {
+            <span>
+                <input type="checkbox" @bind=filterCheckBox @oninput="OnCheckBoxChanged">
+            </span>
+        }
+
+
     }
     else if (FilterType == FilterTypes.RadioButton)
     {
@@ -88,6 +99,9 @@
     public Dictionary<string, string> Options { get; set; }
     [Parameter]
     public string DefaultSelectedOption { get; set; }
+    [Parameter]
+    public bool IsSwitch { get; set; }
+
 
     public string GetDisplayName => string.IsNullOrEmpty(Label) ? Field : Label;
     public bool IsActive;
@@ -102,7 +116,7 @@
                 return filterIntMin.ToString();
             if (FilterType == FilterTypes.MinMax)
                 return $"{filterIntMin}_{filterIntMax}";
-            if (FilterType == FilterTypes.DateTime ||FilterType == FilterTypes.DateTimeMin || FilterType == FilterTypes.DateTimeMax)
+            if (FilterType == FilterTypes.DateTime || FilterType == FilterTypes.DateTimeMin || FilterType == FilterTypes.DateTimeMax)
                 return filterDateTime?.ToShortDateString();
             if (FilterType == FilterTypes.CheckBox)
                 return filterCheckBox.ToString();
