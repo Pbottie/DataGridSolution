@@ -13,6 +13,7 @@
 
 .select-year-month {
     background-color: lightgray;
+    border-radius: 15px;
 }
 
 .calendar-table {
