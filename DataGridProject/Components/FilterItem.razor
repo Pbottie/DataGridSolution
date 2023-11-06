@@ -4,7 +4,7 @@
     <label>@(string.IsNullOrEmpty(Label) ? Field : Label)</label>
     @if (FilterType == FilterTypes.String)
     {
-        <input type="search" autofocus @bind="filterText" @oninput="OnTextFilterValueChanged" placeholder="Filter..." />
+        <input type="search" autofocus @bind="filterText" @oninput="OnTextFilterValueChanged" placeholder="Filter text..." />
     }
     else if (FilterType == FilterTypes.Int)
     {
@@ -154,7 +154,6 @@
 
     protected override void OnInitialized()
     {
-        //Check if property is of chosen type otherwise throw?
         var property = DataGridUtils.GetItemsPropertyInfo<TDataItem>()
         .Where(x => x.Name == Field)
         .FirstOrDefault();
@@ -166,10 +165,6 @@
             throw new ArgumentNullException("RadioButtons need the Options parameter.");
 
         type = property.PropertyType;
-
-        // if (type.Name != FilterType.Name) //Do we want this? Many things can be "ToString()ed"
-        //     throw new ArgumentException("The type of Field and FilterType do not match");
-
 
         if (FilterType == FilterTypes.RadioButton)
         {
@@ -190,45 +185,83 @@
     {
         IsActive = true;
         filterText = e.Value.ToString();
-        ParentFilter.UpdateFilter(this);
+        CheckDisableAndUpdate();
     }
 
     private void OnMinMaxFilterValueChanged()
     {
-        if (filterIntMin == 0 && filterIntMax == 0)
-            IsActive = false;
-        else
-            IsActive = true;
-        ParentFilter.UpdateFilter(this);
+        CheckDisableAndUpdate();
     }
 
     private void OnDateFilterValueChanged(DateTime? date)
     {
-        if (date.HasValue)
-        {
-            IsActive = true;
-        }
-        else
-        {
-            IsActive = false;
-        }
         filterDateTime = date;
-        ParentFilter.UpdateFilter(this);
+        CheckDisableAndUpdate();
     }
 
     private void OnCheckBoxChanged(ChangeEventArgs e)
     {
-        filterCheckBox = IsActive = (bool)e.Value;
-        ParentFilter.UpdateFilter(this);
+        filterCheckBox = (bool)e.Value;
+        CheckDisableAndUpdate();
     }
 
     void OnRadioButtonChanged(ChangeEventArgs e)
     {
         filterText = e.Value.ToString();
-        if (filterText == string.Empty)
-            IsActive = false;
-        else
-            IsActive = true;
+        CheckDisableAndUpdate();
+    }
+
+    private void CheckDisableAndUpdate()
+    {
+        DisableIfDefaultValue();
         ParentFilter.UpdateFilter(this);
+    }
+
+    private void DisableIfDefaultValue()
+    {
+        switch (FilterType)
+        {
+            case FilterTypes.String:
+                if (string.IsNullOrEmpty(filterText))
+                    IsActive = false;
+                break;
+            case FilterTypes.Int:
+                if (filterIntMin == 0)
+                    IsActive = false;
+                else
+                    IsActive = true;
+                break;
+            case FilterTypes.MinMax:
+                if (filterIntMin == 0 && filterIntMax == 0)
+                    IsActive = false;
+                else
+                    IsActive = true;
+                break;
+            case FilterTypes.DateTime:
+                if (filterDateTime.HasValue)
+                {
+                    IsActive = true;
+                }
+                else
+                {
+                    IsActive = false;
+                }
+                break;
+            case FilterTypes.DateTimeMin:
+                goto case FilterTypes.DateTime;
+                break;
+            case FilterTypes.DateTimeMax:
+                goto case FilterTypes.DateTime;
+                break;
+            case FilterTypes.CheckBox:
+                IsActive = filterCheckBox;
+                break;
+            case FilterTypes.RadioButton:
+                goto case FilterTypes.String;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException($"Set FilterType {FilterType} does not exists");
+        }
+
     }
 }
