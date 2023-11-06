@@ -19,16 +19,21 @@
             Max:<input type="range" min="@sliderMin" max="@sliderMax" @bind=filterIntMax @bind:event="oninput" @onmouseup="OnMinMaxFilterValueChanged" @onkeyup="OnMinMaxFilterValueChanged" /> <span class="slider-value">@filterIntMax</span>
         </span>
     }
-    else if (FilterType == FilterTypes.DateTimeMin)
-    {
-
-        <span>
-            <SimpleDatePicker Date="filterDateTime" DateChanged="(DateTime? dt)=>OnDateFilterValueChanged(dt)"></SimpleDatePicker>
-        </span>
-    }
-    else if (FilterType == FilterTypes.DateTimeMax)
+    else if (FilterType == FilterTypes.DateTime || FilterType == FilterTypes.DateTimeMin || FilterType == FilterTypes.DateTimeMax)
     {
         <span>
+            @if (FilterType == FilterTypes.DateTimeMin)
+            {
+                <text>
+                    From
+                </text>
+            }
+            else if (FilterType == FilterTypes.DateTimeMax)
+            {
+                <text>
+                    To
+                </text>
+            }
             <SimpleDatePicker Date="filterDateTime" DateChanged="(DateTime? dt)=>OnDateFilterValueChanged(dt)"></SimpleDatePicker>
         </span>
     }
@@ -41,7 +46,7 @@
     else if (FilterType == FilterTypes.RadioButton)
     {
         <div class="btn-group" role="group">
-            @if (string.IsNullOrEmpty(DefaultSelectedOption))
+            @if (string.IsNullOrEmpty(DefaultSelectedOption) || filterText == "")
             {
                 <input checked type="radio" name="filter@(Field)" value="@string.Empty" class="btn-check" id="filter@(Field)All" @onchange="OnRadioButtonChanged">
             }
@@ -97,7 +102,7 @@
                 return filterIntMin.ToString();
             if (FilterType == FilterTypes.MinMax)
                 return $"{filterIntMin}_{filterIntMax}";
-            if (FilterType == FilterTypes.DateTimeMin || FilterType == FilterTypes.DateTimeMax)
+            if (FilterType == FilterTypes.DateTime ||FilterType == FilterTypes.DateTimeMin || FilterType == FilterTypes.DateTimeMax)
                 return filterDateTime?.ToShortDateString();
             if (FilterType == FilterTypes.CheckBox)
                 return filterCheckBox.ToString();
@@ -115,7 +120,7 @@
             filterIntMin = 0;
         if (FilterType == FilterTypes.MinMax)
             filterIntMin = filterIntMax = 0;
-        if (FilterType == FilterTypes.DateTimeMin || FilterType == FilterTypes.DateTimeMax)
+        if (FilterType == FilterTypes.DateTime || FilterType == FilterTypes.DateTimeMin || FilterType == FilterTypes.DateTimeMax)
             filterDateTime = null;
         if (FilterType == FilterTypes.CheckBox)
             filterCheckBox = false;

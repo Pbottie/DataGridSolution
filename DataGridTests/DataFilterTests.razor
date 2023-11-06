@@ -1,0 +1,85 @@
+@attribute [TestClass]
+@inherits BunitTestContext
+@inject IFilter Filter
+
+@code
+{
+
+    private List<SearchMeasurementListItem> testData;
+
+    [TestInitialize]
+    public void Init()
+    {
+        testData = DataGridProject.BogusData.GetData(10);
+        Services.AddSingleton<IFilter>(new FilterService());
+    }
+
+
+    [TestMethod]
+    public void DataFilterSetsStringFilterCorrectly()
+    {
+        var cut = Render(
+    @<DataFilter Items="testData">
+        <FilterItem FilterType="FilterTypes.String" Field="@nameof(SearchMeasurementListItem.MeasurementName)" />
+    </DataFilter>
+        );
+
+        var FilterItem = cut.FindComponent<FilterItem<SearchMeasurementListItem>>().Instance;
+
+        FilterItem.DefaultSelectedOption.Should().BeNull();
+        FilterItem.Field.Should().Be("MeasurementName");
+        FilterItem.FilterType.Should().Be(FilterTypes.String);
+        FilterItem.FilterValue.Should().Be("");
+        FilterItem.GetDisplayName.Should().Be("MeasurementName");
+        FilterItem.Label.Should().BeNull();
+        FilterItem.Options.Should().BeNull();
+    }
+    
+    [TestMethod]
+    public void DataFilterSetsIntFilterCorrectly()
+    {
+
+        var cut = Render(
+    @<DataFilter Items="testData">
+        <FilterItem FilterType="FilterTypes.Int" Field="@nameof(SearchMeasurementListItem.Id)" />       
+    </DataFilter>
+    );
+
+        var FilterItem = cut.FindComponent<FilterItem<SearchMeasurementListItem>>().Instance;
+
+        FilterItem.DefaultSelectedOption.Should().BeNull();
+        FilterItem.Field.Should().Be("Id");
+        FilterItem.FilterType.Should().Be(FilterTypes.Int);
+        FilterItem.FilterValue.Should().Be("0");
+        FilterItem.GetDisplayName.Should().Be("Id");
+        FilterItem.Label.Should().BeNull();
+        FilterItem.Options.Should().BeNull();
+    }  
+    
+    [TestMethod]
+    public void DataFilterSetsMinMaxFilterCorrectly()
+    {
+
+        var cut = Render(
+    @<DataFilter Items="testData">
+        <FilterItem FilterType="FilterTypes.MinMax" Field="@nameof(SearchMeasurementListItem.TotalEffect)" />
+        <FilterItem FilterType="FilterTypes.String" Field="@nameof(SearchMeasurementListItem.CustomerName)" Label="Name" />
+        <FilterItem FilterType="FilterTypes.String" Field="@nameof(SearchMeasurementListItem.FormattedStartDate)" />
+        <FilterItem FilterType="FilterTypes.DateTime" Field="@nameof(SearchMeasurementListItem.EndDate)" />
+        <FilterItem FilterType="FilterTypes.DateTimeMin" Field="@nameof(SearchMeasurementListItem.StartDate)" />
+        <FilterItem FilterType="FilterTypes.DateTimeMax" Field="@nameof(SearchMeasurementListItem.StartDate)" />
+        <FilterItem FilterType="FilterTypes.CheckBox" Field="@nameof(SearchMeasurementListItem.HasBreakdowns)" />
+    </DataFilter>
+    );
+
+        var FilterItem = cut.FindComponent<FilterItem<SearchMeasurementListItem>>().Instance;
+
+        FilterItem.DefaultSelectedOption.Should().BeNull();
+        FilterItem.Field.Should().Be("TotalEffect");
+        FilterItem.FilterType.Should().Be(FilterTypes.MinMax);
+        FilterItem.FilterValue.Should().Be("0_0");
+        FilterItem.GetDisplayName.Should().Be("TotalEffect");
+        FilterItem.Label.Should().BeNull();
+        FilterItem.Options.Should().BeNull();
+    }
+}

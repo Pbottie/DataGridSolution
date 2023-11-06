@@ -60,12 +60,7 @@
         {
             Filters.Add(filterItem);
 
-            var fieldName = filterItem.Field;
-
-            if (filterItem.FilterType == FilterTypes.DateTimeMin || filterItem.FilterType == FilterTypes.DateTimeMax)
-            {
-                fieldName += filterItem.FilterType == FilterTypes.DateTimeMin ? "_Min" : "_Max";
-            }
+            var fieldName = GetFieldName(filterItem);
 
             FieldDict.Add(fieldName, filterItem.FilterValue);
             FilterTypeDict.Add(fieldName, filterItem.FilterType);
@@ -80,25 +75,31 @@
 
             filterItem.SetFilterMinMax(min, max);
         }
-
-        StateHasChanged();
     }
 
     public void UpdateFilter(FilterItem<TDataItem> filterItem)
     {
+        UpdateFieldDict(filterItem);
+
+        StateHasChanged();
+        Filter.NotifyAll();
+    }
+
+    private string GetFieldName(FilterItem<TDataItem> filterItem)
+    {
         var fieldName = filterItem.Field;
-
-
         if (filterItem.FilterType == FilterTypes.DateTimeMin || filterItem.FilterType == FilterTypes.DateTimeMax)
         {
             fieldName += filterItem.FilterType == FilterTypes.DateTimeMin ? "_Min" : "_Max";
         }
+        return fieldName;
+    }
 
+    private void UpdateFieldDict(FilterItem<TDataItem> filterItem)
+    {
+        var fieldName = GetFieldName(filterItem);
         if (FieldDict.Keys.Contains(fieldName))
             FieldDict[fieldName] = filterItem.FilterValue;
-
-        StateHasChanged();
-        Filter.NotifyAll();
     }
 
     public IEnumerable<TDataItem> FilteredItems
@@ -117,79 +118,129 @@
 
     internal bool IsFiltered(TDataItem item)
     {
-        //Radiobutton
-        var result = true;
         foreach (var kvp in FieldDict)
         {
-            var key = kvp.Key;
-
-            if (key.Contains("_Min") || key.Contains("_Max"))
-            {
-                key = key.Split("_M")[0];
-            }
+            var field = GetCorrectFieldName(kvp.Key);
 
             var activeFields = Filters
             .Where(filter => filter.IsActive)
-            .Select(filter => filter.Field)
-            .ToList();
-            if (!activeFields.Contains(key) || kvp.Value == null)
+            .Select(filter => filter.Field);
+
+            if (!activeFields.Contains(field) || kvp.Value == null)
             {
                 continue;
             }
-                       
-            var property = typeof(TDataItem).GetProperty(key);
-            var value = property.GetValue(item);
 
-            if (FilterTypeDict[kvp.Key] == FilterTypes.String || FilterTypeDict[kvp.Key] == FilterTypes.RadioButton)
+            var propertyValue = typeof(TDataItem).GetProperty(field).GetValue(item);
+            var filterType = FilterTypeDict[kvp.Key];
+
+            if (!EvaluateFilterByType(propertyValue, filterType, kvp.Value))
             {
-                string stringValue = value.ToString().ToLower();
-                var filterValue = kvp.Value.ToLower();
-                if (!stringValue.Contains(filterValue))
-                    return false;
-            }
-            else if (FilterTypeDict[kvp.Key] == FilterTypes.Int)
-            {
-                int intValue = (int)value;
-                var filterValue = int.Parse(kvp.Value);
-                if (intValue < filterValue)
-                    return false;
-            }
-            else if (FilterTypeDict[kvp.Key] == FilterTypes.MinMax)
-            {
-                var minMaxValues = kvp.Value.ToString().Split("_");
-                int min = int.Parse(minMaxValues[0]);
-                int max = int.Parse(minMaxValues[1]);
-                var intValue = int.Parse(value.ToString());
-                if (intValue < min || intValue > max)
-                    return false;
-            }
-            else if (FilterTypeDict[kvp.Key] == FilterTypes.DateTimeMin)
-            {
-                var dateValue = (DateTime)value;
-                var filterValue = DateTime.Parse(kvp.Value);
-                if (filterValue.IsAfterDate(dateValue))
-                {
-                    return false;
-                }
-            }
-            else if (FilterTypeDict[kvp.Key] == FilterTypes.DateTimeMax)
-            {
-                var dateValue = (DateTime)value;
-                var filterValue = DateTime.Parse(kvp.Value);
-                if (filterValue.IsBeforeDate(dateValue))
-                    return false;
-            }
-            else if (FilterTypeDict[kvp.Key] == FilterTypes.CheckBox)
-            {
-                var boolValue = value.ToString();
-                var filterValue = kvp.Value.ToString();
-                if (boolValue != filterValue)
-                    return false;
+                return false;
             }
 
         }
+        return true;
 
-        return result;
     }
+
+    private string GetCorrectFieldName(string key)
+    {
+        if (key.Contains("_Min") || key.Contains("_Max"))
+        {
+            key = key.Split("_M")[0];
+        }
+        return key;
+    }
+
+    private bool EvaluateFilterByType(object value, FilterTypes filterType, string filterValue)
+    {
+        switch (filterType)
+        {
+            case FilterTypes.String:
+            case FilterTypes.RadioButton:
+                return EvaluateStringFilter(value, filterValue);
+            case FilterTypes.Int:
+                return EvaluateIntFilter(value, filterValue);
+            case FilterTypes.MinMax:
+                return EvaluateMinMaxFilter(value, filterValue);
+            case FilterTypes.DateTime:
+                return EvaluateDateTimeFilter(value, filterValue);
+            case FilterTypes.DateTimeMin:
+                return EvaluateDateTimeMinFilter(value, filterValue);
+            case FilterTypes.DateTimeMax:
+                return EvaluateDateTimeMaxFilter(value, filterValue);
+            case FilterTypes.CheckBox:
+                return EvaluateCheckBoxFilter(value, filterValue);
+            default:
+                return true;
+        }
+
+    }
+
+    private bool EvaluateStringFilter(object value, string filterValue)
+    {
+        return value.ToString().ToLower().Contains(filterValue.ToLower());
+    }
+
+    private bool EvaluateIntFilter(object value, string filterValue)
+    {
+        return (int)value >= int.Parse(filterValue);
+    }
+
+    private bool EvaluateMinMaxFilter(object value, string filterValue)
+    {
+        var minMaxValues = filterValue.Split("_");
+        if (minMaxValues.Length == 2 &&
+            int.TryParse(minMaxValues[0], out int min) &&
+            int.TryParse(minMaxValues[1], out int max) &&
+            int.TryParse(value.ToString(), out int intValue))
+        {
+            return intValue >= min && intValue <= max;
+        }
+        return false;
+
+    }
+
+    private bool EvaluateDateTimeFilter(object value, string filterValue)
+    {
+        if (DateTime.TryParse(value.ToString(), out DateTime dateValue) &&
+          DateTime.TryParse(filterValue, out DateTime filterDateValue))
+        {
+            return dateValue.Date == filterDateValue.Date;
+        }
+        return false;
+
+    }
+
+    private bool EvaluateDateTimeMinFilter(object value, string filterValue)
+    {
+        if (DateTime.TryParse(value.ToString(), out DateTime dateValue) &&
+          DateTime.TryParse(filterValue, out DateTime filterDateValue))
+        {
+            return dateValue.Date >= filterDateValue.Date;
+        }
+        return false;
+
+    }
+
+    private bool EvaluateDateTimeMaxFilter(object value, string filterValue)
+    {
+        if (DateTime.TryParse(value.ToString(), out DateTime dateValue) &&
+           DateTime.TryParse(filterValue, out DateTime filterDateValue))
+        {
+            return dateValue.Date <= filterDateValue.Date;
+        }
+        return false;
+
+    }
+
+    private bool EvaluateCheckBoxFilter(object value, string filterValue)
+    {
+        return value.ToString().Equals(filterValue, StringComparison.OrdinalIgnoreCase);
+    }
+
+}
+
 
 }

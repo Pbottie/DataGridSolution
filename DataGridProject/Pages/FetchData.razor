@@ -17,8 +17,11 @@ else
         <FilterItem FilterType="FilterTypes.MinMax" Field="@nameof(SearchMeasurementListItem.TotalEffect)" />
         <FilterItem FilterType="FilterTypes.String" Field="@nameof(SearchMeasurementListItem.CustomerName)" Label="Name" />
         <FilterItem FilterType="FilterTypes.String" Field="@nameof(SearchMeasurementListItem.FormattedStartDate)" />
+        <FilterItem FilterType="FilterTypes.DateTime" Field="@nameof(SearchMeasurementListItem.EndDate)" />
+
         <FilterItem FilterType="FilterTypes.DateTimeMin" Field="@nameof(SearchMeasurementListItem.StartDate)" />
         <FilterItem FilterType="FilterTypes.DateTimeMax" Field="@nameof(SearchMeasurementListItem.StartDate)" />
+
         <FilterItem FilterType="FilterTypes.CheckBox" Field="@nameof(SearchMeasurementListItem.HasBreakdowns)" />
         <FilterItem FilterType="FilterTypes.RadioButton" Field="@nameof(SearchMeasurementListItem.BrandName)" Options="radioButtonOptions" DefaultSelectedOption="Spyder" />
 
@@ -77,6 +80,7 @@ else
         </GridItem>
         <GridItem Field="@nameof(SearchMeasurementListItem.MeasurementName)" IsSortable IsFilterable />
          <GridItem Field="@nameof(SearchMeasurementListItem.BrandName)" />
+         <GridItem Field="@nameof(SearchMeasurementListItem.FormattedEndDate)" />
      </DataGrid>
 }
 
