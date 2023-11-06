@@ -249,16 +249,14 @@
                 break;
             case FilterTypes.DateTimeMin:
                 goto case FilterTypes.DateTime;
-                break;
+
             case FilterTypes.DateTimeMax:
                 goto case FilterTypes.DateTime;
-                break;
             case FilterTypes.CheckBox:
                 IsActive = filterCheckBox;
                 break;
             case FilterTypes.RadioButton:
                 goto case FilterTypes.String;
-                break;
             default:
                 throw new ArgumentOutOfRangeException($"Set FilterType {FilterType} does not exists");
         }
