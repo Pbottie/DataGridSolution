@@ -161,8 +161,14 @@
         if (property == null)
             throw new ArgumentNullException($"Field: {Field} does not exist in item.");
 
-        if (FilterType == FilterTypes.RadioButton && Options == null)
+        if (FilterType == FilterTypes.RadioButton)
+        {
+            if (Options == null)
             throw new ArgumentNullException("RadioButtons need the Options parameter.");
+            else if (!string.IsNullOrEmpty(DefaultSelectedOption) && !Options.ContainsKey(DefaultSelectedOption))
+                throw new ArgumentException("Default option does not exists in selected Field");
+        }
+
 
         type = property.PropertyType;
 

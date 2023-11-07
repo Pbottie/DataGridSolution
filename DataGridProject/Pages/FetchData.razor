@@ -24,7 +24,9 @@ else
 
         <FilterItem FilterType="FilterTypes.CheckBox" Field="@nameof(SearchMeasurementListItem.HasBreakdowns)" />
         <FilterItem IsSwitch FilterType="FilterTypes.CheckBox" Field="@nameof(SearchMeasurementListItem.HasCustomReport)" />
-        <FilterItem FilterType="FilterTypes.RadioButton" Field="@nameof(SearchMeasurementListItem.BrandName)" Options="radioButtonOptions" DefaultSelectedOption="Spyder" />
+         <FilterItem FilterType="FilterTypes.RadioButton" Field="@nameof(SearchMeasurementListItem.Status)" Options="radioButtonOptions" DefaultSelectedOption="Active" />
+
+         <FilterItem FilterType="FilterTypes.Select" Field="@nameof(SearchMeasurementListItem.BrandName)" />
 
     </DataFilter>
 
@@ -82,6 +84,7 @@ else
         <GridItem Field="@nameof(SearchMeasurementListItem.MeasurementName)" IsSortable IsFilterable />
          <GridItem Field="@nameof(SearchMeasurementListItem.BrandName)" />
          <GridItem Field="@nameof(SearchMeasurementListItem.FormattedEndDate)" />
+         <GridItem Field="@nameof(SearchMeasurementListItem.Status)" />
      </DataGrid>
 }
 
@@ -145,7 +148,7 @@ else
         testData = BogusData.GetData(103);
         FilterSubject.RegisterObserver(this);
 
-        radioButtonOptions = testData.Select(x => x.BrandName).Take(5).ToDictionary(x => x, x => x);
+        radioButtonOptions = testData.Select(x => x.Status).Distinct().ToDictionary(value => value.ToString(), display => display.ToString());
 
     }
 
