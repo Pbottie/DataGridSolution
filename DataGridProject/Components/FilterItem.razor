@@ -256,7 +256,11 @@
                 IsActive = filterCheckBox;
                 break;
             case FilterTypes.RadioButton:
-                goto case FilterTypes.String;
+                if (filterText == string.Empty)
+                    IsActive = false;
+                else
+                    IsActive = true;
+                break;
             default:
                 throw new ArgumentOutOfRangeException($"Set FilterType {FilterType} does not exists");
         }
