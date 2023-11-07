@@ -8,5 +8,6 @@ public enum FilterTypes
     DateTimeMin,
     DateTimeMax,
     CheckBox,
-    RadioButton
+    RadioButton,
+    Select
 }

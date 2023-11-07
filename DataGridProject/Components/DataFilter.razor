@@ -75,6 +75,18 @@
 
             filterItem.SetFilterMinMax(min, max);
         }
+
+        if (filterItem.FilterType == FilterTypes.Select)
+        {
+            var property = typeof(TDataItem).GetProperty(filterItem.Field);
+            List<string> list = new();
+            if (filterItem.IsSelectSorted)
+                list = items.Select(item => property.GetValue(item).ToString()).Distinct().Order().ToList();
+            else
+                list = items.Select(item => property.GetValue(item).ToString()).Distinct().ToList();
+            filterItem.SelectOptions = list;
+        }
+
     }
 
     public void UpdateFilter(FilterItem<TDataItem> filterItem)
@@ -173,6 +185,8 @@
                 return EvaluateCheckBoxFilter(value, filterValue);
             case FilterTypes.RadioButton:
                 return EvaluateRadioButtonFilter(value, filterValue);
+            case FilterTypes.Select:
+                return EvaluateSelectFilter(value, filterValue);
             default:
                 return true;
         }
@@ -241,10 +255,19 @@
         return value.ToString().Equals(filterValue, StringComparison.OrdinalIgnoreCase);
     }
 
+    private bool CompareStrings(string value, string filterValue)
+    {
+        return value == filterValue;
+    }
+
     private bool EvaluateRadioButtonFilter(object value, string filterValue)
     {
-        return value.ToString().ToLower() == filterValue.ToLower();
+        return CompareStrings(value.ToString().ToLower(), filterValue.ToLower());
 
+    }
+    private bool EvaluateSelectFilter(object value, string filterValue)
+    {
+        return CompareStrings(value.ToString().ToLower(), filterValue.ToLower());
     }
 
 }

@@ -81,6 +81,18 @@
             }
         </div>
     }
+    else if (FilterType == FilterTypes.Select)
+    {
+        <div>
+            <select class="form-select" @onchange="OnSelectChanged" value=@filterText>
+                <option value="" selected>Select @GetDisplayName</option>
+                @foreach (var option in SelectOptions)
+                {
+                    <option value="@option">@option</option>
+                }
+            </select>
+        </div>
+    }
 </div>
 
 
@@ -100,17 +112,20 @@
     [Parameter]
     public string DefaultSelectedOption { get; set; }
     [Parameter]
-    public bool IsSwitch { get; set; }
+    public bool IsSwitch { get; set; }    
+    [Parameter]
+    public bool IsSelectSorted { get; set; }
 
 
     public string GetDisplayName => string.IsNullOrEmpty(Label) ? Field : Label;
     public bool IsActive;
+    public List<string> SelectOptions = new();
 
     public string FilterValue
     {
         get
         {
-            if (FilterType == FilterTypes.String || FilterType == FilterTypes.RadioButton)
+            if (FilterType == FilterTypes.String || FilterType == FilterTypes.RadioButton || FilterType == FilterTypes.Select)
                 return filterText;
             if (FilterType == FilterTypes.Int)
                 return filterIntMin.ToString();
@@ -128,7 +143,7 @@
 
     public void ClearFilter()
     {
-        if (FilterType == FilterTypes.String || FilterType == FilterTypes.RadioButton)
+        if (FilterType == FilterTypes.String || FilterType == FilterTypes.RadioButton || FilterType == FilterTypes.Select)
             filterText = string.Empty;
         if (FilterType == FilterTypes.Int)
             filterIntMin = 0;
@@ -164,7 +179,7 @@
         if (FilterType == FilterTypes.RadioButton)
         {
             if (Options == null)
-            throw new ArgumentNullException("RadioButtons need the Options parameter.");
+                throw new ArgumentNullException("RadioButtons need the Options parameter.");
             else if (!string.IsNullOrEmpty(DefaultSelectedOption) && !Options.ContainsKey(DefaultSelectedOption))
                 throw new ArgumentException("Default option does not exists in selected Field");
         }
@@ -189,7 +204,6 @@
 
     private void OnTextFilterValueChanged(ChangeEventArgs e)
     {
-        IsActive = true;
         filterText = e.Value.ToString();
         CheckDisableAndUpdate();
     }
@@ -217,6 +231,12 @@
         CheckDisableAndUpdate();
     }
 
+    void OnSelectChanged(ChangeEventArgs e)
+    {
+        filterText = e.Value.ToString();
+        CheckDisableAndUpdate();
+    }
+
     private void CheckDisableAndUpdate()
     {
         DisableIfDefaultValue();
@@ -230,6 +250,8 @@
             case FilterTypes.String:
                 if (string.IsNullOrEmpty(filterText))
                     IsActive = false;
+                else
+                    IsActive = true;
                 break;
             case FilterTypes.Int:
                 if (filterIntMin == 0)
@@ -262,11 +284,9 @@
                 IsActive = filterCheckBox;
                 break;
             case FilterTypes.RadioButton:
-                if (filterText == string.Empty)
-                    IsActive = false;
-                else
-                    IsActive = true;
-                break;
+                goto case FilterTypes.String;
+            case FilterTypes.Select:
+                goto case FilterTypes.String;
             default:
                 throw new ArgumentOutOfRangeException($"Set FilterType {FilterType} does not exists");
         }

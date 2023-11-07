@@ -26,9 +26,9 @@ else
         <FilterItem IsSwitch FilterType="FilterTypes.CheckBox" Field="@nameof(SearchMeasurementListItem.HasCustomReport)" />
          <FilterItem FilterType="FilterTypes.RadioButton" Field="@nameof(SearchMeasurementListItem.Status)" Options="radioButtonOptions" DefaultSelectedOption="Active" />
 
-         <FilterItem FilterType="FilterTypes.Select" Field="@nameof(SearchMeasurementListItem.BrandName)" />
+         <FilterItem IsSelectSorted FilterType="FilterTypes.Select" Field="@nameof(SearchMeasurementListItem.BrandName)" />
 
-    </DataFilter>
+     </DataFilter>
 
     <DataGrid Items="externalFilter?.FilteredItems" class="table-striped table-hover"
               DefaultItemsPerPage="15"
