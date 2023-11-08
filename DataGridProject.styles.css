@@ -39,19 +39,14 @@
 .today[b-9g9y3kcxen] {
     background-color: lightgray;
 }
-/* /Components/DataFilter.razor.rz.scp.css */
-.filter-container[b-f576mhbayo] {
-    justify-content: space-around;
-    margin: 1rem;
-}
-
-.filter-item[b-f576mhbayo] {
-    margin: .25rem;
-}
 /* /Components/FilterItem.razor.rz.scp.css */
-.slider-value[b-8x1h8v0uwe] {
+.slider-value[b-8x1h8v0uwe]{
     display: inline-block;
     width: 2rem;
+}
+
+.fit-content[b-8x1h8v0uwe]{
+    max-width:fit-content;
 }
 /* /Components/GridItem.razor.rz.scp.css */
 .cursor-pointer div *[b-5rteiivt5e] {
@@ -107,6 +102,7 @@
     position: relative;
     display: flex;
     align-items: center;
+    width: max-content;
 }
 /* /Components/Paginator.razor.rz.scp.css */
 .paginator[b-gyhshhcb7x] {
@@ -163,21 +159,6 @@ nav[b-gyhshhcb7x] {
     position: relative;
 }
 
-.calendar-button[b-rk0pilqs09] {
-    margin: 0;
-    padding: 4px;
-    width: 36px;
-    height: 36px;
-    display: inline-block;
-    position: absolute;
-    top: -9px;
-    left: 169px;
-}
-
-    .calendar-button:hover[b-rk0pilqs09] {
-        cursor: pointer;
-    }
-
 .fullscreen[b-rk0pilqs09] {
     position: absolute;
     top: 0;
@@ -191,8 +172,8 @@ nav[b-gyhshhcb7x] {
     visibility: hidden;
 }
 
-button[b-rk0pilqs09]{
-    font-size:small;
+button[b-rk0pilqs09] {
+    font-size: small;
 }
 /* /Shared/MainLayout.razor.rz.scp.css */
 .page[b-o4usi3lo52] {
