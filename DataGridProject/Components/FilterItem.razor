@@ -112,7 +112,7 @@
     [Parameter]
     public string DefaultSelectedOption { get; set; }
     [Parameter]
-    public bool IsSwitch { get; set; }    
+    public bool IsSwitch { get; set; }
     [Parameter]
     public bool IsSelectSorted { get; set; }
 
@@ -141,6 +141,15 @@
         }
     }
 
+    Type type;
+    string filterText = string.Empty;
+    int filterIntMin = 0;
+    int filterIntMax = 0;
+    int sliderMin;
+    int sliderMax;
+    DateTime? filterDateTime;
+    bool filterCheckBox;
+
     public void ClearFilter()
     {
         if (FilterType == FilterTypes.String || FilterType == FilterTypes.RadioButton || FilterType == FilterTypes.Select)
@@ -157,15 +166,6 @@
         IsActive = false;
         ParentFilter.UpdateFilter(this);
     }
-
-    Type type;
-    string filterText = string.Empty;
-    int filterIntMin = 0;
-    int filterIntMax = 0;
-    int sliderMin;
-    int sliderMax;
-    DateTime? filterDateTime;
-    bool filterCheckBox;
 
     protected override void OnInitialized()
     {

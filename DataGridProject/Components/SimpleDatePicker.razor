@@ -20,9 +20,9 @@ else
 }
 @if (isShowingCalendar)
 {
-  
-        <CalendarDatePicker SelectedDate="pickerDate" SelectedDateChanged="HandleDatePicker"></CalendarDatePicker>
-    
+
+    <CalendarDatePicker SelectedDate="pickerDate" SelectedDateChanged="HandleDatePicker"></CalendarDatePicker>
+
 }
 <span class="fullscreen @(isShowingCalendar ? "" : "hidden")" @onclick=ToggleCalendarView></span>
 
@@ -47,6 +47,7 @@ else
         if (pickerDate == null)
         {
             dateString = DateFormat.ToLower();
+            isValidDate = false;
         }
         else
         {
@@ -56,7 +57,6 @@ else
 
     void ValidateChange(ChangeEventArgs e)
     {
-
         var input = e.Value.ToString();
 
         var success = DateTime.TryParseExact(input, DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime result);
@@ -99,6 +99,7 @@ else
         dateString = pickerDate.Value.ToString(DateFormat);
         DateChanged.InvokeAsync(date);
     }
+
     void ToggleCalendarView()
     {
         isShowingCalendar = !isShowingCalendar;

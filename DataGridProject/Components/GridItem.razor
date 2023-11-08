@@ -114,6 +114,9 @@
         if (ParentGrid == null)
             throw new ArgumentNullException("Component must be used with DataGrid");
 
+        if (ColumnTemplate != null && IsSortable)
+            throw new ArgumentException("Can't use Sort on a custom column template");
+
         IsFilterable = IsFilterable || FilterTemplate != null;
 
         ParentGrid.AddItem(this);
@@ -156,7 +159,7 @@
         {
             ParentGrid.Sort(Field);
         }
-        else if(IsFilterable)
+        else if (IsFilterable)
         {
             HandleFilter();
         }

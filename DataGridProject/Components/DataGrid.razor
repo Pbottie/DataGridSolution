@@ -11,7 +11,7 @@
                 if (kvp.Value != "")
                 {
                     <span role="button" @key="kvp" class="badge bg-secondary mx-1" @onclick="()=>RemoveFilter(kvp.Key)">
-                        @(string.IsNullOrEmpty(kvp.Key.Title) ? kvp.Key.Field : kvp.Key.Title): @kvp.Value
+                       X @(string.IsNullOrEmpty(kvp.Key.Title) ? kvp.Key.Field : kvp.Key.Title): @kvp.Value
                     </span>
                 }
             }
