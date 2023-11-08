@@ -21,11 +21,9 @@ else
 
         <FilterItem FilterType="FilterTypes.DateTimeMin" Field="@nameof(SearchMeasurementListItem.StartDate)" />
         <FilterItem FilterType="FilterTypes.DateTimeMax" Field="@nameof(SearchMeasurementListItem.StartDate)" />
-
         <FilterItem FilterType="FilterTypes.CheckBox" Field="@nameof(SearchMeasurementListItem.HasBreakdowns)" />
         <FilterItem IsSwitch FilterType="FilterTypes.CheckBox" Field="@nameof(SearchMeasurementListItem.HasCustomReport)" />
          <FilterItem FilterType="FilterTypes.RadioButton" Field="@nameof(SearchMeasurementListItem.Status)" Options="radioButtonOptions" DefaultSelectedOption="Active" />
-
          <FilterItem IsSelectSorted FilterType="FilterTypes.Select" Field="@nameof(SearchMeasurementListItem.BrandName)" />
 
      </DataFilter>

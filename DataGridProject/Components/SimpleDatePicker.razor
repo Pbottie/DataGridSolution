@@ -1,23 +1,23 @@
 ﻿@using System.Globalization;
 
-<span class="input-container">
-    <input @bind="dateString" @oninput="ValidateChange" @onkeyup="HandleKey" />
-    <div class="calendar-button" @onclick="ToggleCalendarView">
+<span class="input-container input-group">
+    <input class="form-control" @bind="dateString" @oninput="ValidateChange" @onkeyup="HandleKey" />
+    <div class="btn btn-sm btn-outline-secondary" @onclick="ToggleCalendarView">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar-event" viewBox="0 0 16 16">
             <path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1z" />
             <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z" />
         </svg>
     </div>
-</span>
 @if (isValidDate)
 {
-    <button class="btn btn-primary" @onclick="Clear">Clear</button>
+    <button class="btn btn-sm btn-primary" @onclick="Clear">Clear</button>
 }
 else
 {
-    <button class="btn btn-danger" @onclick="Clear">Clear</button>
+    <button class="btn btn-sm btn-danger" @onclick="Clear">Clear</button>
 
 }
+</span>
 @if (isShowingCalendar)
 {
 

@@ -2,21 +2,6 @@
     position: relative;
 }
 
-.calendar-button {
-    margin: 0;
-    padding: 4px;
-    width: 36px;
-    height: 36px;
-    display: inline-block;
-    position: absolute;
-    top: -9px;
-    left: 169px;
-}
-
-    .calendar-button:hover {
-        cursor: pointer;
-    }
-
 .fullscreen {
     position: absolute;
     top: 0;
@@ -30,6 +15,6 @@
     visibility: hidden;
 }
 
-button{
-    font-size:small;
+button {
+    font-size: small;
 }

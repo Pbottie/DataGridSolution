@@ -1,7 +1,19 @@
 ﻿@typeparam TDataItem
 
-<div class="filter-item d-flex flex-column justify-content-center">
-    <label>@(string.IsNullOrEmpty(Label) ? Field : Label)</label>
+<div class="filter-item col d-flex flex-column justify-content-center my-1">
+    @if (FilterType == FilterTypes.DateTimeMin)
+    {
+        <label>@(string.IsNullOrEmpty(Label) ? Field : Label) (From)</label>
+    }
+    else if (FilterType == FilterTypes.DateTimeMax)
+    {
+        <label>@(string.IsNullOrEmpty(Label) ? Field : Label) (To)</label>
+    }
+    else
+    {
+        <label>@(string.IsNullOrEmpty(Label) ? Field : Label)</label>
+    }
+
     @if (FilterType == FilterTypes.String)
     {
         <input type="search" autofocus @bind="filterText" @oninput="OnTextFilterValueChanged" placeholder="Filter text..." />
@@ -13,27 +25,15 @@
     else if (FilterType == FilterTypes.MinMax)
     {
         <span>
-            Min:<input type="range" min="@sliderMin" max="@sliderMax" @bind=filterIntMin @bind:event="oninput" @onmouseup="OnMinMaxFilterValueChanged" @onkeyup="OnMinMaxFilterValueChanged" /> <span class="slider-value">@filterIntMin</span>
+            <div>Min:</div><input class="form-range w-75" type="range" min="@sliderMin" max="@sliderMax" @bind=filterIntMin @bind:event="oninput" @onmouseup="OnMinMaxFilterValueChanged" @onkeyup="OnMinMaxFilterValueChanged" /> <span class="slider-value">@filterIntMin</span>
         </span>
         <span>
-            Max:<input type="range" min="@sliderMin" max="@sliderMax" @bind=filterIntMax @bind:event="oninput" @onmouseup="OnMinMaxFilterValueChanged" @onkeyup="OnMinMaxFilterValueChanged" /> <span class="slider-value">@filterIntMax</span>
+            <div>Max:</div><input class="form-range w-75" type="range" min="@sliderMin" max="@sliderMax" @bind=filterIntMax @bind:event="oninput" @onmouseup="OnMinMaxFilterValueChanged" @onkeyup="OnMinMaxFilterValueChanged" /> <span class="slider-value">@filterIntMax</span>
         </span>
     }
     else if (FilterType == FilterTypes.DateTime || FilterType == FilterTypes.DateTimeMin || FilterType == FilterTypes.DateTimeMax)
     {
         <span>
-            @if (FilterType == FilterTypes.DateTimeMin)
-            {
-                <text>
-                    From
-                </text>
-            }
-            else if (FilterType == FilterTypes.DateTimeMax)
-            {
-                <text>
-                    To
-                </text>
-            }
             <SimpleDatePicker Date="filterDateTime" DateChanged="(DateTime? dt)=>OnDateFilterValueChanged(dt)"></SimpleDatePicker>
         </span>
     }
@@ -56,7 +56,7 @@
     }
     else if (FilterType == FilterTypes.RadioButton)
     {
-        <div class="btn-group" role="group">
+        <div class="btn-group flex-wrap fit-content" role="group">
             @if (string.IsNullOrEmpty(DefaultSelectedOption) || filterText == "")
             {
                 <input checked type="radio" name="filter@(Field)" value="@string.Empty" class="btn-check" id="filter@(Field)All" @onchange="OnRadioButtonChanged">
@@ -84,7 +84,7 @@
     else if (FilterType == FilterTypes.Select)
     {
         <div>
-            <select class="form-select" @onchange="OnSelectChanged" value=@filterText>
+            <select class="form-select fit-content" @onchange="OnSelectChanged" value=@filterText>
                 <option value="" selected>Select @GetDisplayName</option>
                 @foreach (var option in SelectOptions)
                 {

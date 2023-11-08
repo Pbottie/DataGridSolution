@@ -1,4 +1,8 @@
-﻿.slider-value {
+﻿.slider-value{
     display: inline-block;
     width: 2rem;
+}
+
+.fit-content{
+    max-width:fit-content;
 }
