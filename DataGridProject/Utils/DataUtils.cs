@@ -1,8 +1,6 @@
-﻿using System.Reflection;
+﻿namespace DataGridProject.Utils;
 
-namespace DataGridProject.Utils;
-
-public static class DataGridUtils
+public static class DataUtils
 {
     public static IEnumerable<PropertyInfo> GetItemsPropertyInfo<TItem>()
         => typeof(TItem)

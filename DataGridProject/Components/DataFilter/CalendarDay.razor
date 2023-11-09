@@ -1,4 +1,5 @@
-﻿<td class="@(isSelected?"selected":"") @(isToday? "today":"") @(isPartOfMonth? "":"muted")" @onclick="HandleClick">@thisDay.Day</td>
+﻿@namespace DataGridProject.Components
+<td class="@(isSelected?"selected":"") @(isToday? "today":"") @(isPartOfMonth? "":"muted")" @onclick="HandleClick">@thisDay.Day</td>
 
 
 @code {

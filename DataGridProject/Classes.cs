@@ -1,10 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
-using System.ComponentModel.DataAnnotations;
-using System.Globalization;
-using System.Text;
-
-namespace DataGridProject;
+﻿namespace DataGridProject;
 
 public class SearchMeasurementListItem
 {
@@ -72,7 +66,6 @@ public class SearchMeasurementListItem
                 : (tra1, tra1.ToString(format, culture), tra2.ToString(format, culture));
         }
     }
-
     public DateOnly TestDate { get; set; }
 }
 
@@ -84,6 +77,7 @@ public class StatisticInfo
     public List<StatisticInfo> Breakdowns { get; set; }
     public List<StatisticInfo> FrequencyGroups { get; set; }
 }
+
 public class PptReportType
 {
     public Guid MeasurementId { get; set; }
@@ -104,17 +98,4 @@ public enum StatisticsType
     Impression,
     StorageComplete,
     TrackingStart,
-}
-
-public static class ArrayExtensions
-{
-    public static bool IsNullOrEmpty<T>(this IEnumerable<T> collection)
-    {
-        if (collection != null)
-        {
-            return !collection.Any();
-        }
-
-        return true;
-    }
 }

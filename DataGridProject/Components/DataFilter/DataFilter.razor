@@ -1,4 +1,5 @@
-﻿@typeparam TDataItem
+﻿@namespace DataGridProject.Components
+@typeparam TDataItem
 @attribute [CascadingTypeParameter(nameof(TDataItem))]
 
 <CascadingValue Value="this">
@@ -7,18 +8,18 @@
             <div class="d-flex flex-wrap row row-cols-1 row-cols-sm-2 row-cols-xl-4 m-1">
                 @ChildContent
             </div>
-            <div class="mx-3">
-                @foreach (var filter in Filters)
-                {
-                    if (filter.IsActive)
-                    {
-                        <span role="button" @key="filter" class="badge bg-secondary mx-1" @onclick="@(()=> filter.ClearFilter())">
-                            X @filter.GetDisplayName: @(filter.FilterType == FilterTypes.MinMax ? @filter.FilterValue.Replace("_", " - ") : @filter.FilterValue)
-                        </span>
-                    }
-                }
-            </div>
         </div>
+    </div>
+    <div class="mx-3">
+        @foreach (var filter in Filters)
+        {
+            if (filter.IsActive)
+            {
+                <span role="button" @key="filter" class="badge bg-secondary mx-1" @onclick="@(()=> filter.ClearFilter())">
+                    X @filter.GetDisplayName: @(filter.FilterType == FilterTypes.MinMax ? @filter.FilterValue.Replace("_", " - ") : @filter.FilterValue)
+                </span>
+            }
+        }
     </div>
 </CascadingValue>
 
@@ -41,7 +42,7 @@
         if (items != Items)
         {
             items = Items;
-            // Filter.NotifyAll();
+            Filter.NotifyAll();
         }
     }
 

@@ -1,26 +1,43 @@
-﻿@typeparam TDataItem
+﻿@namespace DataGridProject.Components
+@typeparam TDataItem
 
 <div class="filter-item col d-flex flex-column justify-content-center my-1">
-    @if (FilterType == FilterTypes.DateTimeMin)
-    {
-        <label>@(string.IsNullOrEmpty(Label) ? Field : Label) (From)</label>
+    <label class="form-label" for="@ElementId">
+        @if (FilterType == FilterTypes.DateTimeMin)
+        {
+            <text>
+                @(string.IsNullOrEmpty(Label) ? Field : Label) (From)
+            </text>
+        }
+        else if (FilterType == FilterTypes.DateTimeMax)
+        {
+            <text>
+                @(string.IsNullOrEmpty(Label) ? Field : Label) (To)
+            </text>
+        }
+        else if (FilterType == FilterTypes.Int)
+        {
+            <text>
+                @(string.IsNullOrEmpty(Label) ? Field : Label)            (Min)
+            </text>
+        }
+        else
+        {
+            <text>
+                @(string.IsNullOrEmpty(Label) ? Field : Label)
+            </text>
+        }
+    </label>
+    @{
+        Console.WriteLine(ElementId);
     }
-    else if (FilterType == FilterTypes.DateTimeMax)
-    {
-        <label>@(string.IsNullOrEmpty(Label) ? Field : Label) (To)</label>
-    }
-    else
-    {
-        <label>@(string.IsNullOrEmpty(Label) ? Field : Label)</label>
-    }
-
     @if (FilterType == FilterTypes.String)
     {
-        <input type="search" autofocus @bind="filterText" @oninput="OnTextFilterValueChanged" placeholder="Filter text..." />
+        <input id="@ElementId" class="form-control" type="search" autofocus @bind="filterText" @oninput="OnTextFilterValueChanged" placeholder="Filter text..." />
     }
     else if (FilterType == FilterTypes.Int)
     {
-        <span>Min: <input type="number" @bind=filterIntMin @bind:event="oninput" @onmouseup="OnMinMaxFilterValueChanged" @onkeyup="OnMinMaxFilterValueChanged" /> </span>
+        <span><input id="@ElementId" class="form-control w-100" type="number" @bind=filterIntMin @bind:event="oninput" @onmouseup="OnMinMaxFilterValueChanged" @onkeyup="OnMinMaxFilterValueChanged" /> </span>
     }
     else if (FilterType == FilterTypes.MinMax)
     {
@@ -29,11 +46,11 @@
                 Min: <span class="slider-value">@filterIntMin</span>
             </span>
 
-            <input class="form-range" type="range" min="@sliderMin" max="@sliderMax" @bind=filterIntMin @bind:event="oninput" @onmouseup="OnMinMaxFilterValueChanged" @onkeyup="OnMinMaxFilterValueChanged" />
+            <input id="@ElementId" class="form-range" type="range" min="@sliderMin" max="@sliderMax" @bind=filterIntMin @bind:event="oninput" @onmouseup="OnMinMaxFilterValueChanged" @onkeyup="OnMinMaxFilterValueChanged" />
         </span>
         <span>
             Max: <span class="slider-value">@filterIntMax</span>
-            <input class="form-range" type="range" min="@sliderMin" max="@sliderMax" @bind=filterIntMax @bind:event="oninput" @onmouseup="OnMinMaxFilterValueChanged" @onkeyup="OnMinMaxFilterValueChanged" />
+            <input id="@ElementId" class="form-range" type="range" min="@sliderMin" max="@sliderMax" @bind=filterIntMax @bind:event="oninput" @onmouseup="OnMinMaxFilterValueChanged" @onkeyup="OnMinMaxFilterValueChanged" />
         </span>
     }
     else if (FilterType == FilterTypes.DateTime || FilterType == FilterTypes.DateTimeMin || FilterType == FilterTypes.DateTimeMax)
@@ -47,13 +64,13 @@
         if (IsSwitch)
         {
             <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" @bind=filterCheckBox @oninput="OnCheckBoxChanged">
+                <input id="@ElementId" class="form-check-input" type="checkbox" @bind=filterCheckBox @oninput="OnCheckBoxChanged">
             </div>
         }
         else
         {
             <span>
-                <input type="checkbox" @bind=filterCheckBox @oninput="OnCheckBoxChanged">
+                <input id="@ElementId" class="form-check-input" type="checkbox" @bind=filterCheckBox @oninput="OnCheckBoxChanged">
             </span>
         }
 
@@ -64,32 +81,32 @@
         <div class="btn-group flex-wrap fit-content" role="group">
             @if (string.IsNullOrEmpty(DefaultSelectedOption) || filterText == "")
             {
-                <input checked type="radio" name="filter@(Field)" value="@string.Empty" class="btn-check" id="filter@(Field)All" @onchange="OnRadioButtonChanged">
+                <input checked type="radio" name="filter@(Field)" value="@string.Empty" class="btn-check" id="@ElementId" @onchange="OnRadioButtonChanged">
             }
             else
             {
-                <input type="radio" name="filter@(Field)" value="@string.Empty" class="btn-check" id="filter@(Field)All" @onchange="OnRadioButtonChanged">
+                <input type="radio" name="filter@(Field)" value="@string.Empty" class="btn-check" id="@ElementId" @onchange="OnRadioButtonChanged">
             }
-            <label class="btn btn-outline-secondary" for="filter@(Field)All">All</label>
+            <label class="btn btn-outline-secondary" for="@(ElementId)">All</label>
 
             @foreach (var keyValuePair in Options)
             {
                 if (DefaultSelectedOption == keyValuePair.Key)
                 {
-                    <input checked type="radio" name="filter@(Field)" value="@keyValuePair.Key" class="btn-check" id="btnradio@(Field+keyValuePair.Key)" @onchange="OnRadioButtonChanged">
+                    <input checked type="radio" name="filter@(Field)" value="@keyValuePair.Key" class="btn-check" id="@(ElementId+keyValuePair.Key)" @onchange="OnRadioButtonChanged">
                 }
                 else
                 {
-                    <input type="radio" name="filter@(Field)" value="@keyValuePair.Key" class="btn-check" id="btnradio@(Field+keyValuePair.Key)" @onchange="OnRadioButtonChanged">
+                    <input type="radio" name="filter@(Field)" value="@keyValuePair.Key" class="btn-check" id="@(ElementId+keyValuePair.Key)" @onchange="OnRadioButtonChanged">
                 }
-                <label class="btn btn-outline-primary" for="btnradio@(Field+keyValuePair.Key)">@keyValuePair.Value</label>
+                <label class="btn btn-outline-primary" for="@(ElementId+keyValuePair.Key)">@keyValuePair.Value</label>
             }
         </div>
     }
     else if (FilterType == FilterTypes.Select)
     {
         <div>
-            <select class="form-select fit-content" @onchange="OnSelectChanged" value=@filterText>
+            <select id="@ElementId" class="form-select" @onchange="OnSelectChanged" value=@filterText>
                 <option value="" selected>Select @GetDisplayName</option>
                 @foreach (var option in SelectOptions)
                 {
@@ -153,6 +170,7 @@
     int sliderMax;
     DateTime? filterDateTime;
     bool filterCheckBox;
+    string ElementId;
 
     public void ClearFilter()
     {
@@ -179,7 +197,7 @@
 
     protected override void OnInitialized()
     {
-        var property = DataGridUtils.GetItemsPropertyInfo<TDataItem>()
+        var property = DataUtils.GetItemsPropertyInfo<TDataItem>()
         .Where(x => x.Name == Field)
         .FirstOrDefault();
 
@@ -187,11 +205,19 @@
             throw new ArgumentNullException($"Field: {Field} does not exist in item.");
 
         type = property.PropertyType;
+        ElementId = GetRandomString();
 
         ValidateItem();
         InitializeItem();
 
         ParentFilter.AddFilterItem(this);
+    }
+
+    private string GetRandomString()
+    {
+        string path = System.IO.Path.GetRandomFileName();
+        path = path.Replace(".", "");
+        return path;
     }
 
     private void ValidateItem()

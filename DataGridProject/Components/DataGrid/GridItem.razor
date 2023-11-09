@@ -1,7 +1,8 @@
-﻿@inherits UIComponentBase
+﻿@namespace DataGridProject.Components
+@inherits UIComponentBase
 @typeparam TGridItem
 
-<th attribute="@AdditionalAttributes" class="@ClassNames" width="@(ColumnWidth != 0 ? ColumnWidth : null)">
+<th id="@ElementId" attribute="@AdditionalAttributes" class="@ClassNames" width="@(ColumnWidth != 0 ? ColumnWidth : null)">
     <div class="header-content" @onkeyup="HandleKeyUp">
         @if (IsFilterable)
         {
@@ -120,20 +121,21 @@
         IsFilterable = IsFilterable || FilterTemplate != null;
 
         ParentGrid.AddItem(this);
+
+        base.OnInitialized();
     }
 
     protected override void OnParametersSet()
     {
         classBuilder
-        .Begin("")
-        .AddClass("cursor-pointer", IsSortable || IsFilterable)
+        .Begin("cursor-pointer", IsSortable || IsFilterable)
         .GetClass();
 
     }
 
     private bool FieldDoesNotExistInItem()
     {
-        var propertyInfo = DataGridUtils.GetItemsPropertyInfo<TGridItem>()
+        var propertyInfo = DataUtils.GetItemsPropertyInfo<TGridItem>()
         .Where(x => x.Name == Field);
 
         return (propertyInfo.Count() == 0) ? true : false;
@@ -172,7 +174,7 @@
     }
 
     private string GetColumnName()
-     => DataGridUtils.GetItemsPropertyInfo<TGridItem>()
+     => DataUtils.GetItemsPropertyInfo<TGridItem>()
      .Select(x => x.Name)
      .Where(x => x == Field)
      .FirstOrDefault();

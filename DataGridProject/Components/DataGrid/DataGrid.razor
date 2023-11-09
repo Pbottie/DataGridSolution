@@ -1,11 +1,12 @@
-﻿@inherits UIComponentBase
+﻿@namespace DataGridProject.Components
+@inherits UIComponentBase
 @typeparam TGridItem
 @attribute [CascadingTypeParameter(nameof(TGridItem))]
 
 @if (!NoRender)
 {
     <CascadingValue Value="this">
-        <div class="overflow-x-auto mx-3 pt-4">
+        <div id="@ElementId" class="overflow-x-auto mx-3 pt-4">
             @foreach (var kvp in filterTextDict)
             {
                 if (kvp.Value != "")
@@ -98,6 +99,7 @@
             paginationState.SetTotalItemsAsync(Items?.Count() ?? 0);
         }
 
+        base.OnInitialized();
     }
 
     public IEnumerable<TGridItem> TotalItems

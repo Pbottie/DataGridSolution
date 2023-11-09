@@ -1,4 +1,5 @@
-﻿@typeparam TGridItem
+﻿@namespace DataGridProject.Components
+@typeparam TGridItem
 
 @if (Items is not null)
 {
@@ -9,7 +10,7 @@
         foreach (var field in ColumnFields)
         {
             var columnTemplate = GridItems.Where(grid => grid.Field == field).Select(item => item.ColumnTemplate).FirstOrDefault();
-            var columnData = DataGridUtils
+            var columnData = DataUtils
                  .GetItemsPropertyInfo<TGridItem>()
                  .Where(x => x.Name == field)
                  .Select(y => y.GetValue(item))

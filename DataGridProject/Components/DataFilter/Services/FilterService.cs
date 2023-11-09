@@ -1,7 +1,4 @@
-﻿using DataGridProject.Interfaces;
-
-namespace DataGridProject.Services;
-
+﻿namespace DataGridProject.Services;
 public class FilterService : IFilter
 {
     private List<IFilterObserver> _observers = new List<IFilterObserver>();

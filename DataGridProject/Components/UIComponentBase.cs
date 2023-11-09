@@ -2,8 +2,6 @@
 
 public abstract class UIComponentBase : ComponentBase
 {
-    [Inject] public IJSRuntime JSRuntime { get; set; }
-
     /// <summary>
     /// Gets or sets the unique id of the element.
     /// </summary>
@@ -32,9 +30,6 @@ public abstract class UIComponentBase : ComponentBase
 
         base.OnInitialized();
     }
-
-    public async Task JSInvokeVoidAsync(string identifier) => await JSRuntime.InvokeVoidAsync(identifier);
-    public async Task JSInvokeVoidAsync(string identifier, params object[] args) => await JSRuntime.InvokeVoidAsync(identifier, args);
 
     /// <summary>
     /// Gets the built class-names based on all the rules set by the component parameters.
