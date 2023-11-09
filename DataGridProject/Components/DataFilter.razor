@@ -74,8 +74,12 @@
         {
             var property = typeof(TDataItem).GetProperty(filterItem.Field);
 
-            var min = int.Parse(items.Select(item => property.GetValue(item)).ToList().Min().ToString());
-            var max = int.Parse(items.Select(item => property.GetValue(item)).ToList().Max().ToString());
+
+            var minSuccess = int.TryParse(items.Select(item => property.GetValue(item)).ToList().Min().ToString(), out int min);
+            var maxSuccess = int.TryParse(items.Select(item => property.GetValue(item)).ToList().Max().ToString(), out int max);
+
+            if (!minSuccess || !maxSuccess)
+                throw new FormatException($"{filterItem.Field} min/max can't be parsed into int");
 
             filterItem.SetFilterMinMax(min, max);
         }
@@ -218,7 +222,6 @@
             return intValue >= min && intValue <= max;
         }
         return false;
-
     }
 
     private bool EvaluateDateTimeFilter(object value, string filterValue)
@@ -229,7 +232,6 @@
             return dateValue.Date == filterDateValue.Date;
         }
         return false;
-
     }
 
     private bool EvaluateDateTimeMinFilter(object value, string filterValue)
@@ -240,7 +242,6 @@
             return dateValue.Date >= filterDateValue.Date;
         }
         return false;
-
     }
 
     private bool EvaluateDateTimeMaxFilter(object value, string filterValue)
@@ -251,7 +252,6 @@
             return dateValue.Date <= filterDateValue.Date;
         }
         return false;
-
     }
 
     private bool EvaluateCheckBoxFilter(object value, string filterValue)
@@ -269,6 +269,7 @@
         return CompareStrings(value.ToString().ToLower(), filterValue.ToLower());
 
     }
+
     private bool EvaluateSelectFilter(object value, string filterValue)
     {
         return CompareStrings(value.ToString().ToLower(), filterValue.ToLower());

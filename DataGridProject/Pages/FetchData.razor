@@ -1,5 +1,4 @@
-﻿@using DataGridProject.Components
-@implements IFilterObserver
+﻿@implements IFilterObserver
 @implements IDisposable
 @inject IFilter FilterSubject
 
@@ -13,18 +12,21 @@ else
 {
     <DataFilter Items="testData" @ref="externalFilter">
         <FilterItem FilterType="FilterTypes.Int" Field="@nameof(SearchMeasurementListItem.Id)" />
+        <FilterItem FilterType="FilterTypes.DateTime" Field="@nameof(SearchMeasurementListItem.TestDate)" />
         <FilterItem FilterType="FilterTypes.String" Field="@nameof(SearchMeasurementListItem.MeasurementName)" />
         <FilterItem FilterType="FilterTypes.MinMax" Field="@nameof(SearchMeasurementListItem.TotalEffect)" />
         <FilterItem FilterType="FilterTypes.String" Field="@nameof(SearchMeasurementListItem.CustomerName)" Label="Name" />
+
         <FilterItem FilterType="FilterTypes.String" Field="@nameof(SearchMeasurementListItem.FormattedStartDate)" />
         <FilterItem FilterType="FilterTypes.DateTime" Field="@nameof(SearchMeasurementListItem.EndDate)" />
-
         <FilterItem FilterType="FilterTypes.DateTimeMin" Field="@nameof(SearchMeasurementListItem.StartDate)" />
         <FilterItem FilterType="FilterTypes.DateTimeMax" Field="@nameof(SearchMeasurementListItem.StartDate)" />
+
         <FilterItem FilterType="FilterTypes.CheckBox" Field="@nameof(SearchMeasurementListItem.HasBreakdowns)" />
         <FilterItem IsSwitch FilterType="FilterTypes.CheckBox" Field="@nameof(SearchMeasurementListItem.HasCustomReport)" />
-         <FilterItem FilterType="FilterTypes.RadioButton" Field="@nameof(SearchMeasurementListItem.Status)" Options="radioButtonOptions" DefaultSelectedOption="Active" />
-         <FilterItem IsSelectSorted FilterType="FilterTypes.Select" Field="@nameof(SearchMeasurementListItem.BrandName)" />
+        <FilterItem FilterType="FilterTypes.RadioButton" Field="@nameof(SearchMeasurementListItem.Status)" Options="radioButtonOptions" DefaultSelectedOption="Active" />
+        <FilterItem IsSelectSorted FilterType="FilterTypes.Select" Field="@nameof(SearchMeasurementListItem.BrandName)" />
+
 
      </DataFilter>
 
@@ -33,8 +35,8 @@ else
               TGridItem="SearchMeasurementListItem"
               RowClick="Click"
             IsPaginated>
-     <GridItem Field="@nameof(SearchMeasurementListItem.MeasurementId)" />
      <GridItem Field="@nameof(SearchMeasurementListItem.Id)" />
+     <GridItem Field="@nameof(SearchMeasurementListItem.MeasurementId)" />
      <GridItem Title="Custom column template" DefaultFilterValueHasChanged="EffectFilterHasChanged">
          <ColumnTemplate>
              <div class="d-flex align-items-center">
@@ -83,6 +85,7 @@ else
          <GridItem Field="@nameof(SearchMeasurementListItem.BrandName)" />
          <GridItem Field="@nameof(SearchMeasurementListItem.FormattedEndDate)" />
          <GridItem Field="@nameof(SearchMeasurementListItem.Status)" />
+         <GridItem Field="@nameof(SearchMeasurementListItem.TestDate)" />
      </DataGrid>
 }
 

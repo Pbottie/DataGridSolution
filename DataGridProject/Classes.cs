@@ -72,6 +72,8 @@ public class SearchMeasurementListItem
                 : (tra1, tra1.ToString(format, culture), tra2.ToString(format, culture));
         }
     }
+
+    public DateOnly TestDate { get; set; }
 }
 
 public class StatisticInfo

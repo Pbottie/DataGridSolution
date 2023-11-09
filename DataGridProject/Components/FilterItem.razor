@@ -25,10 +25,15 @@
     else if (FilterType == FilterTypes.MinMax)
     {
         <span>
-            <div>Min:</div><input class="form-range w-75" type="range" min="@sliderMin" max="@sliderMax" @bind=filterIntMin @bind:event="oninput" @onmouseup="OnMinMaxFilterValueChanged" @onkeyup="OnMinMaxFilterValueChanged" /> <span class="slider-value">@filterIntMin</span>
+            <span>
+                Min: <span class="slider-value">@filterIntMin</span>
+            </span>
+
+            <input class="form-range" type="range" min="@sliderMin" max="@sliderMax" @bind=filterIntMin @bind:event="oninput" @onmouseup="OnMinMaxFilterValueChanged" @onkeyup="OnMinMaxFilterValueChanged" />
         </span>
         <span>
-            <div>Max:</div><input class="form-range w-75" type="range" min="@sliderMin" max="@sliderMax" @bind=filterIntMax @bind:event="oninput" @onmouseup="OnMinMaxFilterValueChanged" @onkeyup="OnMinMaxFilterValueChanged" /> <span class="slider-value">@filterIntMax</span>
+            Max: <span class="slider-value">@filterIntMax</span>
+            <input class="form-range" type="range" min="@sliderMin" max="@sliderMax" @bind=filterIntMax @bind:event="oninput" @onmouseup="OnMinMaxFilterValueChanged" @onkeyup="OnMinMaxFilterValueChanged" />
         </span>
     }
     else if (FilterType == FilterTypes.DateTime || FilterType == FilterTypes.DateTimeMin || FilterType == FilterTypes.DateTimeMax)
@@ -116,7 +121,6 @@
     [Parameter]
     public bool IsSelectSorted { get; set; }
 
-
     public string GetDisplayName => string.IsNullOrEmpty(Label) ? Field : Label;
     public bool IsActive;
     public List<string> SelectOptions = new();
@@ -167,6 +171,12 @@
         ParentFilter.UpdateFilter(this);
     }
 
+    public void SetFilterMinMax(int min, int max)
+    {
+        sliderMin = min;
+        sliderMax = max;
+    }
+
     protected override void OnInitialized()
     {
         var property = DataGridUtils.GetItemsPropertyInfo<TDataItem>()
@@ -176,30 +186,73 @@
         if (property == null)
             throw new ArgumentNullException($"Field: {Field} does not exist in item.");
 
-        if (FilterType == FilterTypes.RadioButton)
-        {
-            if (Options == null)
-                throw new ArgumentNullException("RadioButtons need the Options parameter.");
-            else if (!string.IsNullOrEmpty(DefaultSelectedOption) && !Options.ContainsKey(DefaultSelectedOption))
-                throw new ArgumentException("Default option does not exists in selected Field");
-        }
-
-
         type = property.PropertyType;
 
+        ValidateItem();
+        InitializeItem();
+
+        ParentFilter.AddFilterItem(this);
+    }
+
+    private void ValidateItem()
+    {
+        switch (FilterType)
+        {
+            // case FilterTypes.String:
+            //      ValidateString();
+            case FilterTypes.Int:
+                ValidateInt();
+                break;
+            // case FilterTypes.MinMax:
+            //      ValidateMinMax();
+            case FilterTypes.DateTime:
+                ValidateDateTime();
+                break;
+            case FilterTypes.DateTimeMin:
+                goto case FilterTypes.DateTime;
+            case FilterTypes.DateTimeMax:
+                goto case FilterTypes.DateTime;
+            // case FilterTypes.CheckBox:
+            //      ValidateCheckBox();
+            case FilterTypes.RadioButton:
+                ValidateRadioButton();
+                break;
+            // case FilterTypes.Select:
+            //      ValidateSelect();
+            default:
+                break;
+        }
+
+    }
+
+
+    private void ValidateDateTime()
+    {
+        if (type.Name != "DateTime" && type.Name != "DateOnly")
+            throw new ArgumentException($"{Field} must be of type DateTime or DateOnly");
+    }
+
+    private void ValidateInt()
+    {
+        if (type == typeof(bool))
+            throw new ArgumentException("Filter can't cast bools to int");
+    }
+
+    private void ValidateRadioButton()
+    {
+        if (Options == null)
+            throw new ArgumentNullException("RadioButtons need the Options parameter.");
+        else if (!string.IsNullOrEmpty(DefaultSelectedOption) && !Options.ContainsKey(DefaultSelectedOption))
+            throw new ArgumentException("Default option does not exists in selected Field");
+    }
+
+    private void InitializeItem()
+    {
         if (FilterType == FilterTypes.RadioButton)
         {
             filterText = DefaultSelectedOption ?? string.Empty;
             IsActive = !string.IsNullOrEmpty(DefaultSelectedOption);
         }
-
-        ParentFilter.AddFilterItem(this);
-    }
-
-    public void SetFilterMinMax(int min, int max)
-    {
-        sliderMin = min;
-        sliderMax = max;
     }
 
     private void OnTextFilterValueChanged(ChangeEventArgs e)
