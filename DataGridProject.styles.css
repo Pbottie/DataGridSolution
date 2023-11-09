@@ -1,5 +1,5 @@
-/* /Components/CalendarDatePicker.razor.rz.scp.css */
-.calendar-view[b-0bpl78kyss] {
+/* /Components/DataFilter/CalendarDatePicker.razor.rz.scp.css */
+.calendar-view[b-l8nazugstk] {
     border: 1px solid gray;
     font-size: .8em;
     text-align: center;
@@ -12,48 +12,69 @@
     z-index: 100;
 }
 
-.select-year-month[b-0bpl78kyss] {
+.select-year-month[b-l8nazugstk] {
     background-color: lightgray;
     border-radius: 15px;
 }
 
-.calendar-table[b-0bpl78kyss] {
+.calendar-table[b-l8nazugstk] {
     background-color: white;
     display: grid;
 }
 
-.next[b-0bpl78kyss], .prev[b-0bpl78kyss] {
+.next[b-l8nazugstk], .prev[b-l8nazugstk] {
     cursor: pointer;
 }
-/* /Components/CalendarDay.razor.rz.scp.css */
-.selected[b-9g9y3kcxen] {
+/* /Components/DataFilter/CalendarDay.razor.rz.scp.css */
+.selected[b-rs8ngy3tpb] {
     border: 2px solid gray;
     font-weight: 700;
     color: red;
 }
 
-.muted[b-9g9y3kcxen] {
+.muted[b-rs8ngy3tpb] {
     background-color: darkgray;
 }
 
-.today[b-9g9y3kcxen] {
+.today[b-rs8ngy3tpb] {
     background-color: lightgray;
 }
-/* /Components/FilterItem.razor.rz.scp.css */
-.slider-value[b-8x1h8v0uwe]{
+/* /Components/DataFilter/FilterItem.razor.rz.scp.css */
+.slider-value[b-28hoqp1fye]{
     display: inline-block;
     width: 2rem;
 }
 
-.fit-content[b-8x1h8v0uwe]{
+.fit-content[b-28hoqp1fye]{
     max-width:fit-content;
 }
-/* /Components/GridItem.razor.rz.scp.css */
-.cursor-pointer div *[b-5rteiivt5e] {
+/* /Components/DataFilter/SimpleDatePicker.razor.rz.scp.css */
+.input-container[b-f7z1l91ys1] {
+    position: relative;
+}
+
+.fullscreen[b-f7z1l91ys1] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 99;
+}
+
+.hidden[b-f7z1l91ys1] {
+    visibility: hidden;
+}
+
+button[b-f7z1l91ys1] {
+    font-size: small;
+}
+/* /Components/DataGrid/GridItem.razor.rz.scp.css */
+.cursor-pointer div *[b-7eaok5l3zb] {
     cursor: pointer;
 }
 
-.filter[b-5rteiivt5e] {
+.filter[b-7eaok5l3zb] {
     padding: 0.5rem;
     position: absolute;
     left: 15px;
@@ -65,7 +86,7 @@
     z-index: 100;
 }
 
-.fullscreen[b-5rteiivt5e] {
+.fullscreen[b-7eaok5l3zb] {
     position: absolute;
     top: 0;
     left: 0;
@@ -74,15 +95,15 @@
     z-index: 99;
 }
 
-.visible[b-5rteiivt5e] {
+.visible[b-7eaok5l3zb] {
     visibility: visible;
 }
 
-.hidden[b-5rteiivt5e] {
+.hidden[b-7eaok5l3zb] {
     visibility: hidden;
 }
 
-.filter-option[b-5rteiivt5e] {
+.filter-option[b-7eaok5l3zb] {
     border: none;
     padding: 0;
     width: 1rem;
@@ -90,7 +111,7 @@
     background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-funnel" viewBox="0 0 16 16"> <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2zm1 .5v1.308l4.372 4.858A.5.5 0 0 1 7 8.5v5.306l2-.666V8.5a.5.5 0 0 1 .128-.334L13.5 3.308V2h-11z"/> </svg> ') center center / 1rem no-repeat;
 }
 
-.filter-option-full[b-5rteiivt5e] {
+.filter-option-full[b-7eaok5l3zb] {
     border: none;
     padding: 0;
     width: 1rem;
@@ -98,14 +119,14 @@
     background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-funnel-fill" viewBox="0 0 16 16"> <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2z"/> </svg> ') center center / 1rem no-repeat;
 }
 
-.header-content[b-5rteiivt5e] {
+.header-content[b-7eaok5l3zb] {
     position: relative;
     display: flex;
     align-items: center;
     width: max-content;
 }
-/* /Components/Paginator.razor.rz.scp.css */
-.paginator[b-gyhshhcb7x] {
+/* /Components/Paginator/Paginator.razor.rz.scp.css */
+.paginator[b-m0b1nv0xcs] {
     display: flex;
     border-top: 1px solid #ccc;
     margin-top: 0.5rem;
@@ -113,67 +134,46 @@
     align-items: center;
 }
 
-.pagination-text[b-gyhshhcb7x] {
+.pagination-text[b-m0b1nv0xcs] {
     margin: 0 0.5rem;
 }
 
-nav[b-gyhshhcb7x] {
+nav[b-m0b1nv0xcs] {
     display: flex;
     margin-left: auto;
     gap: 0.5rem;
     align-items: center;
 }
 
-    nav button[b-gyhshhcb7x] {
+    nav button[b-m0b1nv0xcs] {
         border: 0;
         background: none center center / 1rem no-repeat;
         width: 2rem;
         height: 2rem;
     }
 
-        nav button[disabled][b-gyhshhcb7x] {
+        nav button[disabled][b-m0b1nv0xcs] {
             opacity: 0.4;
         }
 
-        nav button:not([disabled]):hover[b-gyhshhcb7x] {
+        nav button:not([disabled]):hover[b-m0b1nv0xcs] {
             background-color: #eee;
         }
 
-        nav button:not([disabled]):active[b-gyhshhcb7x] {
+        nav button:not([disabled]):active[b-m0b1nv0xcs] {
             background-color: #aaa;
         }
 
-.go-first[b-gyhshhcb7x], .go-last[b-gyhshhcb7x] {
+.go-first[b-m0b1nv0xcs], .go-last[b-m0b1nv0xcs] {
     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-skip-end-fill" viewBox="0 0 16 16"> <path d="M12.5 4a.5.5 0 0 0-1 0v3.248L5.233 3.612C4.693 3.3 4 3.678 4 4.308v7.384c0 .63.692 1.01 1.233.697L11.5 8.753V12a.5.5 0 0 0 1 0V4z"/> </svg>');
 }
 
-.go-previous[b-gyhshhcb7x], .go-next[b-gyhshhcb7x] {
+.go-previous[b-m0b1nv0xcs], .go-next[b-m0b1nv0xcs] {
     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-play-fill" viewBox="0 0 16 16"> <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/> </svg>');
 }
 
-.go-previous[b-gyhshhcb7x], .go-first[b-gyhshhcb7x] {
+.go-previous[b-m0b1nv0xcs], .go-first[b-m0b1nv0xcs] {
     transform: scaleX(-1);
-}
-/* /Components/SimpleDatePicker.razor.rz.scp.css */
-.input-container[b-rk0pilqs09] {
-    position: relative;
-}
-
-.fullscreen[b-rk0pilqs09] {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 99;
-}
-
-.hidden[b-rk0pilqs09] {
-    visibility: hidden;
-}
-
-button[b-rk0pilqs09] {
-    font-size: small;
 }
 /* /Shared/MainLayout.razor.rz.scp.css */
 .page[b-o4usi3lo52] {
