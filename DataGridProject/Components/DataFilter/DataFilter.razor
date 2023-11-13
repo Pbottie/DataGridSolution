@@ -11,11 +11,19 @@
         </div>
     </div>
     <div class="mx-3">
+        @if(Filters.Any(x => x.IsActive))
+        {
+        <span role="button" @key="Guid.NewGuid()" class="badge bg-danger mx-1" @onclick="@(()=> ClearAllActiveFilters())">
+            X Clear All
+        </span>
+
+        }
+
         @foreach (var filter in Filters)
         {
             if (filter.IsActive)
             {
-                <span role="button" @key="filter" class="badge bg-secondary mx-1" @onclick="@(()=> filter.ClearFilter())">
+                <span role="button" @key="Guid.NewGuid()" class="badge bg-secondary mx-1" @onclick="@(()=> filter.ClearFilter())">
                     X @filter.GetDisplayName: @(filter.FilterType == FilterTypes.MinMax ? @filter.FilterValue.Replace("_", " - ") : @filter.FilterValue)
                 </span>
             }
@@ -94,6 +102,16 @@
             else
                 list = items.Select(item => property.GetValue(item).ToString()).Distinct().ToList();
             filterItem.SelectOptions = list;
+        }
+
+    }
+
+    private void ClearAllActiveFilters()
+    {
+        var activeFilters = Filters.Where(filter => filter.IsActive);
+        foreach (var filter in activeFilters)
+        {
+            filter.ClearFilter();
         }
 
     }

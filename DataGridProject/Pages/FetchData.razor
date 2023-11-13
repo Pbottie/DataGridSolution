@@ -81,7 +81,7 @@ else
                 <p><input type="checkbox" @bind=hasCustomReports @bind:event="onchange" /> Has Custom Reports</p>
             </FilterTemplate>
         </GridItem>
-        <GridItem Field="@nameof(SearchMeasurementListItem.MeasurementName)" IsSortable IsFilterable />
+        <GridItem Align="Align.Right" Field="@nameof(SearchMeasurementListItem.MeasurementName)" IsSortable IsFilterable />
          <GridItem Field="@nameof(SearchMeasurementListItem.BrandName)" />
          <GridItem Field="@nameof(SearchMeasurementListItem.FormattedEndDate)" />
          <GridItem Field="@nameof(SearchMeasurementListItem.Status)" />
@@ -139,6 +139,7 @@ else
 
     public void Click(SearchMeasurementListItem item)
     {
+        Console.WriteLine("Clicked: " + item.Id);
         //Do something based on item
     }
 

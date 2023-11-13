@@ -7,16 +7,22 @@
 {
     <CascadingValue Value="this">
         <div id="@ElementId" class="overflow-x-auto mx-3 pt-4">
+            @if (filterTextDict.Values.Any(x => x != ""))
+            {
+                <span role="button" class="badge bg-danger mx-1" @onclick="()=>ClearAllTextFilters()">
+                    X Clear Text Filters
+                </span>
+            }
             @foreach (var kvp in filterTextDict)
             {
                 if (kvp.Value != "")
                 {
                     <span role="button" @key="kvp" class="badge bg-secondary mx-1" @onclick="()=>RemoveFilter(kvp.Key)">
-                       X @(string.IsNullOrEmpty(kvp.Key.Title) ? kvp.Key.Field : kvp.Key.Title): @kvp.Value
+                        X @(string.IsNullOrEmpty(kvp.Key.Title) ? kvp.Key.Field : kvp.Key.Title): @kvp.Value
                     </span>
                 }
             }
-            <table class="@ClassNames">
+            <table @attributes="@AdditionalAttributes" class="@ClassNames">
                 <thead>
                     <tr>
                         @ChildContent
@@ -66,7 +72,7 @@
 
     public string SortedField { get; private set; }
 
-    public List<GridItem<TGridItem>> gridItems = new();
+    private List<GridItem<TGridItem>> gridItems = new();
     private bool isAscending;
     private Dictionary<GridItem<TGridItem>, string> filterTextDict = new();
     private List<string> columnFields = new();
@@ -138,6 +144,14 @@
         }
     }
 
+    internal void ClearAllTextFilters()
+    {
+        foreach (var keyValuePair in filterTextDict)
+        {
+            RemoveFilter(keyValuePair.Key);
+        }
+    }
+
     internal void RemoveFilter(GridItem<TGridItem> gridItem)
     {
         gridItem.RemoveFilter();
@@ -184,13 +198,16 @@
     {
         get
         {
+            if (Items == null)
+                return new List<TGridItem>();
+
             if (!string.IsNullOrEmpty(SortedField))
             {
                 var property = typeof(TGridItem).GetProperty(SortedField);
                 if (isAscending)
-                    return Items.OrderBy(item => (string)property.GetValue(item));
+                    return Items.OrderBy(item => property.GetValue(item).ToString());
                 else
-                    return Items.OrderByDescending(item => (string)property.GetValue(item));
+                    return Items.OrderByDescending(item => property.GetValue(item).ToString());
             }
 
             return Items;

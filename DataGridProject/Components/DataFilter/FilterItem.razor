@@ -28,9 +28,6 @@
             </text>
         }
     </label>
-    @{
-        Console.WriteLine(ElementId);
-    }
     @if (FilterType == FilterTypes.String)
     {
         <input id="@ElementId" class="form-control" type="search" autofocus @bind="filterText" @oninput="OnTextFilterValueChanged" placeholder="Filter text..." />

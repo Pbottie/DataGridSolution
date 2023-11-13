@@ -3,51 +3,40 @@
 
 @if (Items is not null)
 {
-    foreach (var item in Items)
+    for (int i = 0; i < Items.Count(); i++)
     {
-        List<object> rowData = new();
-
-        foreach (var field in ColumnFields)
-        {
-            var columnTemplate = GridItems.Where(grid => grid.Field == field).Select(item => item.ColumnTemplate).FirstOrDefault();
-            var columnData = DataUtils
-                 .GetItemsPropertyInfo<TGridItem>()
-                 .Where(x => x.Name == field)
-                 .Select(y => y.GetValue(item))
-                 .FirstOrDefault();
-            if (columnTemplate != null)
-                rowData.Add(columnTemplate(item));
-            else if (columnData != null)
-                rowData.Add(columnData);
-            else
-                rowData.Add(string.Empty);
-        }
-
-        <tr @key="item" @onclick="()=>HandleClick(item)">
-            @foreach (var columnData in rowData)
-            {
-
-                if (columnData is RenderFragment)
+        var item = Items.Skip(i).Take(1).First();
+        <tr class="@CursorClass" @key="Guid.NewGuid()" @onclick="()=>HandleClick(item)">
+            @{
+                var count = GridItems.Count;
+                for (int j = 0; j < count; j++)
                 {
-                    <td>
-                        @(columnData as RenderFragment)
-                    </td>
-                }
-                else
-                {
-                    <td>
-                        @columnData
+                    var dataPosition = i * count + j;
+                    var columnData = rowData[dataPosition];
+                    <td class="@(GetAlignClass(GridItems[j]))">
+                        @if (columnData is RenderFragment)
+                        {
+                            RenderFragment renderFragment = (RenderFragment)columnData;
+                            @renderFragment
+                        }
+                        else
+                        {
+                            var data = columnData;
+                            @data
+                        }
                     </td>
                 }
             }
         </tr>
-        ;
-
     }
 }
 
 
 @code {
+    //Row styling för Row
+    //Sortera med hela headern GridItem
+    //Cursorpointer when RowClick Grid
+
     [CascadingParameter]
     DataGrid<TGridItem> ParentGrid { get; set; }
     [Parameter, EditorRequired]
@@ -60,11 +49,46 @@
     [Parameter, EditorRequired]
     public List<GridItem<TGridItem>> GridItems { get; set; }
 
+    List<object> rowData = new();
+
+    protected override void OnParametersSet()
+    {
+        if (Items != null)
+        {
+            rowData.Clear();
+          
+            foreach (var item in Items)
+            {
+                foreach (var field in ColumnFields)
+                {
+                    var columnTemplate = GridItems.Where(grid => grid.Field == field).Select(item => item.ColumnTemplate).FirstOrDefault();
+                    var columnData = DataUtils
+                         .GetItemsPropertyInfo<TGridItem>()
+                         .Where(x => x.Name == field)
+                         .Select(y => y.GetValue(item))
+                         .FirstOrDefault();
+                    if (columnTemplate != null)
+                        rowData.Add(columnTemplate(item));
+                    else if (columnData != null)
+                        rowData.Add(columnData);
+                    else
+                        rowData.Add(string.Empty);
+                }
+            }
+        }
+
+    }
 
     public async Task HandleClick(TGridItem item)
     {
         if (Clicked.HasDelegate)
             await Clicked.InvokeAsync(item);
-
     }
+
+    private string? GetAlignClass(GridItem<TGridItem> gridItem)
+    {
+        return gridItem.Align.Equals(Align.Right) ? "text-end" : null;
+    }
+
+    string? CursorClass => Clicked.HasDelegate ? "cursor-pointer" : null;
 }

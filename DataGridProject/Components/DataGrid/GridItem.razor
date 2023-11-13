@@ -2,41 +2,58 @@
 @inherits UIComponentBase
 @typeparam TGridItem
 
-<th id="@ElementId" attribute="@AdditionalAttributes" class="@ClassNames" width="@(ColumnWidth != 0 ? ColumnWidth : null)">
-    <div class="header-content" @onkeyup="HandleKeyUp">
-        @if (IsFilterable)
-        {
-            <button class="@(DefaultFilterValueHasChanged ? "filter-option-full":"filter-option")" type="button" @onclick="@HandleFilter"></button>
-        }
-        <span @onclick=@HandleClick @onmouseover="@HandleMouseOver" @onmouseout="@HandleMouseOut">
-            @if (HeaderTemplate != null)
+<th id="@ElementId" @attributes="@AdditionalAttributes" class="@ClassNames" width="@TableHeaderWidth">
+    <div class="header-content @AlignClass" @onkeyup="HandleKeyUp">
+        <div class="d-flex @RightAlign">
+            @if (IsFilterable)
             {
-                @HeaderTemplate
-            }
-            else if (!string.IsNullOrEmpty(Title))
-            {
-                @Title
-            }
-            else
-            {
-                @GetColumnName()
-            }
-            @if (IsSortable)
-            {
-                @if (IsAscending)
+                if (FilterClass == "filter-option")
                 {
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-up @isVisibleClass" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z" />
-                    </svg>
+                    <button class="filter-option" type="button" @onclick="@HandleFilter">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-funnel" viewBox="0 0 16 16">
+                            <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2zm1 .5v1.308l4.372 4.858A.5.5 0 0 1 7 8.5v5.306l2-.666V8.5a.5.5 0 0 1 .128-.334L13.5 3.308V2h-11z" />
+                        </svg>
+                    </button>
                 }
                 else
                 {
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down @isVisibleClass" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
-                    </svg>
+                    <button class="filter-option-full" type="button" @onclick="@HandleFilter">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-funnel-fill" viewBox="0 0 16 16">
+                            <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2z" />
+                        </svg>
+                    </button>
                 }
             }
-        </span>
+            <span class="label-content" @onmouseover="@HandleMouseOver" @onmouseout="@HandleMouseOut" @onclick=@HandleClick>
+                @if (HeaderTemplate != null)
+                {
+                    @HeaderTemplate
+                }
+                else if (!string.IsNullOrEmpty(Title))
+                {
+                    @Title
+                }
+                else
+                {
+                    @GetColumnName()
+                }
+                @if (IsSortable)
+                {
+                    @if (IsAscending)
+                    {
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-up @isVisibleClass" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z" />
+                        </svg>
+                    }
+                    else
+                    {
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down @isVisibleClass" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+                        </svg>
+                    }
+                }
+            </span>
+        </div>
         @if (isShowingFilterInput)
         {
             <div class="filter">
@@ -53,7 +70,7 @@
             </div>
         }
     </div>
-    <span class="fullscreen @(isShowingFilterInput ? "" : "hidden")" @onclick=CloseFilter>
+    <span class="position-fixed start-0 top-0 w-100 h-100 grid-filter-z @(isShowingFilterInput ? "" : "invisible")" @onclick=CloseFilter>
     </span>
 </th>
 
@@ -82,19 +99,24 @@
     public bool IsFilterable { get; set; }
     [Parameter]
     public bool DefaultFilterValueHasChanged { get; set; }
+    [Parameter]
+    public Align Align { get; set; }
 
     [Parameter]
     public int ColumnWidth { get; set; }
 
     public bool IsSorted => Field == (ParentGrid.SortedField ?? "-x-");
     public bool IsAscending;
+    public RenderFragment ItemHeader;
 
     private bool isHovering;
     private bool isShowingFilterInput;
     private string filterText;
-    private string isVisibleClass => IsSorted || (!IsSorted && isHovering) ? "visible" : "hidden";
-
-    public RenderFragment ItemHeader;
+    private string isVisibleClass => IsSorted || (!IsSorted && isHovering) ? "visible" : "invisible";
+    private string? AlignClass => Align.Equals(Align.Right) ? "flex-row-reverse" : null;
+    private int? TableHeaderWidth => ColumnWidth != 0 ? ColumnWidth : null;
+    private string FilterClass => DefaultFilterValueHasChanged ? "filter-option-full" : "filter-option";
+    private string? RightAlign => Align.Equals(Align.Right) ? null : "w-100";
 
     protected override void OnInitialized()
     {
@@ -128,7 +150,7 @@
     protected override void OnParametersSet()
     {
         classBuilder
-        .Begin("cursor-pointer", IsSortable || IsFilterable)
+        .Begin("grid-cursor-pointer", IsSortable || IsFilterable)
         .GetClass();
 
     }
@@ -196,7 +218,4 @@
         filterText = "";
         DefaultFilterValueHasChanged = false;
     }
-
-
-
 }
