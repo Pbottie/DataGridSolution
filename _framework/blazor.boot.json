@@ -8,7 +8,7 @@
   "resources": {
     "assembly": {
       "Bogus.dll": "sha256-IgFEwQyP1GQSj7cjhmsEcYuEABesDe9Y3oby2kbVnnc=",
-      "DataGridProject.dll": "sha256-To+kcStu9oKdVz874J006ykQSpMzX2RdVTN1szmBWvQ=",
+      "DataGridProject.dll": "sha256-lx+y7LhzHtSy4muZtNuH2m1ts3KPVRQO+KXk\/BiS\/aU=",
       "Microsoft.AspNetCore.Components.dll": "sha256-dFc2W5ccAAMjfpvBATKj1RM6PA0q47SWU6VXrIsN8lU=",
       "Microsoft.AspNetCore.Components.Web.dll": "sha256-kHrLFCY2FDGaZfoYXv7jEGbD3O5w+eWaPEkWHs+EeiA=",
       "Microsoft.AspNetCore.Components.WebAssembly.dll": "sha256-XYM80863rCSqPKTIFsPNKnli9FGEN6ydRhJq9gbYJAE=",
