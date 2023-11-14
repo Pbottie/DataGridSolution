@@ -150,7 +150,7 @@
     protected override void OnParametersSet()
     {
         classBuilder
-        .Begin("grid-cursor-pointer", IsSortable || IsFilterable)
+        .Begin("grid-cursor-pointer", IsSortable)
         .GetClass();
 
     }
@@ -182,11 +182,7 @@
         if (IsSortable)
         {
             ParentGrid.Sort(Field);
-        }
-        else if (IsFilterable)
-        {
-            HandleFilter();
-        }
+        }      
     }
 
     private void HandleKeyUp(KeyboardEventArgs e)

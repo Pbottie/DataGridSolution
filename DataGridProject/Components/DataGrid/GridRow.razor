@@ -9,11 +9,11 @@
         <tr class="@CursorClass" @key="Guid.NewGuid()" @onclick="()=>HandleClick(item)">
             @{
                 var count = GridItems.Count;
+                var styling = HandleStyling?.Invoke(item);
                 for (int j = 0; j < count; j++)
                 {
                     var dataPosition = i * count + j;
                     var columnData = rowData[dataPosition];
-                    var styling = HandleStyling?.Invoke(item);
                     <td class="@(GetAlignClass(GridItems[j]))" style="@styling">
                         @if (columnData is RenderFragment)
                         {
