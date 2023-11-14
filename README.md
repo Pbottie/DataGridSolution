@@ -14,7 +14,7 @@ Blazor Project with DataGrid and DataFilter Component example and (some) Tests
 + Pagination
   + Default Items Per Page
 + Custom Column Title
-
++ Row Styling
 
 ## DataFilter Features
 
@@ -33,4 +33,4 @@ Blazor Project with DataGrid and DataFilter Component example and (some) Tests
     + Using External Dictionary
   + Select
     + Gets Disctinct Values
-    + Possible Default Order 
+    + Possible Default Alphabetical Order
