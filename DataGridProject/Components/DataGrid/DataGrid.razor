@@ -135,18 +135,6 @@
         return filterTextDict.All((kvp) => typeof(TGridItem).GetProperty(kvp.Key.Field).GetValue(item).ToString().ToLower().Contains(kvp.Value.ToLower()));
     }
 
-    internal void UpdateColumnFields(string field)
-    {
-        if (!columnFields.Contains(field) || string.IsNullOrEmpty(field))
-        {
-            columnFields.Add(field);
-        }
-        else
-        {
-            throw new Exception("Field " + field + " already exists!");
-        }
-    }
-
     internal void ClearAllTextFilters()
     {
         foreach (var keyValuePair in filterTextDict)
@@ -163,8 +151,14 @@
 
     internal void AddItem(GridItem<TGridItem> gridItem)
     {
-        gridItems.Add(gridItem);
-        UpdateColumnFields(gridItem.Field);
+        var field = gridItem.Field;
+        if (columnFields.Contains(field))
+            throw new Exception("Field " + field + " already exists!");
+        else
+        {
+            gridItems.Add(gridItem);
+            columnFields.Add(field);
+        }
     }
 
     internal void Sort(string field)
