@@ -13,7 +13,8 @@
                 {
                     var dataPosition = i * count + j;
                     var columnData = rowData[dataPosition];
-                    <td class="@(GetAlignClass(GridItems[j]))">
+                    var styling = HandleStyling?.Invoke(item);
+                    <td class="@(GetAlignClass(GridItems[j]))" style="@styling">
                         @if (columnData is RenderFragment)
                         {
                             RenderFragment renderFragment = (RenderFragment)columnData;
@@ -33,10 +34,6 @@
 
 
 @code {
-    //Row styling för Row
-    //Sortera med hela headern GridItem
-    //Cursorpointer when RowClick Grid
-
     [CascadingParameter]
     DataGrid<TGridItem> ParentGrid { get; set; }
     [Parameter, EditorRequired]
@@ -49,6 +46,9 @@
     [Parameter, EditorRequired]
     public List<GridItem<TGridItem>> GridItems { get; set; }
 
+    [Parameter]
+    public StylingHandler<TGridItem> HandleStyling { get; set; }
+
     List<object> rowData = new();
 
     protected override void OnParametersSet()
@@ -56,7 +56,7 @@
         if (Items != null)
         {
             rowData.Clear();
-          
+
             foreach (var item in Items)
             {
                 foreach (var field in ColumnFields)
@@ -90,5 +90,5 @@
         return gridItem.Align.Equals(Align.Right) ? "text-end" : null;
     }
 
-    string? CursorClass => Clicked.HasDelegate ? "cursor-pointer" : null;
+    string? CursorClass => Clicked.HasDelegate ? "grid-cursor-pointer" : null;
 }

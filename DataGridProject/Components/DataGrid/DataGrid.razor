@@ -31,11 +31,11 @@
                 <tbody>
                     @if (RowClick.HasDelegate)
                     {
-                        <GridRow Items="TotalItems" ColumnFields="columnFields" GridItems="gridItems" Clicked="RowClick" />
+                        <GridRow HandleStyling="StylingHandler" Items="TotalItems" ColumnFields="columnFields" GridItems="gridItems" Clicked="RowClick" />
                     }
                     else
                     {
-                        <GridRow Items="TotalItems" ColumnFields="columnFields" GridItems="gridItems" />
+                        <GridRow HandleStyling="StylingHandler" Items="TotalItems" ColumnFields="columnFields" GridItems="gridItems" />
                     }
                 </tbody>
             </table>
@@ -69,6 +69,9 @@
 
     [Parameter]
     public EventCallback<TGridItem> RowClick { get; set; }
+
+    [Parameter]
+    public StylingHandler<TGridItem> StylingHandler { get; set; }
 
     public string SortedField { get; private set; }
 

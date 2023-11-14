@@ -15,18 +15,18 @@ else
         <FilterItem FilterType="FilterTypes.DateTime" Field="@nameof(SearchMeasurementListItem.TestDate)" />
         <FilterItem FilterType="FilterTypes.String" Field="@nameof(SearchMeasurementListItem.MeasurementName)" />
         <FilterItem FilterType="FilterTypes.MinMax" Field="@nameof(SearchMeasurementListItem.TotalEffect)" />
-        <FilterItem FilterType="FilterTypes.String" Field="@nameof(SearchMeasurementListItem.CustomerName)" Label="Name" />
 
+        <FilterItem FilterType="FilterTypes.String" Field="@nameof(SearchMeasurementListItem.CustomerName)" Label="Name" />
         <FilterItem FilterType="FilterTypes.String" Field="@nameof(SearchMeasurementListItem.FormattedStartDate)" />
         <FilterItem FilterType="FilterTypes.DateTime" Field="@nameof(SearchMeasurementListItem.EndDate)" />
         <FilterItem FilterType="FilterTypes.DateTimeMin" Field="@nameof(SearchMeasurementListItem.StartDate)" />
-        <FilterItem FilterType="FilterTypes.DateTimeMax" Field="@nameof(SearchMeasurementListItem.StartDate)" />
 
+        <FilterItem FilterType="FilterTypes.DateTimeMax" Field="@nameof(SearchMeasurementListItem.StartDate)" />
         <FilterItem FilterType="FilterTypes.CheckBox" Field="@nameof(SearchMeasurementListItem.HasBreakdowns)" />
         <FilterItem IsSwitch FilterType="FilterTypes.CheckBox" Field="@nameof(SearchMeasurementListItem.HasCustomReport)" />
          <FilterItem FilterType="FilterTypes.RadioButton" Field="@nameof(SearchMeasurementListItem.Status)" Options="radioButtonOptions" DefaultSelectedOption="Active" />
-         <FilterItem IsSelectSorted FilterType="FilterTypes.Select" Field="@nameof(SearchMeasurementListItem.BrandName)" />
 
+         <FilterItem IsSelectSorted FilterType="FilterTypes.Select" Field="@nameof(SearchMeasurementListItem.BrandName)" />
 
      </DataFilter>
 
@@ -34,6 +34,7 @@ else
               DefaultItemsPerPage="15"
               TGridItem="SearchMeasurementListItem"
               RowClick="Click"
+              StylingHandler="HandleStyling"
             IsPaginated>
      <GridItem Field="@nameof(SearchMeasurementListItem.Id)" />
      <GridItem Field="@nameof(SearchMeasurementListItem.MeasurementId)" />
@@ -109,38 +110,38 @@ else
         StateHasChanged();
     }
 
+    string HandleStyling(SearchMeasurementListItem item)
+    {
+        if (item.Id % 3 == 0)
+        {
+            return "color:red";
+        }
+        return "";
+    }
+
     List<SearchMeasurementListItem> FilteredData
     {
         get
         {
-            var result = testData;
+            var result = testData.Where(x => x.TotalEffect <= maxEffect);
 
-            if (externalFilter != null)
-            {
-                result = externalFilter.FilteredItems.ToList();
-            }
+            if (minEffect > 0)
+                result = result.Where(x => x.TotalEffect >= minEffect);
 
-            return result;
+            if (hasBreakdowns)
+                result = result.Where(x => x.HasBreakdowns);
 
-            // var result = testData.Where(x => x.TotalEffect <= maxEffect);
+            if (hasCustomReports)
+                result = result.Where(x => x.HasCustomReport);
 
-            // if (minEffect > 0)
-            //     result = result.Where(x => x.TotalEffect >= minEffect);
-
-            // if (hasBreakdowns)
-            //     result = result.Where(x => x.HasBreakdowns);
-
-            // if (hasCustomReports)
-            //     result = result.Where(x => x.HasCustomReport);
-
-            // return result.ToList();
+            return result.ToList();
         }
     }
 
     public void Click(SearchMeasurementListItem item)
     {
-        Console.WriteLine("Clicked: " + item.Id);
         //Do something based on item
+        Console.WriteLine("Clicked: " + item.Id);
     }
 
     protected override void OnInitialized()
