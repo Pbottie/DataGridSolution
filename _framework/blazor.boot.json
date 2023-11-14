@@ -8,8 +8,8 @@
   "resources": {
     "assembly": {
       "Bogus.dll": "sha256-IgFEwQyP1GQSj7cjhmsEcYuEABesDe9Y3oby2kbVnnc=",
-      "DataGridProject.dll": "sha256-vBsS8G+uFdNFeJuOs40niXvcbX1afPMQ+eKopIhGofk=",
-      "Microsoft.AspNetCore.Components.dll": "sha256-sj9ajVDY+xQqHU5+lmAA5y7LsLnT3\/jMLcJiCpUwqeQ=",
+      "DataGridProject.dll": "sha256-To+kcStu9oKdVz874J006ykQSpMzX2RdVTN1szmBWvQ=",
+      "Microsoft.AspNetCore.Components.dll": "sha256-dFc2W5ccAAMjfpvBATKj1RM6PA0q47SWU6VXrIsN8lU=",
       "Microsoft.AspNetCore.Components.Web.dll": "sha256-kHrLFCY2FDGaZfoYXv7jEGbD3O5w+eWaPEkWHs+EeiA=",
       "Microsoft.AspNetCore.Components.WebAssembly.dll": "sha256-XYM80863rCSqPKTIFsPNKnli9FGEN6ydRhJq9gbYJAE=",
       "Microsoft.Extensions.Configuration.Abstractions.dll": "sha256-X\/f4fDl2cuIRXeWHhK\/f2UqQbFioD+RU4a4CEh0zrrQ=",
@@ -34,7 +34,7 @@
       "System.Net.Primitives.dll": "sha256-i2bDzS1GI2vENrmcT+32PxbFsPWcPeEMu9BMZRz1D1s=",
       "System.Private.CoreLib.dll": "sha256-FtPjjTXTMA8BeOoMzQ6CM6gCWfqXn1sFrY1wo6GddEo=",
       "System.Private.Uri.dll": "sha256-Z1OaRdyguX5Sk9vgQOYht7IDps2i5jvksDEuHiWxlMI=",
-      "System.Runtime.dll": "sha256-N5HsfqLPQLuSEZkVu\/nwucLOlTyHeD08xV07G4RdyTw=",
+      "System.Runtime.dll": "sha256-jnJyQ\/FXVZgwtucZBJSZ\/ZetMVxcS6YtkWrrc8V931I=",
       "System.Runtime.InteropServices.JavaScript.dll": "sha256-16ZK\/vGBayMxnP\/gKu3It1kTeccPaN2R8qDjfiPxTS0=",
       "System.Security.Cryptography.Algorithms.dll": "sha256-xPUo+Ksf\/01CiCv\/KEZQSv4URoaXYve8ApHOXCNRupc=",
       "System.Security.Cryptography.Csp.dll": "sha256-aOanLFyy9Zkx\/0igMHYQ\/q0lMwcGD61DQKdbMy6Hgfo=",

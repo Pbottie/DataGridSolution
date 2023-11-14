@@ -70,7 +70,7 @@ button[b-f7z1l91ys1] {
     font-size: small;
 }
 /* /Components/DataGrid/GridItem.razor.rz.scp.css */
-.cursor-pointer div *[b-7eaok5l3zb] {
+.grid-cursor-pointer span[b-7eaok5l3zb] {
     cursor: pointer;
 }
 
@@ -83,23 +83,15 @@ button[b-f7z1l91ys1] {
     box-shadow: 0 3px 8px 1px #aaa;
     border-color: #ddd;
     border-radius: 0.3rem;
-    z-index: 100;
-}
-
-.fullscreen[b-7eaok5l3zb] {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 99;
+    width: max-content;
+    z-index: 110;
 }
 
 .visible[b-7eaok5l3zb] {
     visibility: visible;
 }
 
-.hidden[b-7eaok5l3zb] {
+.invisible[b-7eaok5l3zb] {
     visibility: hidden;
 }
 
@@ -108,7 +100,7 @@ button[b-f7z1l91ys1] {
     padding: 0;
     width: 1rem;
     align-self: stretch;
-    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-funnel" viewBox="0 0 16 16"> <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2zm1 .5v1.308l4.372 4.858A.5.5 0 0 1 7 8.5v5.306l2-.666V8.5a.5.5 0 0 1 .128-.334L13.5 3.308V2h-11z"/> </svg> ') center center / 1rem no-repeat;
+    background: transparent;
 }
 
 .filter-option-full[b-7eaok5l3zb] {
@@ -116,14 +108,28 @@ button[b-f7z1l91ys1] {
     padding: 0;
     width: 1rem;
     align-self: stretch;
-    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-funnel-fill" viewBox="0 0 16 16"> <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2z"/> </svg> ') center center / 1rem no-repeat;
+    background: transparent;
 }
 
 .header-content[b-7eaok5l3zb] {
     position: relative;
     display: flex;
     align-items: center;
-    width: max-content;
+}
+
+.label-content[b-7eaok5l3zb] {
+    align-items: center;
+    display: flex;
+    flex-grow: 1;
+    white-space: nowrap;
+}
+
+.grid-filter-z[b-7eaok5l3zb] {
+    z-index: 100;
+}
+/* /Components/DataGrid/GridRow.razor.rz.scp.css */
+.grid-cursor-pointer[b-ymyixb686v] {
+    cursor: pointer;
 }
 /* /Components/Paginator/Paginator.razor.rz.scp.css */
 .paginator[b-m0b1nv0xcs] {
