@@ -116,7 +116,7 @@
     private string? AlignClass => Align.Equals(Align.Right) ? "flex-row-reverse" : null;
     private int? TableHeaderWidth => ColumnWidth != 0 ? ColumnWidth : null;
     private string FilterClass => DefaultFilterValueHasChanged ? "filter-option-full" : "filter-option";
-    private string? RightAlign => Align.Equals(Align.Right) ? null : "w-100";
+    private string RightAlign => Align.Equals(Align.Right) ? null : "w-100";
 
     protected override void OnInitialized()
     {

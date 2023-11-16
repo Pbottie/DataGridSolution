@@ -1,0 +1,95 @@
+﻿@using System.Collections.Concurrent;
+@inject NotificationService NotificationService
+@implements IDisposable
+
+<div class="notification-container position-fixed bottom-0 d-flex align-items-center flex-column-reverse">
+    @foreach (var message in _messages)
+    {
+        <MessageComponent @key="@message.Id" MessageContent="message" Parent="this" />
+    }
+</div>
+
+
+@code {
+    private string? _heading;
+    private string? _message;
+    private string? _backgroundCssClass;
+    private List<Message> _messages = new();
+
+    protected override void OnInitialized()
+    {
+        NotificationService.OnNotify += HandleNotification;
+    }
+
+    private void HandleNotification(string message, NotificationType type, int delay)
+    {
+        Console.WriteLine(delay);
+        BuildNotificationSettings(type, message);
+        var messageContent = new Message(_heading, _message, _backgroundCssClass, delay);
+        _messages.Add(messageContent);
+        StateHasChanged();
+    }
+
+    public Task RemoveNotification(Message message)
+    {
+        var success = _messages.Remove(message);
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+    public void Dispose()
+    {
+        NotificationService.OnNotify -= HandleNotification;
+    }
+
+    private void BuildNotificationSettings(NotificationType type, string message)
+    {
+        switch (type)
+        {
+            case NotificationType.Info:
+                _backgroundCssClass = $"bg-info";
+                _heading = "Info";
+                break;
+            case NotificationType.Success:
+                _backgroundCssClass = $"bg-success";
+                _heading = "Success";
+                break;
+            case NotificationType.Warning:
+                _backgroundCssClass = $"bg-warning";
+                _heading = "Warning";
+                break;
+            case NotificationType.Error:
+                _backgroundCssClass = "bg-danger";
+                _heading = "Error";
+                break;
+            case NotificationType.Primary:
+                _heading = "Message";
+                _backgroundCssClass = "bg-primary";
+                break;
+            default:
+                _backgroundCssClass = "bg-dark";
+                _heading = "Message";
+                break;
+        }
+        _message = message;
+    }
+
+    public class Message
+    {
+        public string Heading { get; set; }
+        public string MessageContent { get; set; }
+        public string BackgroundCssClass { get; set; }
+        public Guid Id { get; private set; }
+        public int Delay { get; set; }
+
+        public Message(string heading, string messageContent, string backgroundCssClass, int delay)
+        {
+            Heading = heading;
+            MessageContent = messageContent;
+            BackgroundCssClass = backgroundCssClass;
+            Id = Guid.NewGuid();
+            Delay = delay;
+        }
+    };
+
+}

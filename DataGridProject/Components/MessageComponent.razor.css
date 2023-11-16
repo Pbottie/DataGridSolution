@@ -1,0 +1,30 @@
+﻿.notification {
+    padding: 1.5rem;
+    color: #fff;
+    width: 25rem;
+    border-radius: 1rem;
+    margin-bottom: 1rem;
+    -webkit-animation: fade-in 0.3s ease-in both;
+    animation: fade-in 0.3s ease-in both;
+}
+
+.notification-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    justify-content: end;
+}
+
+.notification-body {
+}
+
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}

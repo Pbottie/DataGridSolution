@@ -1,4 +1,6 @@
-﻿@implements IFilterObserver
+﻿@page "/datagrid"
+
+@implements IFilterObserver
 @implements IDisposable
 @inject IFilter FilterSubject
 
@@ -10,6 +12,9 @@
 }
 else
 {
+    <NotificationComponent />
+
+
     <DataFilter Items="testData" @ref="externalFilter">
         <FilterItem FilterType="FilterTypes.Int" Field="@nameof(SearchMeasurementListItem.Id)" />
         <FilterItem FilterType="FilterTypes.DateTime" Field="@nameof(SearchMeasurementListItem.TestDate)" />
@@ -91,6 +96,8 @@ else
 }
 
 @code {
+
+
 
     private List<SearchMeasurementListItem> testData;
 

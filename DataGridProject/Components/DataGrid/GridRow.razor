@@ -5,7 +5,7 @@
 {
     for (int i = 0; i < Items.Count(); i++)
     {
-        var item = Items.Skip(i).Take(1).First();
+        var item = Items.ElementAt(i);
         <tr class="@CursorClass" @key="Guid.NewGuid()" @onclick="()=>HandleClick(item)">
             @{
                 var count = GridItems.Count;
@@ -35,11 +35,14 @@
 
 @code {
     [CascadingParameter]
-    DataGrid<TGridItem> ParentGrid { get; set; }
+    public DataGrid<TGridItem> ParentGrid { get; set; }
+
     [Parameter, EditorRequired]
     public IEnumerable<TGridItem> Items { get; set; }
+
     [Parameter, EditorRequired]
     public List<string> ColumnFields { get; set; }
+
     [Parameter]
     public EventCallback<TGridItem> Clicked { get; set; }
 

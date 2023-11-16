@@ -1,0 +1,52 @@
+﻿@implements IDisposable
+
+<div class="notification visible @MessageContent.BackgroundCssClass">
+    <div class="notification-header">
+        <h5 class="my-auto me-auto">@MessageContent.Heading</h5>
+        <button class="btn-close @(IsDark ? "btn-close-white": null)" type="button" @onclick="Close"></button>
+    </div>
+    <div class="notification-body">
+        <p class="">@MessageContent.MessageContent</p>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public NotificationComponent.Message MessageContent { get; set; }
+
+    [Parameter]
+    public NotificationComponent Parent { get; set; }
+
+    CancellationTokenSource token;
+
+    bool IsDark => MessageContent.BackgroundCssClass.Contains("dark");
+
+    protected override void OnParametersSet()
+    {
+        if (MessageContent.Delay == 0)
+            return;
+
+        token = TimeoutHelper.SetTimeout(async () =>
+        {
+            await RemoveSelf();
+        }, MessageContent.Delay);
+    }
+
+    private async Task Close()
+    {
+        TimeoutHelper.ClearTimeout(token);
+        await RemoveSelf();
+    }
+
+    private async Task RemoveSelf()
+    {
+        await Parent.RemoveNotification(MessageContent);
+    }
+
+    public void Dispose()
+    {
+        TimeoutHelper.ClearTimeout(token);
+    }
+
+}
+
