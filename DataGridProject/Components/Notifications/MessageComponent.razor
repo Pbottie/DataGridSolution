@@ -1,4 +1,5 @@
-﻿@implements IDisposable
+﻿@namespace DataGridProject.Components
+@implements IDisposable
 
 <div class="notification visible @MessageContent.BackgroundCssClass">
     <div class="notification-header">
@@ -12,14 +13,14 @@
 
 @code {
     [Parameter]
-    public NotificationComponent.Message MessageContent { get; set; }
+    public Message MessageContent { get; set; }
 
     [Parameter]
     public NotificationComponent Parent { get; set; }
 
     CancellationTokenSource token;
 
-    bool IsDark => MessageContent.BackgroundCssClass.Contains("dark");
+    bool IsDark => MessageContent.Type.Equals(NotificationType.None);
 
     protected override void OnParametersSet()
     {
@@ -34,7 +35,7 @@
 
     private async Task Close()
     {
-        TimeoutHelper.ClearTimeout(token);
+        token.Cancel();
         await RemoveSelf();
     }
 

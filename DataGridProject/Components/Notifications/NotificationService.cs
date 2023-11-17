@@ -1,4 +1,4 @@
-﻿namespace DataGridProject.Interfaces;
+﻿namespace DataGridProject.Components;
 
 public class NotificationService
 {
@@ -20,6 +20,27 @@ public enum NotificationType
     Warning,
     Primary,
 }
+
+public class Message
+{
+    public string Heading { get; set; }
+    public string MessageContent { get; set; }
+    public string BackgroundCssClass { get; set; }
+    public Guid Id { get; private set; }
+    public int Delay { get; set; }
+    public NotificationType Type { get; set; }
+
+    public Message(string heading, string messageContent, string backgroundCssClass, int delay, NotificationType type)
+    {
+        Heading = heading;
+        MessageContent = messageContent;
+        BackgroundCssClass = backgroundCssClass;
+        Id = Guid.NewGuid();
+        Delay = delay;
+        Type = type;
+    }
+}
+
 public static class TimeoutHelper
 {
     public static CancellationTokenSource SetTimeout(Action action, int timeout)

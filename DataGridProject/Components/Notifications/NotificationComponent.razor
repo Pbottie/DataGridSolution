@@ -1,4 +1,4 @@
-﻿@using System.Collections.Concurrent;
+﻿@namespace DataGridProject.Components
 @inject NotificationService NotificationService
 @implements IDisposable
 
@@ -23,9 +23,8 @@
 
     private void HandleNotification(string message, NotificationType type, int delay)
     {
-        Console.WriteLine(delay);
         BuildNotificationSettings(type, message);
-        var messageContent = new Message(_heading, _message, _backgroundCssClass, delay);
+        var messageContent = new Message(_heading, _message, _backgroundCssClass, delay, type);
         _messages.Add(messageContent);
         StateHasChanged();
     }
@@ -74,22 +73,6 @@
         _message = message;
     }
 
-    public class Message
-    {
-        public string Heading { get; set; }
-        public string MessageContent { get; set; }
-        public string BackgroundCssClass { get; set; }
-        public Guid Id { get; private set; }
-        public int Delay { get; set; }
 
-        public Message(string heading, string messageContent, string backgroundCssClass, int delay)
-        {
-            Heading = heading;
-            MessageContent = messageContent;
-            BackgroundCssClass = backgroundCssClass;
-            Id = Guid.NewGuid();
-            Delay = delay;
-        }
-    };
 
 }
