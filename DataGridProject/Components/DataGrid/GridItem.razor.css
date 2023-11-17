@@ -29,6 +29,7 @@
     width: 1rem;
     align-self: stretch;
     background: transparent;
+    margin-right: 0.2rem;
 }
 
 .filter-option-full {
