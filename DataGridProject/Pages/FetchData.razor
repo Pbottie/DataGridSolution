@@ -13,7 +13,7 @@
 else
 {
     <NotificationComponent />
-
+    <button @onclick="ChangeData">Click to Change</button>
 
     <DataFilter Items="testData" @ref="externalFilter">
         <FilterItem FilterType="FilterTypes.Int" Field="@nameof(SearchMeasurementListItem.Id)" />
@@ -109,6 +109,11 @@ else
 
     public bool EffectFilterHasChanged => (minEffect > 0 || maxEffect < 200);
     public bool BreakdownReportFilterHasChanged => (hasBreakdowns || hasCustomReports);
+
+    void ChangeData()
+    {
+        testData = BogusData.GetData(1000).Skip(980).ToList();
+    }
 
     public void Update()
     {

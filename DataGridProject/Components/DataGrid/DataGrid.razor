@@ -81,7 +81,6 @@
     private List<string> columnFields = new();
     private PaginationState paginationState;
 
-    private IEnumerable<TGridItem> items;
     private IEnumerable<TGridItem> ogItems;
 
     protected override void OnParametersSet()
@@ -89,23 +88,23 @@
         classBuilder
         .Begin("table");
 
-        if (ogItems != Items)
+        if (Items != null)
         {
-            ogItems = Items;
-            items = ogItems;
+            if (!ogItems.SequenceEqual(Items))
+            {
+                SetPagination();
+                ogItems = Items;
+            }
         }
     }
 
     protected override void OnInitialized()
     {
+        ogItems = new List<TGridItem>();
+
         if (IsPaginated)
         {
-            paginationState = new();
-            if (DefaultItemsPerPage > 0)
-            {
-                paginationState.ItemsPerPage = DefaultItemsPerPage;
-            }
-            paginationState.SetTotalItemsAsync(Items?.Count() ?? 0);
+            SetPagination();
         }
 
         base.OnInitialized();
@@ -129,6 +128,18 @@
             return result;
         }
     }
+
+    private void SetPagination()
+    {
+        Console.WriteLine("Setting Pagination");
+        paginationState = new();
+        if (DefaultItemsPerPage > 0)
+        {
+            paginationState.ItemsPerPage = DefaultItemsPerPage;
+        }
+        paginationState.SetTotalItemsAsync(Items?.Count() ?? 0);
+    }
+
 
     internal bool IsFiltered(TGridItem item)
     {
