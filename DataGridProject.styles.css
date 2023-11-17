@@ -101,6 +101,7 @@ button[b-f7z1l91ys1] {
     width: 1rem;
     align-self: stretch;
     background: transparent;
+    margin-right: 0.2rem;
 }
 
 .filter-option-full[b-7eaok5l3zb] {
@@ -131,29 +132,29 @@ button[b-f7z1l91ys1] {
 .grid-cursor-pointer[b-ymyixb686v] {
     cursor: pointer;
 }
-/* /Components/MessageComponent.razor.rz.scp.css */
-.notification[b-iln5jlf0vk] {
+/* /Components/Notifications/MessageComponent.razor.rz.scp.css */
+.notification[b-s6nlqkjuys] {
     padding: 1.5rem;
     color: #fff;
     width: 25rem;
     border-radius: 1rem;
     margin-bottom: 1rem;
     -webkit-animation: fade-in 0.3s ease-in both;
-    animation: fade-in-b-iln5jlf0vk 0.3s ease-in both;
+    animation: fade-in-b-s6nlqkjuys 0.3s ease-in both;
 }
 
-.notification-header[b-iln5jlf0vk] {
+.notification-header[b-s6nlqkjuys] {
     display: flex;
     align-items: center;
     margin-bottom: 0.5rem;
     justify-content: end;
 }
 
-.notification-body[b-iln5jlf0vk] {
+.notification-body[b-s6nlqkjuys] {
 }
 
 
-@keyframes fade-in-b-iln5jlf0vk {
+@keyframes fade-in-b-s6nlqkjuys {
     from {
         opacity: 0;
     }
@@ -162,8 +163,8 @@ button[b-f7z1l91ys1] {
         opacity: 1;
     }
 }
-/* /Components/NotificationComponent.razor.rz.scp.css */
-.notification-container[b-nvd7t5l2vz] {
+/* /Components/Notifications/NotificationComponent.razor.rz.scp.css */
+.notification-container[b-fcjm52knx7] {
     z-index: 500;
     left: 50%;
     transform: translate(-50%,0%);
