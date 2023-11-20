@@ -52,10 +52,10 @@
             if (!Items.SequenceEqual(items))
             {
                 items = Items;
+                SetupFilters();
                 Filter.NotifyAll();
             }
         }
-
 
     }
 
@@ -83,11 +83,46 @@
             FieldDict.Add(fieldName, filterItem.FilterValue);
             FilterTypeDict.Add(fieldName, filterItem.FilterType);
         }
+        SetupFilter(filterItem);
+    }
 
+    public IEnumerable<TDataItem> FilteredItems
+    {
+        get
+        {
+            var result = items;
+            var activeFilters = Filters.Where(filter => filter.IsActive);
+            result = result
+            .Where(x => IsFiltered(x))
+            .ToList();
+
+            return result;
+        }
+    }
+
+    public void UpdateFilter(FilterItem<TDataItem> filterItem)
+    {
+        UpdateFieldDict(filterItem);
+
+        StateHasChanged();
+        Filter.NotifyAll();
+    }
+
+    private void SetupFilters()
+    {
+        foreach (var filter in Filters)
+        {
+            if (filter.FilterType == FilterTypes.Select || filter.FilterType == FilterTypes.MinMax)
+                SetupFilter(filter);
+        }
+    }
+
+
+    private void SetupFilter(FilterItem<TDataItem> filterItem)
+    {
         if (filterItem.FilterType == FilterTypes.MinMax)
         {
             var property = typeof(TDataItem).GetProperty(filterItem.Field);
-
 
             var minSuccess = int.TryParse(items.Select(item => property.GetValue(item)).ToList().Min().ToString(), out int min);
             var maxSuccess = int.TryParse(items.Select(item => property.GetValue(item)).ToList().Max().ToString(), out int max);
@@ -108,7 +143,6 @@
                 list = items.Select(item => property.GetValue(item).ToString()).Distinct().ToList();
             filterItem.SelectOptions = list;
         }
-
     }
 
     private void ClearAllActiveFilters()
@@ -119,14 +153,6 @@
             filter.ClearFilter();
         }
 
-    }
-
-    public void UpdateFilter(FilterItem<TDataItem> filterItem)
-    {
-        UpdateFieldDict(filterItem);
-
-        StateHasChanged();
-        Filter.NotifyAll();
     }
 
     private string GetFieldName(FilterItem<TDataItem> filterItem)
@@ -144,20 +170,6 @@
         var fieldName = GetFieldName(filterItem);
         if (FieldDict.Keys.Contains(fieldName))
             FieldDict[fieldName] = filterItem.FilterValue;
-    }
-
-    public IEnumerable<TDataItem> FilteredItems
-    {
-        get
-        {
-            var result = items;
-            var activeFilters = Filters.Where(filter => filter.IsActive);
-            result = result
-            .Where(x => IsFiltered(x))
-            .ToList();
-
-            return result;
-        }
     }
 
     internal bool IsFiltered(TDataItem item)

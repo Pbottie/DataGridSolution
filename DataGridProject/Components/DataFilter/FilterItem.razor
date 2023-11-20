@@ -18,7 +18,7 @@
         else if (FilterType == FilterTypes.Int)
         {
             <text>
-                @(string.IsNullOrEmpty(Label) ? Field : Label)            (Min)
+                @(string.IsNullOrEmpty(Label) ? Field : Label) (Min)
             </text>
         }
         else
@@ -193,7 +193,7 @@
     }
 
     protected override void OnInitialized()
-    {     
+    {
         var property = DataUtils.GetItemsPropertyInfo<TDataItem>()
         .Where(x => x.Name == Field)
         .FirstOrDefault();
@@ -336,7 +336,7 @@
                     IsActive = true;
                 break;
             case FilterTypes.MinMax:
-                if (filterIntMin == 0 && filterIntMax == 0)
+                if (filterIntMin == sliderMin && filterIntMax == sliderMin)
                     IsActive = false;
                 else
                     IsActive = true;
