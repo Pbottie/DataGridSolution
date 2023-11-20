@@ -11,11 +11,11 @@
         </div>
     </div>
     <div class="mx-3">
-        @if(Filters.Any(x => x.IsActive))
+        @if (Filters.Any(x => x.IsActive))
         {
-        <span role="button" @key="Guid.NewGuid()" class="badge bg-danger mx-1" @onclick="@(()=> ClearAllActiveFilters())">
-            X Clear All
-        </span>
+            <span role="button" @key="Guid.NewGuid()" class="badge bg-danger mx-1" @onclick="@(()=> ClearAllActiveFilters())">
+                X Clear All
+            </span>
 
         }
 
@@ -40,18 +40,23 @@
     [Inject]
     public IFilter Filter { get; set; }
 
-    IEnumerable<TDataItem> items { get; set; }
+    IEnumerable<TDataItem> items { get; set; } = new List<TDataItem>();
 
     [Parameter]
     public RenderFragment ChildContent { get; set; }
 
     protected override void OnParametersSet()
     {
-        if (items != Items)
+        if (Items != null)
         {
-            items = Items;
-            Filter.NotifyAll();
+            if (!Items.SequenceEqual(items))
+            {
+                items = Items;
+                Filter.NotifyAll();
+            }
         }
+
+
     }
 
     protected override void OnAfterRender(bool firstRender)
