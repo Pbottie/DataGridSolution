@@ -135,9 +135,19 @@
     [Parameter]
     public bool IsSelectSorted { get; set; }
 
+    public List<string> SelectOptions
+    {
+        get { return selectOptions; }
+        set
+        {
+            selectOptions = value;
+            filterText = string.Empty;
+            IsActive = false;
+        }
+    }
+
     public string GetDisplayName => string.IsNullOrEmpty(Label) ? Field : Label;
     public bool IsActive;
-    public List<string> SelectOptions = new();
 
     public string FilterValue
     {
@@ -160,6 +170,7 @@
     }
 
     Type type;
+    List<string> selectOptions = new();
     string filterText = string.Empty;
     int filterIntMin = 0;
     int filterIntMax = 0;
@@ -188,15 +199,17 @@
 
     public void SetFilterMinMax(int min, int max)
     {
-        sliderMin = min;
+        sliderMin = filterIntMin = filterIntMax = min;
         sliderMax = max;
+        IsActive = false;
     }
 
     protected override void OnInitialized()
     {
-        var property = DataUtils.GetItemsPropertyInfo<TDataItem>()
-        .Where(x => x.Name == Field)
-        .FirstOrDefault();
+        var property = DataUtils.GetItemsPropertyInfo<TDataItem>
+    ()
+    .Where(x => x.Name == Field)
+    .FirstOrDefault();
 
         if (property == null)
             throw new ArgumentNullException($"Field: {Field} does not exist in item.");

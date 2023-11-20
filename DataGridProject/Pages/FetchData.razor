@@ -13,7 +13,7 @@
 else
 {
     <NotificationComponent />
-    <button @onclick="ChangeData">Click to Change</button>
+    <button class="btn btn-primary mx-3 mt-2" @onclick="ChangeData">Click to Toggle Input Data</button>
 
     <DataFilter Items="testData" @ref="externalFilter">
         <FilterItem FilterType="FilterTypes.Int" Field="@nameof(SearchMeasurementListItem.Id)" />
@@ -110,9 +110,15 @@ else
     public bool EffectFilterHasChanged => (minEffect > 0 || maxEffect < 200);
     public bool BreakdownReportFilterHasChanged => (hasBreakdowns || hasCustomReports);
 
+    private bool initialData = true;
     void ChangeData()
     {
-        testData = BogusData.GetData(1000).Skip(980).ToList();
+        if (initialData)
+            testData = BogusData.GetData(103).ToList();
+        else
+            testData = BogusData.GetData(1000).Skip(980).ToList();
+
+        initialData = !initialData;
     }
 
     public void Update()
