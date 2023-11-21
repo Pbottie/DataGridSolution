@@ -4,7 +4,7 @@ public class NotificationService
 {
     public event Action<string, NotificationType, int> OnNotify;
 
-    public void Notify(string message, NotificationType notificationType, int delay = 2500)
+    public void Notify(string message, NotificationType notificationType, int delay = 5000)
     {
         OnNotify?.Invoke(message, notificationType, delay);
     }
