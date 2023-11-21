@@ -3,10 +3,10 @@
 <div class="m-2">
     <h3>Notifications</h3>
 
-    <button @onclick="@(()=>ShowNotification("Testing Warning!", NotificationType.Warning))"> Click for Warning notification</button>
-    <button @onclick="@(()=>ShowNotification("Testing Info!", NotificationType.Info))"> Click for Info notification</button>
-    <button @onclick="@(()=>ShowNotification("Testing Success!", NotificationType.Success))"> Click for Success notification</button>
-    <button @onclick="@(()=>ShowNotification("Testing Error!", NotificationType.Error))"> Click for Error notification</button>
+    <button @onclick="@(()=>NotificationService.Warning("Testing Warning!"))"> Click for Warning notification</button>
+    <button @onclick="@(()=>NotificationService.Info("Testing Info!"))"> Click for Info notification</button>
+    <button @onclick="@(()=>NotificationService.Success("Testing Success!"))"> Click for Success notification</button>
+    <button @onclick="@(()=>NotificationService.Error("Testing Error!"))"> Click for Error notification</button>
 
     <div class="m-2">
         <span>
@@ -38,7 +38,7 @@
 </div>
 
 @code {
-    [Inject] NotificationService NotificationService { get; set; }
+    [Inject] INotificationService NotificationService { get; set; }
     private string notification;
     private NotificationType type;
     private int wait;
@@ -48,12 +48,6 @@
     protected override void OnInitialized()
     {
         types = Enum.GetValues(typeof(NotificationType)).Cast<NotificationType>().ToList();
-
-    }
-
-    void ShowNotification(string message, NotificationType type)
-    {
-        NotificationService.Notify(message, type);
     }
 
     async Task ShowCustomNotification(string message, NotificationType type, int wait, int delay)
@@ -62,6 +56,5 @@
         await Task.Delay(wait);
         NotificationService.Notify(message, type, delay);
     }
-
 
 }

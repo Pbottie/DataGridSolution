@@ -93,8 +93,7 @@
             var result = items;
             var activeFilters = Filters.Where(filter => filter.IsActive);
             result = result
-            .Where(x => IsFiltered(x))
-            .ToList();
+            .Where(x => IsFiltered(x));
 
             return result;
         }
