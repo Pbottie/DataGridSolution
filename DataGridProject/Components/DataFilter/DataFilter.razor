@@ -210,6 +210,9 @@
 
     private bool EvaluateFilterByType(object value, FilterTypes filterType, string filterValue)
     {
+        if (value == null)
+            return false;
+
         switch (filterType)
         {
             case FilterTypes.String:

@@ -73,7 +73,7 @@ public static class BogusData
             => (s.Impressions.Count > s.TrackingStart.Count
             ? (s.Impressions.Count, s.Impressions.Count.ToString(), s.Impressions.Recently.ToString())
             : (s.TrackingStart.Count, s.TrackingStart.Count.ToString(), s.TrackingStart.Recently.ToString())))
-            .RuleFor(s=>s.TestDate, f=>f.Date.FutureDateOnly());
+            .RuleFor(s=>s.TestDate, f=>f.Date.FutureDateOnly().OrNull(f,0.1f));
 
         bogusList = testData.Generate(1000).ToList();
     }

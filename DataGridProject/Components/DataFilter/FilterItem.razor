@@ -261,10 +261,11 @@
 
     }
 
-
     private void ValidateDateTime()
     {
-        if (type.Name != "DateTime" && type.Name != "DateOnly")
+        var isNullable = type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+
+        if ((type.Name != "DateTime" && type.Name != "DateOnly") && !isNullable)
             throw new ArgumentException($"{Field} must be of type DateTime or DateOnly");
     }
 
