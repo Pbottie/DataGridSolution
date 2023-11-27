@@ -1,0 +1,35 @@
+﻿@namespace DataGridProject.Components
+
+<div @key=Options class="btn-group flex-wrap fit-content" role="group">
+    @foreach (var keyValuePair in Options)
+    {
+        if ((DefaultSelectedOption == keyValuePair.Key && Selected.Contains(keyValuePair.Key))|| Selected.Contains(keyValuePair.Key))
+        {
+            <input checked type="checkbox" name="filter" value="@keyValuePair.Key" class="btn-check" id="@keyValuePair.Key" @onchange="eventArgs => OnCheckedChange(keyValuePair.Key,eventArgs.Value)">
+        }
+        else
+        {
+            <input type="checkbox" name="filter" value="@keyValuePair.Key" class="btn-check" id="@keyValuePair.Key" @onchange="eventArgs => OnCheckedChange(keyValuePair.Key,eventArgs.Value)">
+        }
+        <label class="btn btn-outline-primary" for="@keyValuePair.Key">@keyValuePair.Value</label>
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public Dictionary<string, string> Options { get; set; }
+    [Parameter, EditorRequired]
+    public EventCallback<EventCallbackArgs> OnChecked { get; set; }
+    [Parameter]
+    public string DefaultSelectedOption { get; set; }
+    [Parameter]
+    public List<string> Selected { get; set; }
+
+    private EventCallbackArgs args;
+
+    private void OnCheckedChange(string value, object changeValue)
+    {
+        args = new EventCallbackArgs { Value = value, Checked = (bool)changeValue };
+        OnChecked.InvokeAsync(args);
+    }
+}

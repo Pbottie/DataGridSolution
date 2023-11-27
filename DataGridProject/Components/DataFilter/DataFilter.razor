@@ -24,7 +24,18 @@
             if (filter.IsActive)
             {
                 <span role="button" @key="Guid.NewGuid()" class="badge bg-secondary mx-1" @onclick="@(()=> filter.ClearFilter())">
-                    X @filter.GetDisplayName: @(filter.FilterType == FilterTypes.MinMax ? @filter.FilterValue.Replace("_", " - ") : @filter.FilterValue)
+                    @if (filter.FilterType == FilterTypes.MultiCheckbox)
+                    {
+                        <text>
+                            X @filter.GetDisplayName: @(@filter.FilterValue.Aggregate((x, y) => x + " - " + y))
+                        </text>
+                    }
+                    else
+                    {
+                        <text>
+                            X @filter.GetDisplayName: @(filter.FilterType == FilterTypes.MinMax ? @filter.FilterValue.FirstOrDefault().Replace("_", " - ") : @filter.FilterValue.FirstOrDefault())
+                        </text>
+                    }
                 </span>
             }
         }
@@ -69,7 +80,7 @@
     }
 
     public List<FilterItem<TDataItem>> Filters = new();
-    private Dictionary<string, string?> FieldDict { get; set; } = new();
+    private Dictionary<string, List<string>?> FieldDict { get; set; } = new();
     private Dictionary<string, FilterTypes> FilterTypeDict { get; set; } = new();
 
 
@@ -209,7 +220,7 @@
         return key;
     }
 
-    private bool EvaluateFilterByType(object value, FilterTypes filterType, string filterValue)
+    private bool EvaluateFilterByType(object value, FilterTypes filterType, List<string> filterValue)
     {
         if (value == null)
             return false;
@@ -217,23 +228,25 @@
         switch (filterType)
         {
             case FilterTypes.String:
-                return EvaluateStringFilter(value, filterValue);
+                return EvaluateStringFilter(value, filterValue.FirstOrDefault());
             case FilterTypes.Int:
-                return EvaluateIntFilter(value, filterValue);
+                return EvaluateIntFilter(value, filterValue.FirstOrDefault());
             case FilterTypes.MinMax:
-                return EvaluateMinMaxFilter(value, filterValue);
+                return EvaluateMinMaxFilter(value, filterValue.FirstOrDefault());
             case FilterTypes.DateTime:
-                return EvaluateDateTimeFilter(value, filterValue);
+                return EvaluateDateTimeFilter(value, filterValue.FirstOrDefault());
             case FilterTypes.DateTimeMin:
-                return EvaluateDateTimeMinFilter(value, filterValue);
+                return EvaluateDateTimeMinFilter(value, filterValue.FirstOrDefault());
             case FilterTypes.DateTimeMax:
-                return EvaluateDateTimeMaxFilter(value, filterValue);
+                return EvaluateDateTimeMaxFilter(value, filterValue.FirstOrDefault());
             case FilterTypes.CheckBox:
-                return EvaluateCheckBoxFilter(value, filterValue);
+                return EvaluateCheckBoxFilter(value, filterValue.FirstOrDefault());
+            case FilterTypes.MultiCheckbox:
+                return EvaluateMultiSelectFilter(value, filterValue);
             case FilterTypes.RadioButton:
-                return EvaluateRadioButtonFilter(value, filterValue);
+                return EvaluateRadioButtonFilter(value, filterValue.FirstOrDefault());
             case FilterTypes.Select:
-                return EvaluateSelectFilter(value, filterValue);
+                return EvaluateSelectFilter(value, filterValue.FirstOrDefault());
             default:
                 return true;
         }
@@ -314,4 +327,8 @@
         return CompareStrings(value.ToString().ToLower(), filterValue.ToLower());
     }
 
+    private bool EvaluateMultiSelectFilter(object value, List<string> filterValue)
+    {
+        return filterValue.Any(x => x.ToLower() == value.ToString().ToLower());
+    }
 }

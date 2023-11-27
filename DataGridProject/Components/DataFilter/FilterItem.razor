@@ -71,7 +71,10 @@
             </span>
         }
 
-
+    }
+    else if (FilterType == FilterTypes.MultiCheckbox)
+    {
+        <MultiCheckbox Options="Options" DefaultSelectedOption="@DefaultSelectedOption" OnChecked="OnMultiSelectChanged" Selected="multiSelect"/>
     }
     else if (FilterType == FilterTypes.RadioButton)
     {
@@ -149,28 +152,33 @@
     public string GetDisplayName => string.IsNullOrEmpty(Label) ? Field : Label;
     public bool IsActive;
 
-    public string FilterValue
+    public List<string> FilterValue
     {
         get
         {
-            if (FilterType == FilterTypes.String || FilterType == FilterTypes.RadioButton || FilterType == FilterTypes.Select)
-                return filterText;
-            if (FilterType == FilterTypes.Int)
-                return filterIntMin.ToString();
-            if (FilterType == FilterTypes.MinMax)
-                return $"{filterIntMin}_{filterIntMax}";
-            if (FilterType == FilterTypes.DateTime || FilterType == FilterTypes.DateTimeMin || FilterType == FilterTypes.DateTimeMax)
-                return filterDateTime?.ToShortDateString();
-            if (FilterType == FilterTypes.CheckBox)
-                return filterCheckBox.ToString();
+            if (FilterType == FilterTypes.MultiCheckbox)
+                return multiSelect;
 
-            return string.Empty;
+            multiSelect.Clear();
+            if (FilterType == FilterTypes.String || FilterType == FilterTypes.RadioButton || FilterType == FilterTypes.Select)
+                multiSelect.Add(filterText);
+            if (FilterType == FilterTypes.Int)
+                multiSelect.Add(filterIntMin.ToString());
+            if (FilterType == FilterTypes.MinMax)
+                multiSelect.Add($"{filterIntMin}_{filterIntMax}");
+            if (FilterType == FilterTypes.DateTime || FilterType == FilterTypes.DateTimeMin || FilterType == FilterTypes.DateTimeMax)
+                multiSelect.Add(filterDateTime?.ToShortDateString());
+            if (FilterType == FilterTypes.CheckBox)
+                multiSelect.Add(filterCheckBox.ToString());
+
+            return multiSelect;
             //Better way?
         }
     }
 
     Type type;
     List<string> selectOptions = new();
+    List<string> multiSelect = new();
     string filterText = string.Empty;
     int filterIntMin = 0;
     int filterIntMax = 0;
@@ -192,6 +200,8 @@
             filterDateTime = null;
         if (FilterType == FilterTypes.CheckBox)
             filterCheckBox = false;
+        if (FilterType == FilterTypes.MultiCheckbox)
+            multiSelect = new();
 
         IsActive = false;
         ParentFilter.UpdateFilter(this);
@@ -251,10 +261,12 @@
             // case FilterTypes.CheckBox:
             //      ValidateCheckBox();
             case FilterTypes.RadioButton:
-                ValidateRadioButton();
+                ValidateFilterWithOptions();
                 break;
             // case FilterTypes.Select:
             //      ValidateSelect();
+            case FilterTypes.MultiCheckbox:
+                goto case FilterTypes.RadioButton;
             default:
                 break;
         }
@@ -275,10 +287,10 @@
             throw new ArgumentException("Filter can't cast bools to int");
     }
 
-    private void ValidateRadioButton()
+    private void ValidateFilterWithOptions()
     {
         if (Options == null)
-            throw new ArgumentNullException("RadioButtons need the Options parameter.");
+            throw new ArgumentNullException($"{FilterType} needs the Options parameter.");
         else if (!string.IsNullOrEmpty(DefaultSelectedOption) && !Options.ContainsKey(DefaultSelectedOption))
             throw new ArgumentException("Default option does not exists in selected Field");
     }
@@ -289,6 +301,12 @@
         {
             filterText = DefaultSelectedOption ?? string.Empty;
             IsActive = !string.IsNullOrEmpty(DefaultSelectedOption);
+        }
+        else if (FilterType == FilterTypes.MultiCheckbox)
+        {
+            IsActive = !string.IsNullOrEmpty(DefaultSelectedOption);
+            if (IsActive)
+                multiSelect.Add(DefaultSelectedOption);
         }
     }
 
@@ -327,6 +345,15 @@
         CheckDisableAndUpdate();
     }
 
+    void OnMultiSelectChanged(EventCallbackArgs e)
+    {
+        if (e.Checked)
+            multiSelect.Add(e.Value);
+        else
+            multiSelect.Remove(e.Value);
+        CheckDisableAndUpdate();
+    }
+
     private void CheckDisableAndUpdate()
     {
         DisableIfDefaultValue();
@@ -357,21 +384,22 @@
                 break;
             case FilterTypes.DateTime:
                 if (filterDateTime.HasValue)
-                {
                     IsActive = true;
-                }
                 else
-                {
                     IsActive = false;
-                }
                 break;
             case FilterTypes.DateTimeMin:
                 goto case FilterTypes.DateTime;
-
             case FilterTypes.DateTimeMax:
                 goto case FilterTypes.DateTime;
             case FilterTypes.CheckBox:
                 IsActive = filterCheckBox;
+                break;
+            case FilterTypes.MultiCheckbox:
+                if (multiSelect.Count > 0)
+                    IsActive = true;
+                else
+                    IsActive = false;
                 break;
             case FilterTypes.RadioButton:
                 goto case FilterTypes.String;
