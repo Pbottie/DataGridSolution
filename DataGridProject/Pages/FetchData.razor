@@ -113,12 +113,11 @@ else
     private bool initialData = true;
     void ChangeData()
     {
+        initialData = !initialData;
         if (initialData)
             testData = BogusData.GetData(103).ToList();
         else
             testData = BogusData.GetData(1000).Skip(980).ToList();
-
-        initialData = !initialData;
     }
 
     public void Update()
