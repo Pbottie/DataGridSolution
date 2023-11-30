@@ -5,13 +5,13 @@
     {
         if ((DefaultSelectedOption == keyValuePair.Key && Selected.Contains(keyValuePair.Key))|| Selected.Contains(keyValuePair.Key))
         {
-            <input checked type="checkbox" name="filter" value="@keyValuePair.Key" class="btn-check" id="@keyValuePair.Key" @onchange="eventArgs => OnCheckedChange(keyValuePair.Key,eventArgs.Value)">
+            <input checked type="checkbox" name="filter" value="@keyValuePair.Key" class="btn-check" id="@(keyValuePair.Key+ElementId)" @onchange="eventArgs => OnCheckedChange(keyValuePair.Key,eventArgs.Value)">
         }
         else
         {
-            <input type="checkbox" name="filter" value="@keyValuePair.Key" class="btn-check" id="@keyValuePair.Key" @onchange="eventArgs => OnCheckedChange(keyValuePair.Key,eventArgs.Value)">
+            <input type="checkbox" name="filter" value="@keyValuePair.Key" class="btn-check" id="@(keyValuePair.Key+ElementId)" @onchange="eventArgs => OnCheckedChange(keyValuePair.Key,eventArgs.Value)">
         }
-        <label class="btn btn-outline-primary" for="@keyValuePair.Key">@keyValuePair.Value</label>
+        <label class="btn btn-outline-primary" for="@(keyValuePair.Key+ElementId)">@keyValuePair.Value</label>
     }
 </div>
 
@@ -22,6 +22,8 @@
     public EventCallback<EventCallbackArgs> OnChecked { get; set; }
     [Parameter]
     public string DefaultSelectedOption { get; set; }
+    [Parameter]
+    public string ElementId { get; set; }
     [Parameter]
     public List<string> Selected { get; set; }
 

@@ -19,6 +19,7 @@ public class SearchMeasurementListItem
     public DateTime EndDate { get; set; }
     public string FormattedEndDate => EndDate.ToShortDateString();
     public MeasurementStatus Status { get; set; }
+    public MeasurementStatus Status2 { get; set; }
     public string ErrorMessage { get; set; }
     public StatisticInfo Impressions { get; set; }
     public StatisticInfo Surveys { get; set; }

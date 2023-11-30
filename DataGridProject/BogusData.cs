@@ -55,6 +55,7 @@ public static class BogusData
             .RuleFor(s => s.EndDate, f => f.Date.Future(1))
             .RuleFor(s => s.FormattedEndDate, (f, s) => s.EndDate.ToShortDateString())
             .RuleFor(s => s.Status, f => f.PickRandom<MeasurementStatus>())
+            .RuleFor(s => s.Status2, f => f.PickRandom<MeasurementStatus>())
             .RuleFor(s => s.ErrorMessage, "")
             .RuleFor(s => s.Impressions, testImpressions.Generate(1).First())
             .RuleFor(s => s.Surveys, testSurveys.Generate(1).First())

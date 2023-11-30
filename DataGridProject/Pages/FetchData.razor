@@ -30,6 +30,7 @@ else
         <FilterItem FilterType="FilterTypes.CheckBox" Field="@nameof(SearchMeasurementListItem.HasBreakdowns)" />
         <FilterItem IsSwitch FilterType="FilterTypes.CheckBox" Field="@nameof(SearchMeasurementListItem.HasCustomReport)" />
          <FilterItem FilterType="FilterTypes.MultiCheckbox" Field="@nameof(SearchMeasurementListItem.Status)" Options="radioButtonOptions" DefaultSelectedOption="Active" />
+         <FilterItem FilterType="FilterTypes.MultiCheckbox" Field="@nameof(SearchMeasurementListItem.Status2)" Options="radioButtonOptions" DefaultSelectedOption="Active" />
 
          <FilterItem IsSelectSorted FilterType="FilterTypes.Select" Field="@nameof(SearchMeasurementListItem.BrandName)" />
 
@@ -91,6 +92,7 @@ else
          <GridItem Field="@nameof(SearchMeasurementListItem.BrandName)" />
          <GridItem Field="@nameof(SearchMeasurementListItem.FormattedEndDate)" />
          <GridItem Field="@nameof(SearchMeasurementListItem.Status)" />
+         <GridItem Field="@nameof(SearchMeasurementListItem.Status2)" />
          <GridItem Field="@nameof(SearchMeasurementListItem.TestDate)" />
      </DataGrid>
 }
