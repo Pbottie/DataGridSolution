@@ -9,8 +9,17 @@
         <div id="@ElementId" class="overflow-x-auto mx-3 pt-4">
             @if (filterTextDict.Values.Any(x => x != ""))
             {
+
+
                 <span role="button" class="badge bg-danger mx-1" @onclick="()=>ClearAllTextFilters()">
-                    X Clear Text Filters
+                    X Clear All Filters
+                </span>
+
+            }
+            @if (!string.IsNullOrEmpty(SortedField))
+            {
+                <span role="button" class="badge bg-danger mx-1" @onclick="()=>ClearSort()">
+                    X Clear Sort
                 </span>
             }
             @foreach (var kvp in filterTextDict)
@@ -151,6 +160,13 @@
         {
             RemoveFilter(keyValuePair.Key);
         }
+
+    }
+    
+    internal void ClearSort()
+    {
+        SortedField = string.Empty;
+        Items = ogItems;
     }
 
     internal void RemoveFilter(GridItem<TGridItem> gridItem)
