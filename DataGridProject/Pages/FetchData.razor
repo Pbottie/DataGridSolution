@@ -48,22 +48,22 @@ else
          <ColumnTemplate>
              <div class="d-flex align-items-center">
                  @context.MeasurementId
-                 @context.StartDate
-             </div>
-             <div class="d-flex align-items-center">
-                 @context.MeasurementPath
-                 <strong>
-                     @context.TotalEffect
-                 </strong>
-             </div>
-         </ColumnTemplate>
-         <FilterTemplate>
-             <p>Min: <input type="range" @bind="minEffect" @bind:event="oninput" min="0" max="190" /> <span>@minEffect</span></p>
-             <p>Max: <input type="range" @bind="maxEffect" @bind:event="oninput" min="@minEffect" max="200" /> <span>@maxEffect</span></p>
-         </FilterTemplate>
-     </GridItem>
+                    @context.StartDate
+                </div>
+                <div class="d-flex align-items-center">
+                    @context.MeasurementPath
+                    <strong>
+                        @context.TotalEffect
+                    </strong>
+                </div>
+            </ColumnTemplate>
+            <FilterTemplate>
+                <p>Min: <input type="range" @bind="minEffect" @bind:event="oninput" min="0" max="190" /> <span>@minEffect</span></p>
+                <p>Max: <input type="range" @bind="maxEffect" @bind:event="oninput" min="@minEffect" max="200" /> <span>@maxEffect</span></p>
+            </FilterTemplate>
+        </GridItem>
 
-     <GridItem Field="CustomerName" Title="Name" IsSortable IsFilterable />
+        <GridItem Field="CustomerName" Title="Name" IsSortable IsFilterable />
          <GridItem Title="Quick checks" DefaultFilterValueHasChanged="BreakdownReportFilterHasChanged">
              <ColumnTemplate>
                  <div>
@@ -91,10 +91,15 @@ else
         <GridItem Align="Align.Right" Field="@nameof(SearchMeasurementListItem.MeasurementName)" IsSortable IsFilterable />
          <GridItem Field="@nameof(SearchMeasurementListItem.BrandName)" />
          <GridItem Field="@nameof(SearchMeasurementListItem.FormattedEndDate)" />
-         <GridItem Field="@nameof(SearchMeasurementListItem.Status)" />
-         <GridItem Field="@nameof(SearchMeasurementListItem.Status2)" />
-         <GridItem Field="@nameof(SearchMeasurementListItem.TestDate)" />
-     </DataGrid>
+        <GridItem Field="@nameof(SearchMeasurementListItem.Status)" />
+        <GridItem Field="@nameof(SearchMeasurementListItem.Status2)" />
+        <GridItem Title="">       
+            <ColumnTemplate>
+                @context.MeasurementPath
+            </ColumnTemplate>
+        </GridItem>
+        <GridItem Field="@nameof(SearchMeasurementListItem.TestDate)" />
+    </DataGrid>
 }
 
 @code {

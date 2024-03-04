@@ -126,7 +126,7 @@
 
         if (string.IsNullOrEmpty(Field))
         {
-            if (string.IsNullOrEmpty(Title) && HeaderTemplate == null)
+            if (string.IsNullOrEmpty(Title) && HeaderTemplate == null && ColumnTemplate == null)
                 throw new ArgumentNullException("No Template found. Field and Title can't both be empty");
 
             if (IsFilterable)
