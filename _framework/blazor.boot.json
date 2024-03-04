@@ -1,7 +1,7 @@
 {
   "entryAssembly": "DataGridProject",
   "resources": {
-    "hash": "sha256-/cYwE2Ku75IT8/6kyCqOUf5kLNhmj/IGZhzHnhIVZSQ=",
+    "hash": "sha256-4V/MrsqP3HVD1Xib1ZbgwDl6PVR6rpvENEgd8SNhGaw=",
     "runtime": {
       "dotnet.7.0.16.i1aadeothk.js": "sha256-4BiArKugJJtpQrznGF5zWfmJ2TB98+p6rKsyoqhtMk4=",
       "dotnet.timezones.blat": "sha256-rwyJqJu36keQwNmm/O1XV7tnkkVldIOK8GIjn4gTUt4=",
@@ -12,7 +12,7 @@
     },
     "assembly": {
       "Bogus.dll": "sha256-IgFEwQyP1GQSj7cjhmsEcYuEABesDe9Y3oby2kbVnnc=",
-      "DataGridProject.dll": "sha256-V9pdaTZDUKPH1g13ZnORRILTHZ/Nc25PG/tl9UlK4mE=",
+      "DataGridProject.dll": "sha256-52BqVAlZoLxtkXT0WdDL8kL89W6CBK7qTLwZ4XjQ/TE=",
       "Microsoft.AspNetCore.Components.dll": "sha256-bpZ3TFOPa60PIMHCDAi0lcgHnQ+EO6njNrJTjYvMojY=",
       "Microsoft.AspNetCore.Components.Forms.dll": "sha256-+shobhAyUN7q4gvsTkkavpEe2x3Zaa79Noyyvb1PrFA=",
       "Microsoft.AspNetCore.Components.Web.dll": "sha256-t2SuetEPPXnOERa187mus54gxplu70G1JPIbGdsJTrs=",
